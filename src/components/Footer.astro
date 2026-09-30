@@ -1,0 +1,38 @@
+---
+import { u } from '../lib/url';
+import { Image } from 'astro:assets';
+import Steuerrad from './Steuerrad.astro';
+import logo from '../assets/img/logo-sand.png';
+import { laeden, site, telLink } from '../lib/laden';
+---
+<footer class="relative mt-24 overflow-hidden bg-navy text-sand-100">
+  <Steuerrad farbe="sand" class="-bottom-40 -right-28 h-[28rem] w-[28rem] opacity-[0.07]" />
+  <div class="container-page relative grid gap-10 py-14 md:grid-cols-4">
+    <div>
+      <Image src={logo} alt="Logo Die Schatullen" width={96} height={96} densities={[1, 2]} class="mb-4 h-24 w-24" />
+      <p class="text-sm text-sand-100/80">{site.claim}</p>
+    </div>
+    {laeden.map((l) => (
+      <div>
+        <h2 class="mb-3 font-sans text-sm font-semibold uppercase tracking-wider text-sand">{l.name}</h2>
+        <p class="text-sm leading-relaxed">{l.strasse}<br />{l.plz} {l.ort}</p>
+        <p class="mt-2 text-sm"><a href={telLink(l.telefon)} class="text-sand-100 hover:text-sand">{l.telefon}</a></p>
+        <p class="mt-3 flex gap-4 text-sm">
+          <a href={l.instagram} class="text-sand-100/80 hover:text-sand" rel="noopener">Instagram</a>
+          <a href={l.facebook} class="text-sand-100/80 hover:text-sand" rel="noopener">Facebook</a>
+        </p>
+      </div>
+    ))}
+    <div>
+      <h2 class="mb-3 font-sans text-sm font-semibold uppercase tracking-wider text-sand">Kontakt</h2>
+      <p class="text-sm"><a href={`mailto:${site.email}`} class="text-sand-100 hover:text-sand">{site.email}</a></p>
+      <p class="mt-2 text-sm"><a href={site.youtube} class="text-sand-100/80 hover:text-sand" rel="noopener">YouTube</a></p>
+      <ul class="mt-6 space-y-1 text-sm text-sand-100/70">
+        <li><a href={u('/jobs/')} class="hover:text-sand">Jobs</a></li>
+        <li><a href={u('/impressum/')} class="hover:text-sand">Impressum</a></li>
+        <li><a href={u('/datenschutz/')} class="hover:text-sand">Datenschutz</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="border-t border-sand/15 py-5 text-center text-xs text-sand-100/60">© {new Date().getFullYear()} {site.name} · Hooksiel & Schillig · Wangerland</div>
+</footer>

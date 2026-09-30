@@ -1,0 +1,54 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/bricolage-grotesque/wght.css';
+@import '@fontsource-variable/figtree/wght.css';
+
+/* Farben aus Logo und alter Seite: Navy (Logo), Sand (Logo), Petrol (Öffnungszeiten-Fläche), Himmelblau (Wellenlinie) */
+@theme {
+  --color-navy-950: #0f1e38;
+  --color-navy-900: #14284b;
+  --color-navy: #1b335f;
+  --color-navy-700: #2a4a80;
+  --color-sand: #ede8aa;
+  --color-sand-100: #f8f5dc;
+  --color-sand-50: #fcfbf3;
+  --color-petrol: #6fa9a9;
+  --color-petrol-700: #3f7777;
+  --color-petrol-50: #eaf3f3;
+  --color-himmel: #5aa9dd;
+  --color-signal: #c8412f;
+
+  --font-display: 'Bricolage Grotesque Variable', system-ui, sans-serif;
+  --font-sans: 'Figtree Variable', system-ui, sans-serif;
+}
+
+@layer base {
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body { @apply bg-sand-50 text-navy-950 font-sans antialiased; }
+  html, body { overflow-x: clip; }
+  h1, h2, h3 { @apply font-display font-bold text-navy tracking-[-0.03em]; text-wrap: balance; }
+  a { @apply underline-offset-4; }
+  :focus-visible { @apply outline-2 outline-offset-2 outline-himmel; }
+}
+
+@utility container-page { @apply mx-auto w-full max-w-6xl px-4 sm:px-6; }
+@utility eyebrow { @apply text-xs font-semibold uppercase tracking-[0.18em] text-petrol-700; }
+@utility btn { @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold no-underline transition-colors; }
+@utility btn-primary { @apply btn bg-navy text-sand-50 hover:bg-navy-700; }
+@utility btn-ghost { @apply btn border border-navy/20 text-navy hover:bg-navy/5; }
+@utility prose-text {
+  & p { @apply mb-4 leading-relaxed text-navy-950/85; }
+  & h2 { @apply mt-10 mb-3 text-2xl; }
+  & a { @apply text-navy underline; }
+}
+
+@utility display-xl { font-size: clamp(3.5rem, 11vw, 9rem); line-height: 0.92; }
+@utility display-lg { font-size: clamp(2.25rem, 5.5vw, 4.5rem); line-height: 1; }
+@utility full-bleed { @apply relative w-full overflow-hidden; }
+
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@utility marquee { animation: marquee 60s linear infinite; }
+@media (prefers-reduced-motion: reduce) { .marquee { animation: none; } }
+
+@keyframes steuerrad { to { transform: rotate(360deg); } }
+.steuerrad-drehen { animation: steuerrad 240s linear infinite; }
+@media (prefers-reduced-motion: reduce) { .steuerrad-drehen { animation: none; } }

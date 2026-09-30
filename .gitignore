@@ -1,0 +1,6 @@
+node_modules/
+dist/
+.astro/
+_wp-export/
+.DS_Store
+.env

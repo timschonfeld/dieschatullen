@@ -1,0 +1,68 @@
+---
+/**
+ * Zeigt "Jetzt geöffnet · bis 18 Uhr" o. ä. Die Berechnung läuft im Browser (Europe/Berlin),
+ * damit der Status auch auf einer statischen Seite immer aktuell ist.
+ */
+import { site, type Laden } from '../lib/laden';
+
+interface Props { laden: Laden; class?: string }
+const { laden, class: cls = '' } = Astro.props;
+const daten = JSON.stringify({ zeiten: laden.oeffnungszeiten, winterpause: site.saison.winterpause, ausnahmen: site.ausnahmen });
+---
+<p class={`open-status inline-flex items-center gap-2 rounded-full bg-white/90 px-3 py-1.5 text-sm font-medium text-navy shadow-sm ring-1 ring-navy/10 ${cls}`} data-oeffnung={daten}>
+  <span class="dot h-2.5 w-2.5 rounded-full bg-navy/30" aria-hidden="true"></span>
+  <span class="label">{site.saison.winterpause ? 'Winterpause' : laden.oeffnungszeiten.map((o) => `${o.label.replace(' bis ', '–').replace(' und ', '+')} ${o.von}–${o.bis}`).join(' · ')}</span>
+</p>
+
+<script>
+  type Zeit = { tage: number[]; von: string; bis: string };
+  type Ausnahme = { datum: string; text?: string };
+  const tagNamen = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
+  const uhr = (hm: string) => hm.replace(/^0/, '').replace(':00', '') + ' Uhr';
+  const minuten = (hm: string) => { const [h, m] = hm.split(':').map(Number); return h * 60 + m; };
+
+  function berlinJetzt() {
+    const teile = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Europe/Berlin', year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit', hourCycle: 'h23', weekday: 'short',
+    }).formatToParts(new Date());
+    const w = (t: string) => teile.find((p) => p.type === t)!.value;
+    const datum = `${w('year')}-${w('month')}-${w('day')}`;
+    const tag = new Date(`${datum}T12:00:00Z`).getUTCDay();
+    return { datum, tag, min: Number(w('hour')) * 60 + Number(w('minute')) };
+  }
+
+  function addTage(datum: string, n: number) {
+    const d = new Date(`${datum}T12:00:00Z`); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10);
+  }
+
+  for (const el of document.querySelectorAll<HTMLElement>('.open-status')) {
+    const { zeiten, winterpause, ausnahmen } = JSON.parse(el.dataset.oeffnung!) as { zeiten: Zeit[]; winterpause: boolean; ausnahmen: Ausnahme[] };
+    const label = el.querySelector('.label')!;
+    const dot = el.querySelector('.dot')!;
+    if (winterpause) continue;
+    const jetzt = berlinJetzt();
+    const zu = (datum: string) => ausnahmen.some((a) => a.datum === datum);
+    const heute = zeiten.find((z) => z.tage.includes(jetzt.tag));
+
+    if (heute && !zu(jetzt.datum) && jetzt.min >= minuten(heute.von) && jetzt.min < minuten(heute.bis)) {
+      label.textContent = `Jetzt geöffnet · bis ${uhr(heute.bis)}`;
+      dot.className = 'dot h-2.5 w-2.5 rounded-full bg-emerald-500';
+      continue;
+    }
+    dot.className = 'dot h-2.5 w-2.5 rounded-full bg-signal';
+    if (heute && !zu(jetzt.datum) && jetzt.min < minuten(heute.von)) {
+      label.textContent = `Geschlossen · öffnet heute um ${uhr(heute.von)}`;
+      continue;
+    }
+    for (let i = 1; i <= 7; i++) {
+      const datum = addTage(jetzt.datum, i);
+      const tag = (jetzt.tag + i) % 7;
+      const z = zeiten.find((z) => z.tage.includes(tag));
+      if (z && !zu(datum)) {
+        label.textContent = `Geschlossen · öffnet ${i === 1 ? 'morgen' : tagNamen[tag]} um ${uhr(z.von)}`;
+        break;
+      }
+    }
+  }
+</script>

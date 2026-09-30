@@ -1,0 +1,215 @@
+---
+import { u } from '../lib/url';
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import OpenStatus from '../components/OpenStatus.astro';
+import ClickEmbed from '../components/ClickEmbed.astro';
+import Steuerrad from '../components/Steuerrad.astro';
+import Bewertungen from '../components/Bewertungen.astro';
+import { bild } from '../lib/bilder';
+import { laeden, site, ladenSchema, routenLink, telLink } from '../lib/laden';
+import sortiment from '../data/sortiment.json';
+import news from '../data/news.json';
+import jobs from '../data/jobs.json';
+
+const [hooksiel, schillig] = laeden;
+const ladenFotos: Record<string, { foto: string; alt: string; pos: string }> = {
+  hooksiel: { foto: 'laden-hooksiel', alt: 'Die Hooksieler Schatulle & Drachennest von außen', pos: 'object-center' },
+  schillig: { foto: 'laden-schillig', alt: 'Schaufenster der Schilligen Schatulle', pos: 'object-center' },
+};
+const streifen = ['leuchttuerme', 'tee', 'windspiele', 'gummistiefel', 'drachen-bunt', 'stinker', 'spiele', 'feinkost', 'deich-schillig'];
+---
+<Base schema={laeden.map(ladenSchema)}>
+  <!-- HERO: randloses Großbild, Status-Karten überlappen den unteren Rand -->
+  <section class="full-bleed">
+    <div class="relative h-[58svh] min-h-[380px] md:h-[86svh]">
+      <Image src={bild('drachen-bunt')} alt="Bunter Drache im Drachennest der Hooksieler Schatulle" widths={[480, 828, 1200, 1800, 2400]} sizes="100vw" format="avif" quality={55} class="absolute inset-0 h-full w-full object-cover" loading="eager" fetchpriority="high" />
+      <div class="absolute inset-0 bg-gradient-to-t from-navy-950/85 via-navy-950/25 to-transparent"></div>
+      <div class="container-page relative flex h-full flex-col justify-end pb-24 md:pb-40">
+        <p class="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-sand">Hooksiel & Schillig · Wangerland</p>
+        <h1 class="display-xl !text-white">Moin!</h1>
+        <p class="mt-4 max-w-xl text-lg leading-snug text-white/90 md:text-2xl">Drachen, Tee, Souvenirs und alles für den Strandtag: ein Stück Nordsee zum Mitnehmen.</p>
+      </div>
+    </div>
+    <div class="container-page relative -mt-16 md:-mt-24">
+      {site.saison.hinweis && <p class="mb-3 rounded-2xl bg-sand px-5 py-3 font-semibold text-navy shadow-lg">{site.saison.hinweis}</p>}
+      <ul class="grid gap-3 md:grid-cols-2 md:gap-4">
+        {laeden.map((l) => (
+          <li class="flex flex-wrap items-center justify-between gap-x-4 gap-y-3 rounded-3xl bg-white p-5 shadow-xl shadow-navy/10 ring-1 ring-navy/5 md:p-6">
+            <div class="min-w-0">
+              <a href={`#${l.id}`} class="font-display text-lg font-bold text-navy no-underline hover:underline">{l.name}</a>
+              <OpenStatus laden={l} class="mt-1 !flex !bg-transparent !p-0 !shadow-none !ring-0" />
+            </div>
+            <div class="flex gap-2">
+              <a href={telLink(l.telefon)} class="btn-ghost !px-4 !py-2.5" aria-label={`${l.name} anrufen`}>Anrufen</a>
+              <a href={routenLink(l)} class="btn-primary !px-4 !py-2.5" rel="noopener" aria-label={`Route zu ${l.name}`}>Route</a>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- LÄDEN: große Split-Sektionen, Bild randlos bis zum Bildschirmrand -->
+  <section class="relative mt-24 md:mt-32" aria-labelledby="laeden-titel">
+    <Steuerrad class="-right-24 -top-28 h-80 w-80 opacity-[0.06] md:-right-40 md:-top-48 md:h-[36rem] md:w-[36rem]" />
+    <div class="container-page relative mb-10 md:mb-16">
+      <p class="eyebrow mb-3">Unsere Läden</p>
+      <h2 id="laeden-titel" class="display-lg max-w-3xl">Zwei Schatullen, ein Gefühl von Urlaub</h2>
+    </div>
+    <div class="space-y-16 md:space-y-0 md:border-y md:border-navy/10">
+      {laeden.map((l, i) => (
+        <article id={l.id} class="grid scroll-mt-20 md:min-h-[88svh] md:grid-cols-2">
+          <div class={`relative min-h-[60svh] md:min-h-0 ${i % 2 ? 'md:order-2' : ''}`}>
+            <Image src={bild(ladenFotos[l.id].foto)} alt={ladenFotos[l.id].alt} widths={[640, 1024, 1600, 2000]} sizes="(min-width: 768px) 50vw, 100vw" class={`absolute inset-0 h-full w-full object-cover ${ladenFotos[l.id].pos}`} />
+            <OpenStatus laden={l} class="absolute left-4 top-4 !text-base md:left-8 md:top-8" />
+          </div>
+          <div class={`flex flex-col justify-center px-4 pt-10 sm:px-6 md:px-12 md:py-20 lg:px-20 xl:px-24 ${i % 2 ? 'md:bg-sand-100' : 'md:bg-white'}`}>
+            <p class="eyebrow mb-3 !text-sm">{l.ort} · seit {l.seit}</p>
+            <h3 class="text-4xl leading-[1.05] lg:text-6xl">{l.name}</h3>
+            <p class="mt-6 max-w-xl text-lg leading-relaxed text-navy-950/85 lg:text-xl">{l.text}</p>
+            <ul class="mt-7 flex flex-wrap gap-2">
+              {l.besonderheiten.map((b) => <li class="rounded-full bg-petrol-50 px-4 py-2 text-sm font-semibold text-petrol-700 lg:text-base">{b}</li>)}
+            </ul>
+            {l.gutZuWissen.length > 0 && (
+              <ul class="mt-6 space-y-2 text-navy-950/80 lg:text-lg">
+                {l.gutZuWissen.map((g) => <li class="flex gap-3"><span class="mt-0.5 font-bold text-petrol-700" aria-hidden="true">✓</span>{g}</li>)}
+              </ul>
+            )}
+            <div class="mt-10 grid max-w-xl gap-8 border-t border-navy/15 pt-8 sm:grid-cols-2 lg:text-lg">
+              <div>
+                <p class="mb-2 font-display text-xl font-bold text-navy">Öffnungszeiten</p>
+                {site.saison.winterpause ? <p>Winterpause</p> : (
+                  <dl class="space-y-2">
+                    {l.oeffnungszeiten.map((o) => <div><dt class="text-navy-950/70">{o.label}</dt><dd class="font-semibold tabular-nums text-navy">{o.von}–{o.bis} Uhr</dd></div>)}
+                  </dl>
+                )}
+              </div>
+              <div>
+                <p class="mb-2 font-display text-xl font-bold text-navy">Adresse</p>
+                <address class="not-italic leading-relaxed">{l.strasse}<br />{l.plz} {l.ort}<br /><a href={telLink(l.telefon)} class="font-semibold text-navy">{l.telefon}</a></address>
+              </div>
+            </div>
+            <div class="mt-10 flex flex-wrap gap-3">
+              <a href={routenLink(l)} class="btn-primary !px-7 !py-4 !text-base" rel="noopener">Route planen</a>
+              <a href={telLink(l.telefon)} class="btn-ghost !px-7 !py-4 !text-base">Anrufen</a>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- SORTIMENT: Bento-Raster (Desktop) / Wisch-Karussell (Handy) -->
+  <section class="relative mt-24 md:mt-32" aria-labelledby="sortiment-titel">
+    <Steuerrad class="-left-40 top-10 hidden h-[30rem] w-[30rem] opacity-[0.05] md:block" />
+    <div class="container-page relative mb-10 flex flex-wrap items-end justify-between gap-6">
+      <div class="max-w-2xl">
+        <p class="eyebrow mb-3">Sortiment</p>
+        <h2 id="sortiment-titel" class="display-lg">Nichts, was ihr nicht bei uns findet</h2>
+      </div>
+      <a href={u('/sortiment/')} class="btn-ghost">Ganzes Sortiment →</a>
+    </div>
+    <ul class="flex snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto px-4 sm:scroll-px-6 pb-4 [scrollbar-width:none] sm:px-6 md:mx-auto md:grid md:max-w-6xl md:grid-cols-4 md:grid-rows-2 md:gap-4 md:overflow-visible md:px-6 md:pb-0">
+      {sortiment.slice(0, 5).map((s, i) => (
+        <li class={`w-[80vw] shrink-0 snap-start sm:w-[55vw] md:w-auto ${i === 0 ? 'md:col-span-2 md:row-span-2' : ''}`}>
+          <a href={u(s.link ?? '/sortiment/')} class="group relative block h-full overflow-hidden rounded-3xl no-underline">
+            <Image src={bild(s.bild)} alt="" widths={[480, 800, 1200]} sizes={i === 0 ? '(min-width: 768px) 50vw, 80vw' : '(min-width: 768px) 25vw, 80vw'} class={`h-full w-full object-cover transition-transform duration-700 group-hover:scale-105 ${i === 0 ? 'aspect-[4/5] md:aspect-auto' : 'aspect-[4/5] md:aspect-square'}`} />
+            <span class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-navy-950/85 to-transparent p-5 pt-16">
+              <span class={`block font-display font-bold leading-tight text-white ${i === 0 ? 'text-2xl md:text-4xl' : 'text-xl'}`}>{s.titel}</span>
+              {s.hinweis && <span class="mt-1 block text-sm text-sand">{s.hinweis}</span>}
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <!-- DRACHEN: randloses Vollbild mit Text-Overlay -->
+  <section class="full-bleed mt-24 md:mt-32" aria-labelledby="drachen-titel">
+    <div class="relative min-h-[85svh]">
+      <Image src={bild('drachen-wand')} alt="Wand voller Lenkdrachen im Drachennest" widths={[640, 1024, 1600, 2400]} sizes="100vw" class="absolute inset-0 h-full w-full object-cover" />
+      <div class="absolute inset-0 bg-gradient-to-r from-navy-950/90 via-navy-950/60 to-navy-950/10"></div>
+      <Steuerrad farbe="sand" class="-bottom-32 -right-32 h-[26rem] w-[26rem] opacity-[0.12] md:h-[40rem] md:w-[40rem]" />
+      <div class="container-page relative flex min-h-[85svh] flex-col justify-center py-20">
+        <div class="max-w-xl">
+          <p class="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-sand">Drachennest</p>
+          <h2 id="drachen-titel" class="display-lg !text-white">Vom ersten Kinderdrachen bis zur Vierleiner-Matte</h2>
+          <p class="mt-6 text-lg leading-relaxed text-white/85">Mehr als 80 Kinderdrachen, Lenkdrachen von HQ und Elliot und Lenkmatten für richtig Power. Nicky ist selbst vom Drachenfliegen zum Kitesurfen gekommen und berät euch gern.</p>
+          <p class="mt-4 text-lg leading-relaxed text-white/85"><strong class="text-sand">Bruchlandung?</strong> Wir ersetzen Gestänge und Leinen, nähen und flicken. Bringt euren Drachen einfach vorbei.</p>
+          <div class="mt-8 flex flex-wrap gap-3">
+            <a href={u('/drachen-und-drachenreparatur/')} class="btn bg-sand text-navy hover:bg-white">Drachen & Reparatur</a>
+            <a href={site.youtube} class="btn border border-white/40 text-white hover:bg-white/10" rel="noopener">Videos auf YouTube</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOTOSTREIFEN: laufendes Band mit großen Bildern -->
+  <section class="full-bleed mt-4" aria-label="Eindrücke aus den Schatullen">
+    <div class="marquee flex w-max gap-4">
+      {[...streifen, ...streifen].map((b, i) => (
+        <Image src={bild(b)} alt="" widths={[400, 640]} sizes="(min-width: 768px) 28vw, 70vw" class="h-[45svh] max-h-[460px] w-auto rounded-3xl object-cover" aria-hidden={i >= streifen.length ? 'true' : undefined} />
+      ))}
+    </div>
+  </section>
+
+  <div class="mt-24 md:mt-32"><Bewertungen /></div>
+
+  <!-- TEAM & JOBS -->
+  <section class="container-page relative mt-24 grid items-center gap-10 md:mt-32 md:grid-cols-12" aria-labelledby="team-titel">
+    <Steuerrad class="-right-10 -top-16 h-72 w-72 opacity-[0.05] md:-right-56 md:h-[34rem] md:w-[34rem]" />
+    <div class="relative md:col-span-7">
+      <Image src={bild('nadja-nicky')} alt="Nadja und Nicky zur Eröffnung der Schilligen Schatulle" widths={[640, 1000, 1400]} sizes="(min-width: 768px) 58vw, 100vw" class="aspect-[4/3] w-full rounded-[2rem] object-cover" />
+      <Image src={bild('stinker')} alt="Ladenkater Stinker" widths={[240, 400]} sizes="180px" class="absolute -bottom-8 right-4 aspect-square w-32 rounded-3xl border-4 border-sand-50 object-cover shadow-xl md:-right-8 md:w-48" />
+    </div>
+    <div class="md:col-span-5">
+      <p class="eyebrow mb-3">Über uns</p>
+      <h2 id="team-titel" class="display-lg">Große Nordsee-Fans, seit 2000</h2>
+      <p class="mt-5 text-lg leading-relaxed text-navy-950/80">Gegründet von Britta Schwarting, hat Nicky die Hooksieler Schatulle 2015 übernommen und stetig ausgebaut. 2021 kam die Schillige Schatulle dazu. Mit Nadja und Ladenkater Stinker freut sie sich auf euren Besuch.</p>
+      <a href={u('/ueber-uns/')} class="btn-ghost mt-6">Mehr über uns</a>
+      {jobs.aktiv && (
+        <a href={u('/jobs/')} class="mt-8 block rounded-3xl bg-navy p-6 no-underline transition-colors hover:bg-navy-700">
+          <p class="text-xs font-semibold uppercase tracking-[0.2em] text-sand">Wir suchen dich</p>
+          <p class="mt-2 font-display text-2xl font-bold text-white">{jobs.titel}</p>
+          <p class="mt-1 text-sm text-white/75">{jobs.gesucht.join(' · ')} →</p>
+        </a>
+      )}
+    </div>
+  </section>
+
+  {news.length > 0 && (
+    <section class="container-page mt-24" aria-labelledby="news-titel">
+      <h2 id="news-titel" class="display-lg mb-8">Aktuelles</h2>
+      <ul class="grid gap-4 md:grid-cols-2">
+        {news.map((n: { titel: string; datum: string; text: string }) => (
+          <li class="rounded-3xl bg-white p-6 ring-1 ring-navy/10">
+            <p class="eyebrow mb-1">{new Date(n.datum).toLocaleDateString('de-DE', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+            <h3 class="text-2xl">{n.titel}</h3>
+            <p class="mt-2 text-navy-950/80">{n.text}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  <!-- 360°-RUNDGÄNGE -->
+  <section class="container-page mt-24 md:mt-32" aria-labelledby="rundgang-titel">
+    <div class="mb-10 max-w-2xl">
+      <p class="eyebrow mb-3">Virtuell reinschauen</p>
+      <h2 id="rundgang-titel" class="display-lg">360°-Rundgang durch die Läden</h2>
+      <p class="mt-4 text-lg text-navy-950/80">Kleiner Tipp: In Hooksiel könnt ihr sogar draußen zwischen Postkartenständern und Windspielen stöbern und euch die Nordseeluft um die Ohren wehen lassen.</p>
+    </div>
+    <div class="grid gap-6 md:grid-cols-2">
+      <div>
+        <ClickEmbed src={hooksiel.rundgang} titel="Rundgang Hooksiel starten" anbieter="Google" poster={bild('laden-hooksiel')} alt="" />
+        <p class="mt-3 font-display text-lg font-bold text-navy">{hooksiel.name}</p>
+      </div>
+      <div>
+        <ClickEmbed src={schillig.rundgang} titel="Rundgang Schillig starten" anbieter="Google" poster={bild('windspiele-ballons')} alt="" />
+        <p class="mt-3 font-display text-lg font-bold text-navy">{schillig.name}</p>
+      </div>
+    </div>
+  </section>
+</Base>

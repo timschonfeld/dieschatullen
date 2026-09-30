@@ -1,0 +1,67 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import { bild } from '../lib/bilder';
+import { site } from '../lib/laden';
+
+const arten = [
+  { titel: 'Kinderdrachen', bild: 'drachen-bunt', text: 'Ein großes Sortiment an Einleinerdrachen, die den Himmel farbenfroh erstrahlen lassen: vom allerersten Drachen für die ganz kleinen Piloten bis zum großen, kunstvollen Giant Dragon.' },
+  { titel: 'Lenkdrachen', bild: 'drachen-wand', text: 'Der Klassiker für jeden Drachenfreund. Los geht es beim kleinen Delta Basic, mit dem schon Kinder ab sieben Jahren erste Flugerfahrungen sammeln. Für Aufsteiger und Fortgeschrittene haben wir die passenden Drachen von HQ und Elliot.' },
+  { titel: 'Lenkmatten', bild: 'lenkmatten', text: 'Wer es fordernd und zugkräftig mag: Zweileiner-Matten in Basic oder Pro, Dreileiner mit Lenkbar und Vierleiner für richtig Power. Spätestens jetzt wird Drachenfliegen zum Sport.' },
+];
+const marken = [
+  { name: 'Elliot', logo: 'logo-elliot', url: 'https://shop.elliot.de' },
+  { name: 'Invento', logo: 'logo-invento', url: 'https://www.invento-hq.com/' },
+  { name: 'HQ', logo: 'logo-hq', url: 'https://www.invento-hq.com/' },
+];
+---
+<Base title="Drachen und Drachenreparatur" description="Kinderdrachen, Lenkdrachen und Lenkmatten von HQ und Elliot, dazu Beratung und Drachenreparatur im Drachennest Hooksiel und in der Schilligen Schatulle.">
+  <PageHero eyebrow="Drachennest" titel="Drachen & Drachenreparatur" foto={bild('drachen-laden')} alt="Drachenabteilung mit vielen bunten Drachen"
+    intro="Lokale Brands und Alltime Favorites: Bei uns findet ihr für jedes Alter und jeden Geschmack das passende Fluggerät, mit professioneller Kaufberatung gleich dazu." />
+
+  <section class="container-page mt-20 grid gap-6 md:mt-28 md:grid-cols-3">
+    {arten.map((a) => (
+      <article class="overflow-hidden rounded-3xl bg-white ring-1 ring-navy/10">
+        <Image src={bild(a.bild)} alt={a.titel} widths={[480, 800, 1200]} sizes="(min-width: 768px) 33vw, 100vw" class="aspect-[4/5] w-full object-cover" />
+        <div class="p-6 md:p-8">
+          <h2 class="text-2xl">{a.titel}</h2>
+          <p class="mt-3 leading-relaxed text-navy-950/80">{a.text}</p>
+        </div>
+      </article>
+    ))}
+  </section>
+
+  <section class="mt-24 bg-navy text-sand-50">
+    <div class="container-page grid items-center gap-10 py-16 md:grid-cols-2">
+      <div>
+        <p class="eyebrow mb-3 !text-sand">Bruchlandung?</p>
+        <h2 class="text-3xl !text-sand-50 sm:text-4xl">Wir machen euren Nordseehelden wieder flugfähig</h2>
+        <p class="mt-4 leading-relaxed text-sand-100/85">Ob Lenkdrachen, Drachen oder Powerkite: Jedes Fluggerät kommt einmal an seine Grenzen und braucht einen neuen Trimm, ein Ersatzteil, eine neue Naht oder einfach einen fachkundigen Kniff.</p>
+        <ul class="mt-5 space-y-2 text-sand-100/90">
+          <li>· Gestänge und Leinen ersetzen</li>
+          <li>· Nähen und flicken</li>
+          <li>· Einzelne Ersatzteile zum Mitnehmen</li>
+        </ul>
+        <p class="mt-5 leading-relaxed text-sand-100/85">Schaut einfach mit eurem defekten Drachen in einer der Schatullen vorbei und lasst euch beraten.</p>
+      </div>
+      <Image src={bild('windspiele-ballons')} alt="Bunte Windspiele und Drachen in der Schatulle" widths={[600, 1000]} sizes="(min-width: 768px) 50vw, 100vw" class="aspect-[4/3] w-full rounded-3xl object-cover" />
+    </div>
+  </section>
+
+  <section class="container-page mt-24 grid gap-10 md:grid-cols-2">
+    <div>
+      <h2 class="text-3xl">Nicky erklärt's auf YouTube</h2>
+      <p class="mt-4 leading-relaxed text-navy-950/80">Wie werden unterschiedliche Drachen aufgebaut und geflogen? Nicky zeigt euch, worauf es beim jeweiligen Modell ankommt. Und achtet beim Fliegen immer auf Windstärke, Windrichtung und Wolkenbild.</p>
+      <a href={site.youtube} class="btn-primary mt-6" rel="noopener">Zum YouTube-Kanal</a>
+    </div>
+    <div>
+      <h2 class="text-3xl">Unsere Marken</h2>
+      <ul class="mt-6 flex flex-wrap items-center gap-6">
+        {marken.map((m) => (
+          <li><a href={m.url} rel="noopener" class="block rounded-2xl bg-white p-4 ring-1 ring-navy/10 hover:ring-navy/30"><Image src={bild(m.logo)} alt={`${m.name} Drachen`} height={56} class="h-14 w-auto" /></a></li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</Base>

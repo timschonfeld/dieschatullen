@@ -1,0 +1,33 @@
+---
+import { u } from '../lib/url';
+/** Lädt ein fremdes iframe (Google 360°-Rundgang, YouTube …) erst nach Klick: kein Cookie-Banner nötig. */
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props { src: string; titel: string; anbieter: string; poster: ImageMetadata; alt: string }
+const { src, titel, anbieter, poster, alt } = Astro.props;
+---
+<div class="click-embed relative aspect-video overflow-hidden rounded-3xl bg-navy-900" data-src={src} data-titel={titel}>
+  <Image src={poster} alt={alt} widths={[640, 1000]} sizes="(min-width: 768px) 50vw, 100vw" class="absolute inset-0 h-full w-full object-cover opacity-60" />
+  <div class="relative flex h-full flex-col items-center justify-center gap-3 p-6 text-center">
+    <button type="button" class="btn bg-sand text-navy hover:bg-white">
+      <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
+      {titel}
+    </button>
+    <p class="max-w-sm text-xs text-white/90">Beim Klick wird Inhalt von {anbieter} geladen, dabei werden Daten an {anbieter} übertragen. Mehr dazu in der <a href={u('/datenschutz/')} class="text-white underline">Datenschutzerklärung</a>.</p>
+  </div>
+</div>
+
+<script>
+  for (const el of document.querySelectorAll<HTMLElement>('.click-embed')) {
+    el.querySelector('button')?.addEventListener('click', () => {
+      const f = document.createElement('iframe');
+      f.src = el.dataset.src!;
+      f.title = el.dataset.titel!;
+      f.className = 'absolute inset-0 h-full w-full border-0';
+      f.allow = 'fullscreen; accelerometer; gyroscope';
+      f.referrerPolicy = 'no-referrer-when-downgrade';
+      el.replaceChildren(f);
+    }, { once: true });
+  }
+</script>

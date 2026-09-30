@@ -1,0 +1,36 @@
+---
+import { u } from '../lib/url';
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import { bild } from '../lib/bilder';
+import sortiment from '../data/sortiment.json';
+---
+<Base title="Sortiment" description="Drachen, Windspiele, über 60 Teesorten, maritime Souvenirs, Geschenke, Strandbedarf und Lebensmittel: das Sortiment der Schatullen in Hooksiel und Schillig.">
+  <PageHero eyebrow="Unser Sortiment" titel="Nichts, was ihr nicht bei uns findet" foto={bild('leuchttuerme')} alt="Leuchtturm-Deko in der Schatulle"
+    intro="Bei uns gibt es alles, was ihr für euren Nordseeurlaub braucht. Ob Lenkdrachen oder Sonnencreme, Wattschuhe oder ein großes Sortiment an Teesorten. Mit personalisierten Geschenkideen und maritimen Souvenirs könnt ihr das Wangerland mit nach Hause nehmen." />
+
+  <div class="mt-20 space-y-16 md:mt-28 md:space-y-0">
+    {sortiment.map((s, i) => (
+      <section class="grid md:min-h-[75svh] md:grid-cols-12">
+        <div class={`relative min-h-[55svh] md:col-span-7 md:min-h-0 ${i % 2 ? 'md:order-2' : ''}`}>
+          <Image src={bild(s.bild)} alt={s.titel} widths={[640, 1024, 1600]} sizes="(min-width: 768px) 58vw, 100vw" class="absolute inset-0 h-full w-full object-cover" />
+        </div>
+        <div class="flex flex-col justify-center px-4 pt-8 sm:px-6 md:col-span-5 md:px-12 md:py-16 lg:px-16">
+          {s.hinweis && <p class="mb-3 self-start rounded-full bg-sand px-3 py-1 text-xs font-semibold text-navy">{s.hinweis}</p>}
+          <h2 class="text-3xl md:text-5xl">{s.titel}</h2>
+          <p class="mt-5 text-lg leading-relaxed text-navy-950/80">{s.text}</p>
+          {s.link && <a href={u(s.link)} class="btn-ghost mt-8 self-start">Mehr zu Drachen →</a>}
+        </div>
+      </section>
+    ))}
+  </div>
+
+  <section class="container-page mt-24">
+    <div class="rounded-3xl bg-petrol-50 p-8 sm:p-12">
+      <h2 class="text-2xl sm:text-3xl">Etwas Bestimmtes gesucht?</h2>
+      <p class="mt-3 max-w-2xl text-navy-950/80">Wir verschicken auch einzelne Dinge aus unserem Sortiment. Ruft einfach an, wenn ihr genau wisst, was ihr haben wollt.</p>
+      <a href={u('/kontakt/')} class="btn-primary mt-6">Kontakt</a>
+    </div>
+  </section>
+</Base>

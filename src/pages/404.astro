@@ -1,0 +1,13 @@
+---
+import { u } from '../lib/url';
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+---
+<Base title="Seite nicht gefunden">
+  <PageHero eyebrow="404" titel="Hier ist nur Watt." intro="Diese Seite gibt es (nicht mehr). Vielleicht hilft euch eine dieser Seiten weiter:">
+    <div class="mt-6 flex flex-wrap gap-3">
+      <a href={u('/')} class="btn-primary">Zur Startseite</a>
+      <a href={u('/kontakt/')} class="btn-ghost">Öffnungszeiten & Anfahrt</a>
+    </div>
+  </PageHero>
+</Base>

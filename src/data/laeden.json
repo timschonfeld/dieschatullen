@@ -1,0 +1,97 @@
+[
+  {
+    "id": "hooksiel",
+    "name": "Hooksieler Schatulle & Drachennest",
+    "kurz": "Hooksiel",
+    "strasse": "Lange Str. 38",
+    "plz": "26434",
+    "ort": "Hooksiel",
+    "telefon": "04425 991187",
+    "lat": 53.629744,
+    "lon": 8.026146,
+    "seit": 2000,
+    "text": "Unser Stammhaus mit 200 Quadratmetern voller Andenken, Postkarten, Geschenkideen und Drachen. Ob ihr Schmuck mit Nordseemotiven liebt oder von Lakritz nicht genug bekommt: Hier wird jeder fündig. Neben Kater Stinker trefft ihr hier meist Nicky oder eine tolle Vertretung aus ihrem Team.",
+    "besonderheiten": [
+      "Drachennest mit großer Drachenauswahl",
+      "Postkarten & Briefmarken",
+      "Tassen- und Türschild-Gravur"
+    ],
+    "instagram": "https://www.instagram.com/hooksielerschatulle/",
+    "facebook": "https://www.facebook.com/HooksielerSchatulle",
+    "rundgang": "https://www.google.com/maps/embed?pb=!4v1656339680353!6m8!1m7!1sCAoSLEFGMVFpcE8xMEpzcE4yZEU2TzlIb3ZpQ3JHWlRPU0lsWmNNSEY2MWw5dFhR!2m2!1d53.629744435943!2d8.0261460160932!3f20.897789261328022!4f-5.784563782496079!5f0.7820865974627469",
+    "oeffnungszeiten": [
+      {
+        "label": "Montag bis Freitag",
+        "tage": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "von": "10:00",
+        "bis": "18:00"
+      },
+      {
+        "label": "Samstag und Sonntag",
+        "tage": [
+          6,
+          0
+        ],
+        "von": "10:00",
+        "bis": "17:00"
+      }
+    ],
+    "gutZuWissen": []
+  },
+  {
+    "id": "schillig",
+    "name": "Schillige Schatulle",
+    "kurz": "Schillig",
+    "strasse": "Schillighörn 2",
+    "plz": "26434",
+    "ort": "Schillig",
+    "telefon": "04426 4719966",
+    "lat": 53.702956,
+    "lon": 8.024996,
+    "seit": 2021,
+    "text": "Die kleine Schwester liegt direkt hinterm Deich, nur ein paar Schritte vom Strand. Neben fast allem, was ihr aus Hooksiel kennt, gibt es hier friesische Lebensmittel, Eis, kalte Getränke, Kaffee und Strandsnacks. Ihr seid also rundum versorgt.",
+    "besonderheiten": [
+      "Direkt am Strand von Schillig",
+      "Kaffee, Eis & Strandsnacks",
+      "Mini-Supermarkt für den Urlaub"
+    ],
+    "instagram": "https://www.instagram.com/schillige_schatulle/",
+    "facebook": "https://www.facebook.com/schilligeschatulle/",
+    "rundgang": "https://www.google.com/maps/embed?pb=!4v1656397351373!6m8!1m7!1sCAoSLEFGMVFpcE90eVUzVXBVeUFaMG95bGFnRWhPMzIxUzRNUl96Z25PSVlvZmdS!2m2!1d53.702955876538!2d8.0249958710266!3f20!4f0!5f0.7820865974627469",
+    "oeffnungszeiten": [
+      {
+        "label": "Montag bis Freitag",
+        "tage": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "von": "10:00",
+        "bis": "18:00"
+      },
+      {
+        "label": "Samstag und Sonntag",
+        "tage": [
+          6,
+          0
+        ],
+        "von": "10:00",
+        "bis": "17:00"
+      }
+    ],
+    "gutZuWissen": [
+      "Refill-Station: Trinkwasserflasche kostenlos auffüllen",
+      "Lebensmittel kurz vor dem MHD zu reduzierten Preisen",
+      "Kinderwagenfreundlich",
+      "Bar, Karte, Apple Pay & Google Pay"
+    ]
+  }
+]

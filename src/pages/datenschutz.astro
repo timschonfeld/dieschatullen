@@ -1,0 +1,36 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import { site } from '../lib/laden';
+// Entwurf für die neue, statische Seite ohne Cookies/Tracking. Vor Launch rechtlich prüfen lassen.
+---
+<Base title="Datenschutz">
+  <PageHero titel="Datenschutzerklärung" intro="Kurz vorweg: Diese Website setzt keine Cookies, nutzt keine Analyse- oder Tracking-Dienste und lädt keine Inhalte von Dritten, solange ihr nicht selbst darauf klickt." />
+  <section class="container-page prose-text mt-10 max-w-3xl">
+    <h2>1. Verantwortliche Stelle</h2>
+    <p>Nicole Schwarting, Die Schatullen<br />Schillighörn 2, 26434 Schillig<br />E-Mail: <a href={`mailto:${site.email}`}>{site.email}</a></p>
+
+    <h2>2. Hosting und Server-Logfiles</h2>
+    <p>Diese Website wird bei der Hetzner Online GmbH, Industriestr. 25, 91710 Gunzenhausen, gehostet. Beim Aufruf der Seiten speichert der Server automatisch Informationen, die euer Browser übermittelt: IP-Adresse, Datum und Uhrzeit, aufgerufene Seite, Referrer-URL, Browsertyp und Betriebssystem. Diese Daten dienen ausschließlich dem sicheren und stabilen Betrieb der Website und werden nicht mit anderen Daten zusammengeführt. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO. Mit Hetzner besteht ein Vertrag zur Auftragsverarbeitung nach Art. 28 DSGVO.</p>
+
+    <h2>3. Kontakt per E-Mail oder Telefon</h2>
+    <p>Wenn ihr uns per E-Mail oder Telefon kontaktiert, verarbeiten wir eure Angaben, um eure Anfrage zu beantworten (Art. 6 Abs. 1 lit. b bzw. f DSGVO). Bewerbungen nutzen wir ausschließlich für das Bewerbungsverfahren (§ 26 BDSG, Art. 6 Abs. 1 lit. b DSGVO) und löschen sie spätestens sechs Monate nach Abschluss, sofern ihr keiner längeren Speicherung zustimmt.</p>
+
+    <h2>4. Schriften und Karten</h2>
+    <p>Alle Schriften werden direkt von unserem Server geladen, es besteht keine Verbindung zu Google Fonts oder anderen Anbietern. Die Kartenausschnitte sind Bilder auf unserem Server (Kartendaten © OpenStreetMap-Mitwirkende). Erst wenn ihr auf „Route planen“ klickt, werdet ihr zu Google Maps weitergeleitet; dort gilt die Datenschutzerklärung von Google.</p>
+
+    <h2>5. 360°-Rundgänge (Google Maps)</h2>
+    <p>Auf der Startseite könnt ihr 360°-Rundgänge durch unsere Läden starten. Diese werden erst nach eurem Klick von Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland, geladen. Dabei werden unter anderem eure IP-Adresse und technische Daten an Google übermittelt; eine Übermittlung in die USA ist möglich. Google ist unter dem EU-US Data Privacy Framework zertifiziert. Rechtsgrundlage ist eure Einwilligung durch den Klick (Art. 6 Abs. 1 lit. a DSGVO). Mehr dazu: <a href="https://policies.google.com/privacy" rel="noopener">policies.google.com/privacy</a>.</p>
+
+    <h2>6. Links zu sozialen Netzwerken</h2>
+    <p>Wir verlinken auf unsere Profile bei Instagram, Facebook und YouTube. Es handelt sich um einfache Links, es werden keine Daten übertragen, bevor ihr sie anklickt. Danach gelten die Datenschutzbestimmungen des jeweiligen Anbieters.</p>
+
+    <h2>7. SSL-/TLS-Verschlüsselung</h2>
+    <p>Diese Seite nutzt aus Sicherheitsgründen eine SSL-/TLS-Verschlüsselung. Eine verschlüsselte Verbindung erkennt ihr an „https://“ in der Adresszeile.</p>
+
+    <h2>8. Eure Rechte</h2>
+    <p>Ihr habt jederzeit das Recht auf Auskunft (Art. 15 DSGVO), Berichtigung (Art. 16), Löschung (Art. 17), Einschränkung der Verarbeitung (Art. 18), Datenübertragbarkeit (Art. 20) und Widerspruch (Art. 21 DSGVO). Eine erteilte Einwilligung könnt ihr jederzeit mit Wirkung für die Zukunft widerrufen. Außerdem habt ihr das Recht, euch bei einer Aufsichtsbehörde zu beschweren, zum Beispiel bei der Landesbeauftragten für den Datenschutz Niedersachsen.</p>
+
+    <p class="text-sm text-navy-950/60">Stand: Oktober 2026</p>
+  </section>
+</Base>

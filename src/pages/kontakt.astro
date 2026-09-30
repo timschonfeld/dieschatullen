@@ -1,0 +1,49 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import OpenStatus from '../components/OpenStatus.astro';
+import { bild } from '../lib/bilder';
+import { laeden, site, routenLink, telLink, ladenSchema } from '../lib/laden';
+---
+<Base title="Kontakt & Anfahrt" description="Adressen, Telefonnummern, Öffnungszeiten und Anfahrt der Hooksieler Schatulle & Drachennest und der Schilligen Schatulle." schema={laeden.map(ladenSchema)}>
+  <PageHero eyebrow="Kontakt & Anfahrt" titel="Wo ihr uns findet" foto={bild('deich-schillig')} alt="Grüner Deich in Schillig"
+    intro="Wir sind mitten im Wangerland an der Nordseeküste. Von uns aus seid ihr schnell auf den Ostfriesischen Inseln und am Jadebusen. Für jedes Strandabenteuer findet ihr bei uns das richtige Equipment." />
+
+  <section class="container-page mt-12 grid gap-6 md:grid-cols-2">
+    {laeden.map((l) => (
+      <article id={l.id} class="scroll-mt-24 overflow-hidden rounded-3xl bg-white ring-1 ring-navy/10">
+        <a href={routenLink(l)} rel="noopener" class="relative block">
+          <Image src={bild(`karte-${l.id}`)} alt={`Kartenausschnitt ${l.ort} mit Standort der ${l.name}`} widths={[480, 720]} sizes="(min-width: 768px) 50vw, 100vw" class="aspect-[18/11] w-full object-cover" />
+          <span class="absolute bottom-2 right-2 rounded bg-white/85 px-1.5 text-[10px] text-navy-950/70">© OpenStreetMap-Mitwirkende</span>
+        </a>
+        <div class="p-6 sm:p-8">
+          <h2 class="text-2xl">{l.name}</h2>
+          <OpenStatus laden={l} class="mt-3" />
+          <address class="mt-4 not-italic leading-relaxed">{l.strasse}<br />{l.plz} {l.ort}</address>
+          <dl class="mt-4 space-y-1 text-sm">
+            {!site.saison.winterpause && l.oeffnungszeiten.map((o) => (
+              <div class="flex justify-between gap-3 border-b border-navy/5 py-1"><dt>{o.label}</dt><dd class="tabular-nums">{o.von}–{o.bis} Uhr</dd></div>
+            ))}
+          </dl>
+          <div class="mt-6 flex flex-wrap gap-3">
+            <a href={telLink(l.telefon)} class="btn-primary">{l.telefon}</a>
+            <a href={routenLink(l)} class="btn-ghost" rel="noopener">Route planen</a>
+          </div>
+        </div>
+      </article>
+    ))}
+  </section>
+
+  <section class="container-page mt-16 grid gap-6 md:grid-cols-2">
+    <div class="rounded-3xl bg-petrol-50 p-8">
+      <h2 class="text-2xl">Schreibt uns</h2>
+      <p class="mt-3 text-navy-950/80">Fragen, Bestellungen zum Verschicken oder einfach ein Moin:</p>
+      <a href={`mailto:${site.email}`} class="btn-primary mt-5">{site.email}</a>
+    </div>
+    <figure class="flex flex-col justify-center rounded-3xl bg-navy p-8 text-sand-50">
+      <blockquote class="font-display text-2xl leading-snug">„Sehr freundliche und fachkundige Mitarbeiter. Tolle Beratung. War sicherlich nicht der letzte Besuch.“</blockquote>
+      <figcaption class="mt-4 text-sm text-sand-100/75">Daniela Faller</figcaption>
+    </figure>
+  </section>
+</Base>

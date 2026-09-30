@@ -1,0 +1,36 @@
+---
+import Steuerrad from './Steuerrad.astro';
+import bewertungen from '../data/bewertungen.json';
+
+const { google, zitate } = bewertungen;
+const fuellung = (i: number) => Math.max(0, Math.min(1, google.sterne - i)) * 100;
+---
+<section class="relative overflow-hidden bg-sand-100 py-20 md:py-28" aria-labelledby="bewertungen-titel">
+  <Steuerrad class="-left-32 -bottom-32 h-96 w-96 opacity-[0.06] md:h-[34rem] md:w-[34rem]" />
+  <div class="container-page relative grid items-center gap-12 md:grid-cols-12">
+    <div class="md:col-span-5">
+      <p class="eyebrow mb-3">Das sagen unsere Gäste</p>
+      <h2 id="bewertungen-titel" class="sr-only">Bewertungen</h2>
+      <p class="font-display text-8xl font-bold leading-none text-navy md:text-9xl">{google.sterne.toLocaleString('de-DE')}</p>
+      <p class="mt-3 flex gap-1 text-3xl" role="img" aria-label={`${google.sterne.toLocaleString('de-DE')} von 5 Sternen`}>
+        {Array.from({ length: 5 }, (_, i) => (
+          <span aria-hidden="true" class="relative inline-block text-navy/15">★<span class="absolute inset-0 overflow-hidden text-[#f5b301]" style={`width:${fuellung(i)}%`}>★</span></span>
+        ))}
+      </p>
+      <p class="mt-3 text-lg text-navy-950/75">bei Google · rund {google.anzahl} Bewertungen<br /><span class="text-sm">{google.laden}, Stand {google.stand}</span></p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href={google.link} class="btn-primary" rel="noopener">Alle Bewertungen auf Google</a>
+        <a href={google.link} class="btn-ghost" rel="noopener">Bewertung schreiben</a>
+      </div>
+    </div>
+    <div class="space-y-6 md:col-span-7">
+      {zitate.map((z) => (
+        <figure class="rounded-[2rem] bg-white p-8 shadow-xl shadow-navy/5 md:p-12">
+          <p class="text-5xl leading-none text-himmel" aria-hidden="true">“</p>
+          <blockquote class="mt-2 font-display text-2xl font-semibold leading-snug text-navy md:text-4xl">{z.text}</blockquote>
+          <figcaption class="mt-6 text-navy-950/70">{z.name}</figcaption>
+        </figure>
+      ))}
+    </div>
+  </div>
+</section>
