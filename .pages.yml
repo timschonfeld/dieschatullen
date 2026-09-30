@@ -1,0 +1,178 @@
+# Pages CMS (https://pagescms.org): Bearbeitungsoberfläche im Browser für die Inhalte in src/data/.
+# Anmelden mit GitHub → Repository wählen → Branch wählen → Inhalte bearbeiten → "Speichern" löst den Deploy aus.
+media:
+  input: src/assets/img
+  output: src/assets/img
+
+content:
+  - name: allgemein
+    label: "⚓ Allgemein & Winterpause"
+    type: file
+    path: src/data/site.json
+    format: json
+    fields:
+      - name: saison
+        label: Saison
+        type: object
+        fields:
+          - { name: winterpause, label: "Winterpause (Läden geschlossen)", type: boolean }
+          - { name: hinweis, label: "Hinweis-Banner oben auf der Startseite (leer = aus)", type: string }
+      - name: ausnahmen
+        label: "Zusätzliche Schließtage (z. B. Feiertage)"
+        type: object
+        list: true
+        fields:
+          - { name: datum, label: Datum, type: date }
+      - { name: email, label: E-Mail, type: string }
+      - { name: youtube, label: YouTube-Kanal, type: string }
+      - { name: name, label: Name, type: string }
+      - { name: claim, label: Claim, type: string }
+      - { name: beschreibung, label: "Beschreibung für Google", type: text }
+
+  - name: laeden
+    label: "🏠 Läden & Öffnungszeiten"
+    type: file
+    path: src/data/laeden.json
+    format: json
+    list: true
+    fields:
+      - { name: id, label: "ID (nicht ändern)", type: string }
+      - { name: name, label: Name, type: string }
+      - { name: kurz, label: Kurzname, type: string }
+      - { name: strasse, label: Straße, type: string }
+      - { name: plz, label: PLZ, type: string }
+      - { name: ort, label: Ort, type: string }
+      - { name: telefon, label: Telefon, type: string }
+      - { name: seit, label: "Geöffnet seit (Jahr)", type: number }
+      - { name: text, label: Beschreibung, type: text }
+      - { name: besonderheiten, label: "Besonderheiten (Schlagworte)", type: string, list: true }
+      - { name: gutZuWissen, label: "Gut zu wissen", type: string, list: true }
+      - name: oeffnungszeiten
+        label: Öffnungszeiten
+        type: object
+        list: true
+        fields:
+          - { name: label, label: "Tage (Text), z. B. Montag bis Freitag", type: string }
+          - { name: tage, label: "Tage als Zahlen (0 = Sonntag, 1 = Montag … 6 = Samstag)", type: number, list: true }
+          - { name: von, label: "Von (HH:MM)", type: string }
+          - { name: bis, label: "Bis (HH:MM)", type: string }
+      - { name: instagram, label: Instagram, type: string }
+      - { name: facebook, label: Facebook, type: string }
+      - { name: googleCid, label: "Google-Profil-ID (nicht ändern)", type: string }
+      - { name: rundgang, label: "360°-Rundgang (Embed-Link)", type: string }
+      - { name: lat, label: Breitengrad, type: number }
+      - { name: lon, label: Längengrad, type: number }
+
+  - name: news
+    label: "📣 Aktuelles"
+    type: file
+    path: src/data/news.json
+    format: json
+    list: true
+    fields:
+      - { name: titel, label: Titel, type: string }
+      - { name: datum, label: Datum, type: date }
+      - { name: text, label: Text, type: text }
+
+  - name: jobs
+    label: "🧑‍🤝‍🧑 Jobs"
+    type: file
+    path: src/data/jobs.json
+    format: json
+    fields:
+      - { name: aktiv, label: "Wir suchen gerade (Hinweis auf der Startseite)", type: boolean }
+      - { name: titel, label: Überschrift, type: string }
+      - { name: text, label: Text, type: text }
+      - { name: gesucht, label: "Gesucht (Schlagworte)", type: string, list: true }
+      - { name: email, label: "Bewerbungen an", type: string }
+
+  - name: videos
+    label: "🎬 Videos"
+    type: file
+    path: src/data/videos.json
+    format: json
+    list: true
+    fields:
+      - { name: id, label: "YouTube-ID (Teil nach watch?v=)", type: string }
+      - { name: titel, label: Titel, type: string }
+      - { name: thema, label: Thema, type: select, options: { values: [Lenkdrachen, Lenkmatten, Zubehör, Kinderdrachen, Reparatur] } }
+      - { name: text, label: Kurzbeschreibung, type: text }
+
+  - name: bewertungen
+    label: "⭐ Bewertungen"
+    type: file
+    path: src/data/bewertungen.json
+    format: json
+    fields:
+      - { name: stand, label: "Stand (Datum der Zahlen)", type: string }
+      - name: google
+        label: Google-Werte je Laden
+        type: object
+        list: true
+        fields:
+          - { name: laden, label: "Laden-ID (hooksiel/schillig)", type: string }
+          - { name: sterne, label: Sterne, type: number }
+          - { name: anzahl, label: Anzahl Rezensionen, type: number }
+          - { name: themen, label: "Häufig erwähnt", type: string, list: true }
+      - name: zitate
+        label: Kundenzitate
+        type: object
+        list: true
+        fields:
+          - { name: text, label: Zitat, type: text }
+          - { name: name, label: Name, type: string }
+
+  - name: faq
+    label: "❓ FAQ"
+    type: file
+    path: src/data/faq.json
+    format: json
+    list: true
+    fields:
+      - { name: frage, label: Frage, type: string }
+      - { name: antwort, label: Antwort, type: text }
+
+  - name: sortiment
+    label: "🛍️ Sortiment"
+    type: file
+    path: src/data/sortiment.json
+    format: json
+    list: true
+    fields:
+      - { name: titel, label: Titel, type: string }
+      - { name: bild, label: "Bild (Dateiname ohne Endung aus src/assets/img)", type: string }
+      - { name: text, label: Text, type: text }
+      - { name: hinweis, label: "Hinweis (z. B. nur in Schillig)", type: string }
+      - { name: link, label: "Link (optional)", type: string }
+
+  - name: uebersetzungen
+    label: "🌍 Englisch & Niederländisch"
+    type: file
+    path: src/data/uebersetzungen.json
+    format: json
+    fields:
+      - name: en
+        label: English
+        type: object
+        fields: &sprachfelder
+          - { name: titel, label: Seitentitel, type: string }
+          - { name: beschreibung, label: Beschreibung, type: text }
+          - { name: hero, label: Einleitung, type: text }
+          - { name: laedenTitel, label: "Überschrift Läden", type: string }
+          - name: laeden
+            label: Ladentexte
+            type: object
+            fields:
+              - { name: hooksiel, label: Hooksiel, type: text }
+              - { name: schillig, label: Schillig, type: text }
+          - { name: sortimentTitel, label: "Überschrift Sortiment", type: string }
+          - { name: sortiment, label: Sortiment, type: string, list: true }
+          - { name: drachenTitel, label: "Überschrift Drachen", type: string }
+          - { name: drachenText, label: "Text Drachen", type: text }
+          - { name: kontaktTitel, label: "Überschrift Kontakt", type: string }
+          - { name: kontaktText, label: "Text Kontakt", type: text }
+          - { name: deutsch, label: "Link zur deutschen Seite", type: string }
+      - name: nl
+        label: Nederlands
+        type: object
+        fields: *sprachfelder

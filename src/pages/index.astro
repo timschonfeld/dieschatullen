@@ -6,6 +6,7 @@ import OpenStatus from '../components/OpenStatus.astro';
 import ClickEmbed from '../components/ClickEmbed.astro';
 import Steuerrad from '../components/Steuerrad.astro';
 import Bewertungen from '../components/Bewertungen.astro';
+import Drachenwetter from '../components/Drachenwetter.astro';
 import { bild } from '../lib/bilder';
 import { laeden, site, ladenSchema, routenLink, telLink } from '../lib/laden';
 import sortiment from '../data/sortiment.json';
@@ -129,17 +130,18 @@ const streifen = ['leuchttuerme', 'tee', 'windspiele', 'gummistiefel', 'drachen-
   <section class="full-bleed mt-24 md:mt-32" aria-labelledby="drachen-titel">
     <div class="relative min-h-[85svh]">
       <Image src={bild('drachen-wand')} alt="Wand voller Lenkdrachen im Drachennest" widths={[640, 1024, 1600, 2400]} sizes="100vw" class="absolute inset-0 h-full w-full object-cover" />
-      <div class="absolute inset-0 bg-gradient-to-r from-navy-950/90 via-navy-950/60 to-navy-950/10"></div>
+      <div class="absolute inset-0 bg-navy-950/75 md:bg-transparent md:bg-gradient-to-r md:from-navy-950/90 md:via-navy-950/60 md:to-navy-950/10"></div>
       <Steuerrad farbe="sand" class="-bottom-32 -right-32 h-[26rem] w-[26rem] opacity-[0.12] md:h-[40rem] md:w-[40rem]" />
       <div class="container-page relative flex min-h-[85svh] flex-col justify-center py-20">
         <div class="max-w-xl">
-          <p class="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-sand">Drachennest</p>
+          <Drachenwetter variante="kompakt" link={u('/drachen-und-drachenreparatur/#drachenwetter')} />
+          <p class="mb-3 mt-8 text-xs font-semibold uppercase tracking-[0.2em] text-sand">Drachennest</p>
           <h2 id="drachen-titel" class="display-lg !text-white">Vom ersten Kinderdrachen bis zur Vierleiner-Matte</h2>
           <p class="mt-6 text-lg leading-relaxed text-white/85">Mehr als 80 Kinderdrachen, Lenkdrachen von HQ und Elliot und Lenkmatten für richtig Power. Nicky ist selbst vom Drachenfliegen zum Kitesurfen gekommen und berät euch gern.</p>
           <p class="mt-4 text-lg leading-relaxed text-white/85"><strong class="text-sand">Bruchlandung?</strong> Wir ersetzen Gestänge und Leinen, nähen und flicken. Bringt euren Drachen einfach vorbei.</p>
           <div class="mt-8 flex flex-wrap gap-3">
             <a href={u('/drachen-und-drachenreparatur/')} class="btn bg-sand text-navy hover:bg-white">Drachen & Reparatur</a>
-            <a href={site.youtube} class="btn border border-white/40 text-white hover:bg-white/10" rel="noopener">Videos auf YouTube</a>
+            <a href={u('/videos/')} class="btn border border-white/40 text-white hover:bg-white/10">Nickys Drachen-Videos</a>
           </div>
         </div>
       </div>

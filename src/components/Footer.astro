@@ -4,13 +4,20 @@ import { Image } from 'astro:assets';
 import Steuerrad from './Steuerrad.astro';
 import logo from '../assets/img/logo-sand.png';
 import { laeden, site, telLink } from '../lib/laden';
+import { ui, sprachen, type Lang } from '../i18n/ui';
+
+interface Props { lang?: Lang }
+const { lang = 'de' } = Astro.props;
+const t = ui[lang];
+const claim = { de: site.claim, en: 'Souvenirs, kites & tea in Wangerland', nl: 'Souvenirs, vliegers & thee in Wangerland' }[lang];
+const kontakt = { de: 'Kontakt', en: 'Contact', nl: 'Contact' }[lang];
 ---
 <footer class="relative mt-24 overflow-hidden bg-navy text-sand-100">
   <Steuerrad farbe="sand" class="-bottom-40 -right-28 h-[28rem] w-[28rem] opacity-[0.07]" />
   <div class="container-page relative grid gap-10 py-14 md:grid-cols-4">
     <div>
       <Image src={logo} alt="Logo Die Schatullen" width={96} height={96} densities={[1, 2]} class="mb-4 h-24 w-24" />
-      <p class="text-sm text-sand-100/80">{site.claim}</p>
+      <p class="text-sm text-sand-100/80">{claim}</p>
     </div>
     {laeden.map((l) => (
       <div>
@@ -24,15 +31,26 @@ import { laeden, site, telLink } from '../lib/laden';
       </div>
     ))}
     <div>
-      <h2 class="mb-3 font-sans text-sm font-semibold uppercase tracking-wider text-sand">Kontakt</h2>
+      <h2 class="mb-3 font-sans text-sm font-semibold uppercase tracking-wider text-sand">{kontakt}</h2>
       <p class="text-sm"><a href={`mailto:${site.email}`} class="text-sand-100 hover:text-sand">{site.email}</a></p>
       <p class="mt-2 text-sm"><a href={site.youtube} class="text-sand-100/80 hover:text-sand" rel="noopener">YouTube</a></p>
       <ul class="mt-6 space-y-1 text-sm text-sand-100/70">
-        <li><a href={u('/jobs/')} class="hover:text-sand">Jobs</a></li>
-        <li><a href={u('/impressum/')} class="hover:text-sand">Impressum</a></li>
-        <li><a href={u('/datenschutz/')} class="hover:text-sand">Datenschutz</a></li>
+        {lang === 'de' && <li><a href={u('/jobs/')} class="hover:text-sand">Jobs</a></li>}
+        <li><a href={u('/impressum/')} class="hover:text-sand">{t.impressum}</a></li>
+        <li><a href={u('/datenschutz/')} class="hover:text-sand">{t.datenschutz}</a></li>
       </ul>
     </div>
   </div>
-  <div class="border-t border-sand/15 py-5 text-center text-xs text-sand-100/60">© {new Date().getFullYear()} {site.name} · Hooksiel & Schillig · Wangerland</div>
+  <div class="relative border-t border-sand/15">
+    <div class="container-page flex flex-col items-center justify-between gap-4 py-5 text-xs text-sand-100/60 sm:flex-row">
+      <nav aria-label={t.sprache} class="flex items-center gap-1">
+        <svg class="mr-1 h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18" /></svg>
+        {sprachen.map((s) => (
+          <a href={u(s.pfad)} hreflang={s.code} lang={s.code} aria-current={s.code === lang ? 'true' : undefined}
+            class="rounded-full px-3 py-1.5 text-sm text-sand-100/80 no-underline hover:bg-white/10 aria-[current=true]:bg-sand aria-[current=true]:font-semibold aria-[current=true]:text-navy">{s.name}</a>
+        ))}
+      </nav>
+      <p>© {new Date().getFullYear()} {site.name} · Hooksiel & Schillig · Wangerland</p>
+    </div>
+  </div>
 </footer>

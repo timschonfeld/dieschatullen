@@ -42,7 +42,10 @@
         "bis": "17:00"
       }
     ],
-    "gutZuWissen": []
+    "gutZuWissen": [
+      "Rollstuhlgerechter Eingang und Parkplatz"
+    ],
+    "googleCid": "2375914120795954704"
   },
   {
     "id": "schillig",
@@ -88,10 +91,10 @@
       }
     ],
     "gutZuWissen": [
-      "Refill-Station: Trinkwasserflasche kostenlos auffüllen",
       "Lebensmittel kurz vor dem MHD zu reduzierten Preisen",
-      "Kinderwagenfreundlich",
+      "Kinderwagenfreundlich, rollstuhlgerechter Eingang",
       "Bar, Karte, Apple Pay & Google Pay"
-    ]
+    ],
+    "googleCid": "12078960578468771110"
   }
 ]

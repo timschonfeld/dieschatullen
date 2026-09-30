@@ -1,36 +1,61 @@
 ---
 import Steuerrad from './Steuerrad.astro';
 import bewertungen from '../data/bewertungen.json';
+import { laeden } from '../lib/laden';
+import type { Lang } from '../i18n/ui';
 
-const { google, zitate } = bewertungen;
-const fuellung = (i: number) => Math.max(0, Math.min(1, google.sterne - i)) * 100;
+interface Props { lang?: Lang }
+const { lang = 'de' } = Astro.props;
+const txt = {
+  de: { eyebrow: 'Das sagen unsere Gäste', titel: 'Bewertungen', bei: 'bei Google', rez: 'Rezensionen', themen: 'Häufig erwähnt', profil: 'Auf Google ansehen', stand: 'Stand' },
+  en: { eyebrow: 'What our guests say', titel: 'Reviews', bei: 'on Google', rez: 'reviews', themen: 'Often mentioned', profil: 'View on Google', stand: 'as of' },
+  nl: { eyebrow: 'Wat onze gasten zeggen', titel: 'Beoordelingen', bei: 'op Google', rez: 'reviews', themen: 'Vaak genoemd', profil: 'Bekijk op Google', stand: 'stand' },
+}[lang];
+const profile = bewertungen.google.map((g) => ({ ...g, laden: laeden.find((l) => l.id === g.laden)! }));
+const fuellung = (sterne: number, i: number) => Math.max(0, Math.min(1, sterne - i)) * 100;
+const themenUebersetzung: Record<string, { en: string; nl: string }> = {
+  Preise: { en: 'Prices', nl: 'Prijzen' }, Drachen: { en: 'Kites', nl: 'Vliegers' }, Auswahl: { en: 'Selection', nl: 'Keuze' },
+  Reparatur: { en: 'Repairs', nl: 'Reparatie' }, Urlaub: { en: 'Holiday', nl: 'Vakantie' }, Sortiment: { en: 'Range', nl: 'Assortiment' },
+};
+const thema = (th: string) => (lang === 'de' ? th : themenUebersetzung[th]?.[lang] ?? th);
+const zahl = (n: number) => n.toLocaleString(lang === 'en' ? 'en-GB' : lang === 'nl' ? 'nl-NL' : 'de-DE');
 ---
 <section class="relative overflow-hidden bg-sand-100 py-20 md:py-28" aria-labelledby="bewertungen-titel">
   <Steuerrad class="-left-32 -bottom-32 h-96 w-96 opacity-[0.06] md:h-[34rem] md:w-[34rem]" />
-  <div class="container-page relative grid items-center gap-12 md:grid-cols-12">
-    <div class="md:col-span-5">
-      <p class="eyebrow mb-3">Das sagen unsere Gäste</p>
-      <h2 id="bewertungen-titel" class="sr-only">Bewertungen</h2>
-      <p class="font-display text-8xl font-bold leading-none text-navy md:text-9xl">{google.sterne.toLocaleString('de-DE')}</p>
-      <p class="mt-3 flex gap-1 text-3xl" role="img" aria-label={`${google.sterne.toLocaleString('de-DE')} von 5 Sternen`}>
-        {Array.from({ length: 5 }, (_, i) => (
-          <span aria-hidden="true" class="relative inline-block text-navy/15">★<span class="absolute inset-0 overflow-hidden text-[#f5b301]" style={`width:${fuellung(i)}%`}>★</span></span>
-        ))}
-      </p>
-      <p class="mt-3 text-lg text-navy-950/75">bei Google · rund {google.anzahl} Bewertungen<br /><span class="text-sm">{google.laden}, Stand {google.stand}</span></p>
-      <div class="mt-8 flex flex-wrap gap-3">
-        <a href={google.link} class="btn-primary" rel="noopener">Alle Bewertungen auf Google</a>
-        <a href={google.link} class="btn-ghost" rel="noopener">Bewertung schreiben</a>
-      </div>
-    </div>
-    <div class="space-y-6 md:col-span-7">
-      {zitate.map((z) => (
-        <figure class="rounded-[2rem] bg-white p-8 shadow-xl shadow-navy/5 md:p-12">
-          <p class="text-5xl leading-none text-himmel" aria-hidden="true">“</p>
-          <blockquote class="mt-2 font-display text-2xl font-semibold leading-snug text-navy md:text-4xl">{z.text}</blockquote>
-          <figcaption class="mt-6 text-navy-950/70">{z.name}</figcaption>
-        </figure>
+  <div class="container-page relative">
+    <p class="eyebrow mb-3">{txt.eyebrow}</p>
+    <h2 id="bewertungen-titel" class="display-lg">{txt.titel}</h2>
+
+    <div class="mt-10 grid gap-6 md:grid-cols-2">
+      {profile.map((g) => (
+        <a href={`https://www.google.com/maps?cid=${g.laden.googleCid}`} rel="noopener" class="group block rounded-[2rem] bg-white p-8 no-underline shadow-xl shadow-navy/5 ring-1 ring-navy/5 transition-shadow hover:shadow-2xl md:p-10">
+          <p class="font-display text-xl font-bold text-navy">{g.laden.name}</p>
+          <div class="mt-4 flex items-end gap-5">
+            <p class="font-display text-7xl font-bold leading-none text-navy md:text-8xl">{zahl(g.sterne)}</p>
+            <div class="pb-1">
+              <p class="flex gap-0.5 text-2xl" role="img" aria-label={`${zahl(g.sterne)} / 5`}>
+                {Array.from({ length: 5 }, (_, i) => (
+                  <span aria-hidden="true" class="relative inline-block text-navy/15">★<span class="absolute inset-0 overflow-hidden text-[#f5b301]" style={`width:${fuellung(g.sterne, i)}%`}>★</span></span>
+                ))}
+              </p>
+              <p class="mt-1 text-navy-950/70">{zahl(g.anzahl)} {txt.rez} {txt.bei}</p>
+            </div>
+          </div>
+          <p class="mt-6 text-sm font-semibold uppercase tracking-wider text-navy-950/70">{txt.themen}</p>
+          <ul class="mt-2 flex flex-wrap gap-2">
+            {g.themen.map((th) => <li class="rounded-full bg-petrol-50 px-3 py-1.5 text-sm font-semibold text-petrol-700">{thema(th)}</li>)}
+          </ul>
+          <p class="mt-6 font-semibold text-navy group-hover:underline">{txt.profil} →</p>
+        </a>
       ))}
     </div>
+
+    {lang === 'de' && bewertungen.zitate.map((z) => (
+      <figure class="mt-6 rounded-[2rem] bg-navy p-8 text-white md:p-12">
+        <blockquote class="font-display text-2xl font-semibold leading-snug md:text-4xl">„{z.text}“</blockquote>
+        <figcaption class="mt-5 text-white/70">{z.name}</figcaption>
+      </figure>
+    ))}
+    <p class="mt-4 text-xs text-navy-950/70">Google, {txt.stand} {bewertungen.stand}</p>
   </div>
 </section>

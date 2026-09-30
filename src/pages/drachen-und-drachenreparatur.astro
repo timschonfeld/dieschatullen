@@ -1,9 +1,10 @@
 ---
+import { u } from '../lib/url';
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
+import Drachenwetter from '../components/Drachenwetter.astro';
 import { bild } from '../lib/bilder';
-import { site } from '../lib/laden';
 
 const arten = [
   { titel: 'Kinderdrachen', bild: 'drachen-bunt', text: 'Ein großes Sortiment an Einleinerdrachen, die den Himmel farbenfroh erstrahlen lassen: vom allerersten Drachen für die ganz kleinen Piloten bis zum großen, kunstvollen Giant Dragon.' },
@@ -32,6 +33,14 @@ const marken = [
     ))}
   </section>
 
+  <section class="container-page mt-24" aria-label="Drachenwetter">
+    <div class="mb-8 max-w-2xl">
+      <p class="eyebrow mb-3">Live aus Schillig und Hooksiel</p>
+      <p class="display-lg font-display font-bold text-navy">Kann ich heute Drachen steigen lassen?</p>
+    </div>
+    <Drachenwetter />
+  </section>
+
   <section class="mt-24 bg-navy text-sand-50">
     <div class="container-page grid items-center gap-10 py-16 md:grid-cols-2">
       <div>
@@ -53,7 +62,7 @@ const marken = [
     <div>
       <h2 class="text-3xl">Nicky erklärt's auf YouTube</h2>
       <p class="mt-4 leading-relaxed text-navy-950/80">Wie werden unterschiedliche Drachen aufgebaut und geflogen? Nicky zeigt euch, worauf es beim jeweiligen Modell ankommt. Und achtet beim Fliegen immer auf Windstärke, Windrichtung und Wolkenbild.</p>
-      <a href={site.youtube} class="btn-primary mt-6" rel="noopener">Zum YouTube-Kanal</a>
+      <a href={u('/videos/')} class="btn-primary mt-6">Zu den Videos</a>
     </div>
     <div>
       <h2 class="text-3xl">Unsere Marken</h2>

@@ -1,0 +1,111 @@
+---
+/** Kompakte Besucherseite für Englisch und Niederländisch (alles Wichtige auf einer Seite). */
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import OpenStatus from './OpenStatus.astro';
+import Drachenwetter from './Drachenwetter.astro';
+import Bewertungen from './Bewertungen.astro';
+import Steuerrad from './Steuerrad.astro';
+import { bild } from '../lib/bilder';
+import { u } from '../lib/url';
+import { laeden, site, ladenSchema, routenLink, telLink } from '../lib/laden';
+import { ui, tageLabel } from '../i18n/ui';
+import uebersetzungen from '../data/uebersetzungen.json';
+
+interface Props { lang: 'en' | 'nl' }
+const { lang } = Astro.props;
+const c = uebersetzungen[lang];
+const t = ui[lang];
+const fotos: Record<string, string> = { hooksiel: 'laden-hooksiel', schillig: 'laden-schillig' };
+---
+<Base title={c.titel} description={c.beschreibung} lang={lang} schema={laeden.map(ladenSchema)}>
+  <section class="full-bleed">
+    <div class="relative h-[52svh] min-h-[360px] md:h-[70svh]">
+      <Image src={bild('drachen-bunt')} alt="" widths={[480, 828, 1200, 1800]} sizes="100vw" format="avif" quality={55} class="absolute inset-0 h-full w-full object-cover" loading="eager" fetchpriority="high" />
+      <div class="absolute inset-0 bg-gradient-to-t from-navy-950/85 via-navy-950/25 to-transparent"></div>
+      <div class="container-page relative flex h-full flex-col justify-end pb-24 md:pb-32">
+        <p class="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-sand">Hooksiel & Schillig · Wangerland</p>
+        <h1 class="display-xl !text-white">Moin!</h1>
+        <p class="mt-4 max-w-xl text-lg leading-snug text-white/90 md:text-2xl">{c.hero}</p>
+      </div>
+    </div>
+    <div class="container-page relative -mt-16 md:-mt-20">
+      <ul class="grid gap-3 md:grid-cols-2 md:gap-4">
+        {laeden.map((l) => (
+          <li class="flex flex-wrap items-center justify-between gap-x-4 gap-y-3 rounded-3xl bg-white p-5 shadow-xl shadow-navy/10 ring-1 ring-navy/5 md:p-6">
+            <div class="min-w-0">
+              <a href={`#${l.id}`} class="font-display text-lg font-bold text-navy no-underline hover:underline">{l.name}</a>
+              <OpenStatus laden={l} lang={lang} class="mt-1 !flex !bg-transparent !p-0 !shadow-none !ring-0" />
+            </div>
+            <div class="flex gap-2">
+              <a href={telLink(l.telefon)} class="btn-ghost !px-4 !py-2.5">{t.anrufen}</a>
+              <a href={routenLink(l)} class="btn-primary !px-4 !py-2.5" rel="noopener">{t.route}</a>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section id="laeden" class="relative mt-24 scroll-mt-20">
+    <Steuerrad class="-right-24 -top-24 h-80 w-80 opacity-[0.06] md:h-[32rem] md:w-[32rem]" />
+    <div class="container-page relative mb-10"><h2 class="display-lg">{c.laedenTitel}</h2></div>
+    <div class="container-page relative grid gap-6 md:grid-cols-2">
+      {laeden.map((l) => (
+        <article id={l.id} class="scroll-mt-24 overflow-hidden rounded-[2rem] bg-white ring-1 ring-navy/10">
+          <Image src={bild(fotos[l.id])} alt={l.name} widths={[480, 800, 1200]} sizes="(min-width: 768px) 50vw, 100vw" class="aspect-[3/2] w-full object-cover" />
+          <div class="p-6 md:p-10">
+            <p class="eyebrow mb-2">{l.ort} · {t.seit} {l.seit}</p>
+            <h3 class="text-3xl md:text-4xl">{l.name}</h3>
+            <p class="mt-4 text-lg leading-relaxed text-navy-950/85">{c.laeden[l.id as 'hooksiel' | 'schillig']}</p>
+            <div class="mt-8 grid gap-6 border-t border-navy/10 pt-6 sm:grid-cols-2">
+              <div>
+                <p class="mb-2 font-display text-lg font-bold text-navy">{t.oeffnungszeiten}</p>
+                {site.saison.winterpause ? <p>{t.winterpause}</p> : l.oeffnungszeiten.map((o) => <p>{tageLabel(o.tage, lang)}<br /><span class="font-semibold tabular-nums">{o.von}–{o.bis}</span></p>)}
+              </div>
+              <div>
+                <p class="mb-2 font-display text-lg font-bold text-navy">{t.adresse}</p>
+                <address class="not-italic">{l.strasse}<br />{l.plz} {l.ort}<br /><a href={telLink(l.telefon)} class="font-semibold text-navy">+49 {l.telefon.replace(/^0/, '')}</a></address>
+              </div>
+            </div>
+            <div class="mt-8 flex flex-wrap gap-3">
+              <a href={routenLink(l)} class="btn-primary" rel="noopener">{t.route}</a>
+              <a href={telLink(l.telefon)} class="btn-ghost">{t.anrufen}</a>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="container-page mt-24 grid items-center gap-10 md:grid-cols-2">
+    <Image src={bild('leuchttuerme')} alt="" widths={[600, 1000]} sizes="(min-width: 768px) 50vw, 100vw" class="aspect-[4/3] w-full rounded-[2rem] object-cover" />
+    <div>
+      <h2 class="display-lg">{c.sortimentTitel}</h2>
+      <ul class="mt-6 space-y-3 text-lg">
+        {c.sortiment.map((s) => <li class="flex gap-3"><span class="mt-1 font-bold text-petrol-700" aria-hidden="true">✓</span>{s}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section id="drachen" class="container-page mt-24 scroll-mt-20">
+    <div class="mb-8 max-w-3xl">
+      <h2 class="display-lg">{c.drachenTitel}</h2>
+      <p class="mt-5 text-lg leading-relaxed text-navy-950/85">{c.drachenText}</p>
+    </div>
+    <Drachenwetter lang={lang} />
+  </section>
+
+  <div class="mt-24"><Bewertungen lang={lang} /></div>
+
+  <section id="kontakt" class="container-page mt-24 scroll-mt-20">
+    <div class="rounded-[2rem] bg-petrol-50 p-8 md:p-12">
+      <h2 class="display-lg">{c.kontaktTitel}</h2>
+      <p class="mt-4 text-lg text-navy-950/80">{c.kontaktText}</p>
+      <div class="mt-6 flex flex-wrap gap-3">
+        <a href={`mailto:${site.email}`} class="btn-primary">{site.email}</a>
+        <a href={u('/')} class="btn-ghost" hreflang="de">{c.deutsch} →</a>
+      </div>
+    </div>
+  </section>
+</Base>

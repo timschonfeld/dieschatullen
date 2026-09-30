@@ -1,0 +1,44 @@
+# Live-Deploy auf Hetzner Webhosting: jeder Push auf "main" baut die Seite und spiegelt dist/ per SFTP.
+# Benötigte Repository-Secrets: HETZNER_HOST, HETZNER_USER, HETZNER_PASSWORD, HETZNER_PATH (z. B. /public_html/dieschatullen)
+name: Live (Hetzner)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: hetzner
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Zugangsdaten vorhanden?
+        id: check
+        env:
+          HOST: ${{ secrets.HETZNER_HOST }}
+        run: |
+          if [ -z "$HOST" ]; then echo "Keine Hetzner-Secrets hinterlegt, Deploy übersprungen."; echo "ok=false" >> "$GITHUB_OUTPUT"; else echo "ok=true" >> "$GITHUB_OUTPUT"; fi
+      - if: steps.check.outputs.ok == 'true'
+        uses: actions/checkout@v4
+      - if: steps.check.outputs.ok == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - if: steps.check.outputs.ok == 'true'
+        run: npm ci && npm run build
+        env:
+          PUBLIC_WIND_PROXY: '1'
+      - if: steps.check.outputs.ok == 'true'
+        name: Upload per SFTP
+        env:
+          HOST: ${{ secrets.HETZNER_HOST }}
+          USER: ${{ secrets.HETZNER_USER }}
+          PASS: ${{ secrets.HETZNER_PASSWORD }}
+          ZIEL: ${{ secrets.HETZNER_PATH }}
+        run: |
+          sudo apt-get install -y lftp >/dev/null
+          lftp -u "$USER","$PASS" "sftp://$HOST" -e "set sftp:auto-confirm yes; mirror --reverse --delete --verbose --exclude-glob .git* dist/ $ZIEL; bye"
