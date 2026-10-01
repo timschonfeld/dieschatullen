@@ -1,14 +1,12 @@
 {
-  "name": "Die Schatullen",
-  "claim": "Souvenirs, Drachen & Tee im Wangerland",
-  "beschreibung": "Drachen, Souvenirs, Tee und Strandbedarf: die Hooksieler Schatulle & Drachennest und die Schillige Schatulle an der Nordsee im Wangerland.",
+  "saison": {
+    "winterpause": true,
+    "winterpauseVon": "2026-10-01",
+    "winterpauseBis": "2027-02-28"
+  },
   "email": "info@dieschatullen.de",
   "youtube": "https://www.youtube.com/channel/UCsPe_VbbnuNkM_7EbrzW4Ng",
-  "saison": {
-    "winterpause": false,
-    "winterpauseVon": "",
-    "winterpauseBis": "2027-02-28",
-    "hinweis": ""
-  },
-  "ausnahmen": []
+  "name": "Die Schatullen",
+  "claim": "Souvenirs, Drachen & Tee im Wangerland",
+  "beschreibung": "Drachen, Souvenirs, Tee und Strandbedarf: die Hooksieler Schatulle & Drachennest und die Schillige Schatulle an der Nordsee im Wangerland."
 }
