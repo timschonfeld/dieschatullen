@@ -9,15 +9,13 @@ import Bewertungen from '../components/Bewertungen.astro';
 import Drachenwetter from '../components/Drachenwetter.astro';
 import { bild } from '../lib/bilder';
 import { heuteBerlin, zeitenKurz } from '../lib/zeit';
-import { laeden, site, ladenSchema, routenLink, telLink, istWinterpause, winterpauseHinweis } from '../lib/laden';
-import sortiment from '../data/sortiment.json';
-import alleNews from '../data/news.json';
-import jobs from '../data/jobs.json';
+import { laeden, site, saison, ladenSchema, routenLink, telLink, istWinterpause, winterpauseHinweis } from '../lib/laden';
+import { sortiment, news as alleNews, jobs } from '../lib/daten';
 
 const [hooksiel, schillig] = laeden;
 // News ausblenden, sobald ihr Enddatum (oder Datum) vorbei ist; Seite wird täglich neu gebaut
 const heute = heuteBerlin();
-const news = (alleNews as { titel: string; datum: string; ende?: string; text: string; link?: string }[]).filter((n) => (n.ende ?? n.datum) >= heute);
+const news = alleNews.filter((n) => (n.ende ?? n.datum) >= heute);
 const ladenFotos: Record<string, { foto: string; alt: string; pos: string }> = {
   hooksiel: { foto: 'laden-hooksiel', alt: 'Die Hooksieler Schatulle & Drachennest von außen', pos: 'object-center' },
   schillig: { foto: 'laden-schillig', alt: 'Schaufenster der Schilligen Schatulle', pos: 'object-center' },
@@ -37,7 +35,7 @@ const streifen = ['leuchttuerme', 'tee', 'windspiele', 'gummistiefel', 'drachen-
       </div>
     </div>
     <div class="container-page relative -mt-16 md:-mt-24">
-      {(site.saison.hinweis || istWinterpause()) && <p class="mb-3 rounded-md bg-sand px-5 py-3 font-semibold text-navy">{site.saison.hinweis || winterpauseHinweis()}</p>}
+      {(saison.hinweis || istWinterpause()) && <p class="mb-3 rounded-md bg-sand px-5 py-3 font-semibold text-navy">{saison.hinweis || winterpauseHinweis()}</p>}
       <ul class="grid gap-3 md:grid-cols-2 md:gap-4">
         {laeden.map((l) => (
           <li class="flex flex-wrap items-center justify-between gap-x-4 gap-y-3 rounded-lg bg-white p-5 ring-1 ring-navy/15 md:p-6">

@@ -3,14 +3,14 @@
  * Zeigt "Jetzt geöffnet · bis 18 Uhr" o. ä. Die Berechnung läuft im Browser (Europe/Berlin),
  * damit der Status auch auf einer statischen Seite immer aktuell ist.
  */
-import { site, istWinterpause, type Laden } from '../lib/laden';
+import { saison, ausnahmen, istWinterpause, type Laden } from '../lib/laden';
 import { ui, tageLabel, type Lang } from '../i18n/ui';
 
 interface Props { laden: Laden; class?: string; lang?: Lang }
 const { laden, class: cls = '', lang = 'de' } = Astro.props;
 const t = ui[lang];
 const texte = { winterpause: t.winterpause, offen: t.offen, zuHeute: t.zuHeute, zuMorgen: t.zuMorgen, zuTag: t.zuTag, tage: t.tage, lang };
-const daten = JSON.stringify({ zeiten: laden.oeffnungszeiten, winterpause: site.saison.winterpause, von: site.saison.winterpauseVon, bis: site.saison.winterpauseBis, ausnahmen: site.ausnahmen, texte });
+const daten = JSON.stringify({ zeiten: laden.oeffnungszeiten, winterpause: saison.winterpause, von: saison.winterpauseVon, bis: saison.winterpauseBis, ausnahmen, texte });
 const fallback = istWinterpause()
   ? t.winterpause
   : laden.oeffnungszeiten.map((o) => `${lang === 'de' ? o.label : tageLabel(o.tage, lang)} ${o.von}–${o.bis}`).join(' · ');

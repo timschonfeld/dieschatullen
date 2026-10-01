@@ -1,18 +1,16 @@
-import laeden from '../data/laeden.json';
-import site from '../data/site.json';
+import { laeden, site, saison, ausnahmen, type Laden } from './daten';
 import { heuteBerlin } from './zeit';
 
-export type Laden = (typeof laeden)[number];
 
 /** Winterpause: manuell (winterpause: true) oder automatisch im Zeitraum winterpauseVon–winterpauseBis (YYYY-MM-DD). */
 export function istWinterpause(datum = heuteBerlin()) {
-  const { winterpause, winterpauseVon: von, winterpauseBis: bis } = site.saison;
+  const { winterpause, winterpauseVon: von, winterpauseBis: bis } = saison;
   return winterpause || (!!von && !!bis && datum >= von && datum <= bis);
 }
 
 /** Automatischer Hinweis während der Winterpause, z. B. „Winterpause bis 28. Februar …“ */
 export function winterpauseHinweis() {
-  const bis = site.saison.winterpauseBis;
+  const bis = saison.winterpauseBis;
   if (!bis) return 'Wir sind in der Winterpause und freuen uns auf die nächste Saison!';
   const wieder = new Date(`${bis}T12:00:00Z`); wieder.setUTCDate(wieder.getUTCDate() + 1);
   const f = (d: Date) => d.toLocaleDateString('de-DE', { day: 'numeric', month: 'long', timeZone: 'UTC' });
@@ -50,4 +48,4 @@ export function ladenSchema(l: Laden) {
   };
 }
 
-export { laeden, site };
+export { laeden, site, saison, ausnahmen, type Laden };

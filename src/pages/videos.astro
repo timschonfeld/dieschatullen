@@ -4,7 +4,7 @@ import PageHero from '../components/PageHero.astro';
 import ClickEmbed from '../components/ClickEmbed.astro';
 import { bild, bildOder } from '../lib/bilder';
 import { site } from '../lib/laden';
-import videos from '../data/videos.json';
+import { videos } from '../lib/daten';
 
 for (const v of videos) if (!/^[\w-]{11}$/.test(v.id)) throw new Error(`Ungültige YouTube-ID: ${v.id}`);
 const themen = [...new Set(videos.map((v) => v.thema))];

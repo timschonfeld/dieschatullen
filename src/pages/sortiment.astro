@@ -4,7 +4,7 @@ import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import { bild } from '../lib/bilder';
-import sortiment from '../data/sortiment.json';
+import { sortiment } from '../lib/daten';
 ---
 <Base title="Sortiment: Souvenirs, Tee & Strandbedarf in Hooksiel und Schillig" description="Drachen, Windspiele, über 60 Teesorten, maritime Souvenirs, Geschenke, Strandbedarf und Lebensmittel: das Sortiment der Schatullen in Hooksiel und Schillig.">
   <PageHero eyebrow="Unser Sortiment" titel="Nichts, was ihr nicht bei uns findet" foto={bild('leuchttuerme')} alt="Leuchtturm-Deko in der Schatulle"
