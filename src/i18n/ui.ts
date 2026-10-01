@@ -15,8 +15,8 @@ const tage = {
 export const ui = {
   de: {
     tage: tage.de, bis: 'bis', und: 'und', uhr: ' Uhr',
-    offen: 'Jetzt geöffnet · bis {zeit}', zuHeute: 'Geschlossen · öffnet heute um {zeit}',
-    zuMorgen: 'Geschlossen · öffnet morgen um {zeit}', zuTag: 'Geschlossen · öffnet {tag} um {zeit}', winterpause: 'Winterpause',
+    offen: 'Jetzt geöffnet bis {bis} Uhr', zuHeute: 'Heute geöffnet von {von} bis {bis} Uhr',
+    zuMorgen: 'Morgen wieder geöffnet von {von} bis {bis} Uhr', zuTag: 'Am {tag} wieder geöffnet von {von} bis {bis} Uhr', winterpause: 'Winterpause',
     route: 'Route planen', anrufen: 'Anrufen', oeffnungszeiten: 'Öffnungszeiten', adresse: 'Adresse', seit: 'seit',
     impressum: 'Impressum', datenschutz: 'Datenschutz', sprache: 'Sprache',
     wind: {
@@ -52,8 +52,8 @@ export const ui = {
   },
   en: {
     tage: tage.en, bis: 'to', und: '&', uhr: '',
-    offen: 'Open now · until {zeit}', zuHeute: 'Closed · opens today at {zeit}',
-    zuMorgen: 'Closed · opens tomorrow at {zeit}', zuTag: 'Closed · opens {tag} at {zeit}', winterpause: 'Winter break',
+    offen: 'Open now until {bis}', zuHeute: 'Open today from {von} to {bis}',
+    zuMorgen: 'Open again tomorrow from {von} to {bis}', zuTag: 'Open again on {tag} from {von} to {bis}', winterpause: 'Winter break',
     route: 'Directions', anrufen: 'Call', oeffnungszeiten: 'Opening hours', adresse: 'Address', seit: 'since',
     impressum: 'Legal notice (German)', datenschutz: 'Privacy (German)', sprache: 'Language',
     wind: {
@@ -89,8 +89,8 @@ export const ui = {
   },
   nl: {
     tage: tage.nl, bis: 't/m', und: 'en', uhr: ' uur',
-    offen: 'Nu geopend · tot {zeit}', zuHeute: 'Gesloten · opent vandaag om {zeit}',
-    zuMorgen: 'Gesloten · opent morgen om {zeit}', zuTag: 'Gesloten · opent {tag} om {zeit}', winterpause: 'Winterstop',
+    offen: 'Nu geopend tot {bis} uur', zuHeute: 'Vandaag geopend van {von} tot {bis} uur',
+    zuMorgen: 'Morgen weer geopend van {von} tot {bis} uur', zuTag: 'Op {tag} weer geopend van {von} tot {bis} uur', winterpause: 'Winterstop',
     route: 'Route plannen', anrufen: 'Bellen', oeffnungszeiten: 'Openingstijden', adresse: 'Adres', seit: 'sinds',
     impressum: 'Colofon (Duits)', datenschutz: 'Privacy (Duits)', sprache: 'Taal',
     wind: {

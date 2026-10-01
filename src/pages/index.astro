@@ -16,6 +16,15 @@ import jobs from '../data/jobs.json';
 const [hooksiel, schillig] = laeden;
 // News ausblenden, sobald ihr Enddatum (oder Datum) vorbei ist; Seite wird täglich neu gebaut
 const heute = new Date().toISOString().slice(0, 10);
+// „Mo–Fr 10–18 · Sa & So 10–17 Uhr“ aus den Öffnungszeiten
+const KURZ = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
+const h = (hm: string) => hm.replace(/^0/, '').replace(':00', '');
+const zeitenKurz = (l: (typeof laeden)[number]) =>
+  l.oeffnungszeiten.map((o) => {
+    const fortlaufend = o.tage.length > 2 && o.tage.every((n, i) => i === 0 || n === (o.tage[i - 1] + 1) % 7);
+    const tage = fortlaufend ? `${KURZ[o.tage[0]]}–${KURZ[o.tage[o.tage.length - 1]]}` : o.tage.map((n) => KURZ[n]).join(' & ');
+    return `${tage} ${h(o.von)}–${h(o.bis)}`;
+  }).join(' · ') + ' Uhr';
 const news = (alleNews as { titel: string; datum: string; ende?: string; text: string; link?: string }[]).filter((n) => (n.ende ?? n.datum) >= heute);
 const ladenFotos: Record<string, { foto: string; alt: string; pos: string }> = {
   hooksiel: { foto: 'laden-hooksiel', alt: 'Die Hooksieler Schatulle & Drachennest von außen', pos: 'object-center' },
@@ -43,6 +52,7 @@ const streifen = ['leuchttuerme', 'tee', 'windspiele', 'gummistiefel', 'drachen-
             <div class="min-w-0">
               <a href={`#${l.id}`} class="font-display text-lg font-bold text-navy no-underline hover:underline">{l.name}</a>
               <OpenStatus laden={l} class="mt-1 !flex !bg-transparent !p-0 !shadow-none !ring-0" />
+              {!istWinterpause() && <p class="mt-1 text-sm text-navy-950/70">{zeitenKurz(l)}</p>}
             </div>
             <div class="flex gap-2">
               <a href={telLink(l.telefon)} class="btn-ghost !px-4 !py-2.5" aria-label={`${l.name} anrufen`}>Anrufen</a>
@@ -66,7 +76,6 @@ const streifen = ['leuchttuerme', 'tee', 'windspiele', 'gummistiefel', 'drachen-
         <article id={l.id} class="grid scroll-mt-20 md:min-h-[88svh] md:grid-cols-2">
           <div class={`relative min-h-[60svh] md:min-h-0 ${i % 2 ? 'md:order-2' : ''}`}>
             <Image src={bild(ladenFotos[l.id].foto)} alt={ladenFotos[l.id].alt} widths={[640, 1024, 1600, 2000]} sizes="(min-width: 768px) 50vw, 100vw" class={`absolute inset-0 h-full w-full object-cover ${ladenFotos[l.id].pos}`} />
-            <OpenStatus laden={l} class="absolute left-4 top-4 !text-base md:left-8 md:top-8" />
           </div>
           <div class={`flex flex-col justify-center px-4 pt-10 sm:px-6 md:px-12 md:py-20 lg:px-20 xl:px-24 ${i % 2 ? 'md:bg-sand-100' : 'md:bg-white'}`}>
             <p class="eyebrow mb-3 !text-sm">{l.ort} · seit {l.seit}</p>
@@ -80,24 +89,7 @@ const streifen = ['leuchttuerme', 'tee', 'windspiele', 'gummistiefel', 'drachen-
                 {l.gutZuWissen.map((g) => <li class="flex gap-3"><span class="mt-0.5 font-bold text-petrol-700" aria-hidden="true">✓</span>{g}</li>)}
               </ul>
             )}
-            <div class="mt-10 grid max-w-xl gap-8 border-t border-navy/15 pt-8 sm:grid-cols-2 lg:text-lg">
-              <div>
-                <p class="mb-2 font-display text-xl font-bold text-navy">Öffnungszeiten</p>
-                {istWinterpause() ? <p>Winterpause</p> : (
-                  <dl class="space-y-2">
-                    {l.oeffnungszeiten.map((o) => <div><dt class="text-navy-950/70">{o.label}</dt><dd class="font-semibold tabular-nums text-navy">{o.von}–{o.bis} Uhr</dd></div>)}
-                  </dl>
-                )}
-              </div>
-              <div>
-                <p class="mb-2 font-display text-xl font-bold text-navy">Adresse</p>
-                <address class="not-italic leading-relaxed">{l.strasse}<br />{l.plz} {l.ort}<br /><a href={telLink(l.telefon)} class="font-semibold text-navy">{l.telefon}</a></address>
-              </div>
-            </div>
-            <div class="mt-10 flex flex-wrap gap-3">
-              <a href={routenLink(l)} class="btn-primary !px-7 !py-4 !text-base" rel="noopener">Route planen</a>
-              <a href={telLink(l.telefon)} class="btn-ghost !px-7 !py-4 !text-base">Anrufen</a>
-            </div>
+            <a href={u(`/kontakt/#${l.id}`)} class="btn-ghost mt-10 self-start">Öffnungszeiten & Anfahrt</a>
           </div>
         </article>
       ))}
@@ -172,7 +164,7 @@ const streifen = ['leuchttuerme', 'tee', 'windspiele', 'gummistiefel', 'drachen-
 
   <!-- FOTOSTREIFEN: laufendes Band mit großen Bildern -->
   <section class="full-bleed group/streifen mt-4" aria-label="Eindrücke aus den Schatullen" data-streifen>
-    <button type="button" data-streifen-knopf aria-pressed="false" class="absolute right-4 top-4 z-10 inline-flex h-11 items-center gap-2 rounded-[3px] border-2 border-navy bg-white px-4 text-sm font-semibold text-navy hover:bg-sand-100">
+    <button type="button" data-streifen-knopf aria-pressed="false" class="absolute right-4 top-4 z-10 inline-flex h-11 items-center gap-2 rounded-lg border-2 border-navy bg-white px-4 text-sm font-semibold text-navy hover:bg-sand-100">
       <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path data-icon-pause d="M7 5h4v14H7zM13 5h4v14h-4z" /><path data-icon-play class="hidden" d="M8 5v14l11-7z" /></svg>
       <span data-streifen-text>Animation anhalten</span>
     </button>

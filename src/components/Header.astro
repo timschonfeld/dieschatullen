@@ -46,11 +46,11 @@ const pfad = Astro.url.pathname;
     </nav>
 
     <details class="group relative lg:hidden">
-      <summary class="flex h-11 w-11 cursor-pointer list-none items-center justify-center rounded-[3px] border-2 border-navy text-navy hover:bg-navy hover:text-sand-50 [&::-webkit-details-marker]:hidden" aria-label="Menü">
+      <summary class="flex h-11 w-11 cursor-pointer list-none items-center justify-center rounded-lg border-2 border-navy text-navy hover:bg-navy hover:text-sand-50 [&::-webkit-details-marker]:hidden" aria-label="Menü">
         <svg class="h-6 w-6 group-open:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round" /></svg>
         <svg class="hidden h-6 w-6 group-open:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke-linecap="round" /></svg>
       </summary>
-      <nav aria-label="Mobile Navigation" class="absolute right-0 top-13 w-60 rounded-[3px] border-2 border-navy bg-white p-1">
+      <nav aria-label="Mobile Navigation" class="absolute right-0 top-13 w-60 rounded-lg border-2 border-navy bg-white p-1">
         <ul>
           <li><a href={u(start)} class="block px-4 py-3 font-semibold text-navy no-underline hover:bg-sand-100">{lang === 'de' ? 'Start' : 'Home'}</a></li>
           {links.map((n) => (

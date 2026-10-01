@@ -9,20 +9,20 @@ import { ui, tageLabel, type Lang } from '../i18n/ui';
 interface Props { laden: Laden; class?: string; lang?: Lang }
 const { laden, class: cls = '', lang = 'de' } = Astro.props;
 const t = ui[lang];
-const texte = { winterpause: t.winterpause, offen: t.offen, zuHeute: t.zuHeute, zuMorgen: t.zuMorgen, zuTag: t.zuTag, tage: t.tage, uhr: t.uhr, lang };
+const texte = { winterpause: t.winterpause, offen: t.offen, zuHeute: t.zuHeute, zuMorgen: t.zuMorgen, zuTag: t.zuTag, tage: t.tage, lang };
 const daten = JSON.stringify({ zeiten: laden.oeffnungszeiten, winterpause: site.saison.winterpause, von: site.saison.winterpauseVon, bis: site.saison.winterpauseBis, ausnahmen: site.ausnahmen, texte });
 const fallback = istWinterpause()
   ? t.winterpause
   : laden.oeffnungszeiten.map((o) => `${lang === 'de' ? o.label : tageLabel(o.tage, lang)} ${o.von}–${o.bis}`).join(' · ');
 ---
-<p class={`open-status inline-flex items-center gap-2 rounded-[3px] bg-white px-3 py-1.5 text-sm font-semibold text-navy ${cls}`} data-oeffnung={daten}>
+<p class={`open-status inline-flex items-center gap-2 rounded-lg bg-white px-3 py-1.5 text-sm font-semibold text-navy ${cls}`} data-oeffnung={daten}>
   <span class="dot h-2.5 w-2.5 shrink-0 rounded-full bg-navy/30" aria-hidden="true"></span>
   <span class="label">{fallback}</span>
 </p>
 
 <script>
   type Zeit = { tage: number[]; von: string; bis: string };
-  type Texte = { winterpause: string; offen: string; zuHeute: string; zuMorgen: string; zuTag: string; tage: string[]; uhr: string; lang: string };
+  type Texte = { winterpause: string; offen: string; zuHeute: string; zuMorgen: string; zuTag: string; tage: string[]; lang: string };
   const minuten = (hm: string) => { const [h, m] = hm.split(':').map(Number); return h * 60 + m; };
 
   function berlinJetzt() {
@@ -38,7 +38,10 @@ const fallback = istWinterpause()
 
   for (const el of document.querySelectorAll<HTMLElement>('.open-status')) {
     const { zeiten, winterpause, von, bis, ausnahmen, texte: t } = JSON.parse(el.dataset.oeffnung!) as { zeiten: Zeit[]; winterpause: boolean; von: string; bis: string; ausnahmen: { datum: string }[]; texte: Texte };
-    const uhr = (hm: string) => (t.lang === 'de' ? hm.replace(/^0/, '').replace(':00', '') : hm) + t.uhr;
+    // 10:00 → „10“, 17:30 → „17:30“ (DE/NL); Englisch bleibt bei 10:00
+    const zeit = (hm: string) => (t.lang === 'en' ? hm : hm.replace(/^0/, '').replace(':00', ''));
+    const satz = (vorlage: string, z: Zeit, tag?: number) =>
+      vorlage.replace('{von}', zeit(z.von)).replace('{bis}', zeit(z.bis)).replace('{tag}', tag === undefined ? '' : t.tage[tag]);
     const label = el.querySelector('.label')!;
     const dot = el.querySelector('.dot')!;
     const jetzt = berlinJetzt();
@@ -48,20 +51,20 @@ const fallback = istWinterpause()
     const heute = zeiten.find((z) => z.tage.includes(jetzt.tag));
 
     if (heute && !zu(jetzt.datum) && jetzt.min >= minuten(heute.von) && jetzt.min < minuten(heute.bis)) {
-      label.textContent = t.offen.replace('{zeit}', uhr(heute.bis));
+      label.textContent = satz(t.offen, heute);
       dot.className = 'dot h-2.5 w-2.5 shrink-0 rounded-full bg-emerald-500';
       continue;
     }
     dot.className = 'dot h-2.5 w-2.5 shrink-0 rounded-full bg-signal';
     if (heute && !zu(jetzt.datum) && jetzt.min < minuten(heute.von)) {
-      label.textContent = t.zuHeute.replace('{zeit}', uhr(heute.von));
+      label.textContent = satz(t.zuHeute, heute);
       continue;
     }
     for (let i = 1; i <= 7; i++) {
       const tag = (jetzt.tag + i) % 7;
       const z = zeiten.find((z) => z.tage.includes(tag));
       if (z && !zu(addTage(jetzt.datum, i))) {
-        label.textContent = (i === 1 ? t.zuMorgen : t.zuTag).replace('{tag}', t.tage[tag]).replace('{zeit}', uhr(z.von));
+        label.textContent = satz(i === 1 ? t.zuMorgen : t.zuTag, z, tag);
         break;
       }
     }
