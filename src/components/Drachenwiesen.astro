@@ -1,0 +1,72 @@
+---
+/** Wo darf ich Drachen steigen lassen? Nationalpark-Regel + Drachenwiesen (Karte als Bild, keine Verbindung zu Dritten). */
+import { Image } from 'astro:assets';
+import karte from '../assets/img/karte-drachenwiese-schillig.png';
+import { laeden } from '../lib/laden';
+import type { Lang } from '../i18n/ui';
+
+interface Props { lang?: Lang }
+const { lang = 'de' } = Astro.props;
+// Drachenwiese Schillig laut OpenStreetMap (Way 1300406422), Mittelpunkt
+const wiese = { lat: 53.7043, lon: 8.02907 };
+const hooksiel = laeden.find((l) => l.id === 'hooksiel')!;
+const txt = {
+  de: {
+    eyebrow: 'Nationalpark Wattenmeer', titel: 'Wo darf ich Drachen steigen lassen?',
+    intro: 'Im Nationalpark Niedersächsisches Wattenmeer ist Drachensteigen in der Ruhe- und Zwischenzone verboten, damit Vögel und andere Tiere nicht gestört werden. Erlaubt ist es in der Erholungszone, am besten auf den ausgewiesenen Drachenwiesen.',
+    schilligTitel: 'Drachenwiese Schillig', schilligText: 'Direkt hinterm Deich zwischen Uferpromenade und Badestrand, nur ein paar Schritte von der Schilligen Schatulle.',
+    hooksielTitel: 'Hooksiel', hooksielText: 'Fragt uns in der Hooksieler Schatulle, wo ihr am Strand am besten fliegen könnt. Wir zeigen es euch gern.',
+    route: 'Route zur Drachenwiese', laden: 'Laden', wieseLabel: 'Drachenwiese', mehr: 'Mehr zu den Regeln beim Nationalpark Wattenmeer',
+    alt: 'Karte: Drachenwiese Schillig hinter dem Deich, daneben die Schillige Schatulle',
+  },
+  en: {
+    eyebrow: 'Wadden Sea National Park', titel: 'Where can I fly my kite?',
+    intro: 'In the Lower Saxony Wadden Sea National Park, flying kites is prohibited in the rest and intermediate zones so that birds and other wildlife are not disturbed. It is allowed in the recreation zone, ideally on the designated kite meadows.',
+    schilligTitel: 'Kite meadow Schillig', schilligText: 'Right behind the dike between the promenade and the bathing beach, just a few steps from the Schillige Schatulle.',
+    hooksielTitel: 'Hooksiel', hooksielText: 'Ask us at the Hooksieler Schatulle where the best spot on the beach is. We’re happy to show you.',
+    route: 'Directions to the kite meadow', laden: 'Shop', wieseLabel: 'Kite meadow', mehr: 'More about the rules (Wadden Sea National Park, German)',
+    alt: 'Map: kite meadow Schillig behind the dike, next to the Schillige Schatulle',
+  },
+  nl: {
+    eyebrow: 'Nationaal Park Waddenzee', titel: 'Waar mag ik vliegeren?',
+    intro: 'In het Nationaal Park Nedersaksische Waddenzee is vliegeren verboden in de rust- en tussenzone, zodat vogels en andere dieren niet worden gestoord. In de recreatiezone mag het wel, het liefst op de aangewezen vliegerweides.',
+    schilligTitel: 'Vliegerweide Schillig', schilligText: 'Direct achter de dijk tussen de boulevard en het badstrand, op een paar stappen van de Schillige Schatulle.',
+    hooksielTitel: 'Hooksiel', hooksielText: 'Vraag ons in de Hooksieler Schatulle waar je op het strand het beste kunt vliegeren. We laten het je graag zien.',
+    route: 'Route naar de vliegerweide', laden: 'Winkel', wieseLabel: 'Vliegerweide', mehr: 'Meer over de regels (Nationaal Park Waddenzee, Duits)',
+    alt: 'Kaart: vliegerweide Schillig achter de dijk, naast de Schillige Schatulle',
+  },
+}[lang];
+const routeWiese = `https://www.google.com/maps/dir/?api=1&destination=${wiese.lat},${wiese.lon}`;
+---
+<section class="relative" aria-labelledby={`drachenwiesen-${lang}`}>
+  <div class="mb-8 max-w-3xl">
+    <p class="eyebrow mb-3">{txt.eyebrow}</p>
+    <h2 id={`drachenwiesen-${lang}`} class="display-lg">{txt.titel}</h2>
+    <p class="mt-5 text-lg leading-relaxed text-navy-950/85">{txt.intro}</p>
+  </div>
+  <div class="grid gap-6 lg:grid-cols-[1.6fr_1fr]">
+    <figure class="overflow-hidden rounded-[2rem] bg-white ring-1 ring-navy/10">
+      <a href={routeWiese} rel="noopener" class="relative block">
+        <Image src={karte} alt={txt.alt} widths={[600, 900, 1200]} sizes="(min-width: 1024px) 60vw, 100vw" class="aspect-[5/3] w-full object-cover" />
+        <span class="absolute bottom-2 right-2 rounded bg-white/85 px-1.5 text-[10px] text-navy-950/80">© OpenStreetMap-Mitwirkende</span>
+      </a>
+      <figcaption class="flex flex-wrap gap-4 px-6 py-4 text-sm text-navy-950/80">
+        <span class="inline-flex items-center gap-2"><span class="h-3 w-5 rounded-sm border-2 border-[#1d7650] bg-[#1d7650]/40" aria-hidden="true"></span>{txt.wieseLabel}</span>
+        <span class="inline-flex items-center gap-2"><span class="h-3 w-3 rounded-full bg-navy" aria-hidden="true"></span>{txt.laden}: Schillige Schatulle</span>
+      </figcaption>
+    </figure>
+    <div class="flex flex-col gap-6">
+      <div class="rounded-[2rem] bg-white p-6 ring-1 ring-navy/10 md:p-8">
+        <h3 class="text-2xl">{txt.schilligTitel}</h3>
+        <p class="mt-3 leading-relaxed text-navy-950/85">{txt.schilligText}</p>
+        <a href={routeWiese} rel="noopener" class="btn-primary mt-5">{txt.route}</a>
+      </div>
+      <div class="rounded-[2rem] bg-white p-6 ring-1 ring-navy/10 md:p-8">
+        <h3 class="text-2xl">{txt.hooksielTitel}</h3>
+        <p class="mt-3 leading-relaxed text-navy-950/85">{txt.hooksielText}</p>
+        <p class="mt-3 text-sm text-navy-950/75">{hooksiel.name}, {hooksiel.strasse}</p>
+      </div>
+    </div>
+  </div>
+  <p class="mt-4 text-sm"><a href="https://www.nationalpark-wattenmeer.de/wissensbeitrag/drachensport/" rel="noopener" class="text-navy underline">{txt.mehr}</a></p>
+</section>

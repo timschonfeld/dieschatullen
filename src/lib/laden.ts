@@ -3,6 +3,21 @@ import site from '../data/site.json';
 
 export type Laden = (typeof laeden)[number];
 
+/** Winterpause: manuell (winterpause: true) oder automatisch im Zeitraum winterpauseVon–winterpauseBis (YYYY-MM-DD). */
+export function istWinterpause(datum = new Date().toISOString().slice(0, 10)) {
+  const { winterpause, winterpauseVon: von, winterpauseBis: bis } = site.saison;
+  return winterpause || (!!von && !!bis && datum >= von && datum <= bis);
+}
+
+/** Automatischer Hinweis während der Winterpause, z. B. „Winterpause bis 28. Februar …“ */
+export function winterpauseHinweis() {
+  const bis = site.saison.winterpauseBis;
+  if (!bis) return 'Wir sind in der Winterpause und freuen uns auf die nächste Saison!';
+  const wieder = new Date(`${bis}T12:00:00Z`); wieder.setUTCDate(wieder.getUTCDate() + 1);
+  const f = (d: Date) => d.toLocaleDateString('de-DE', { day: 'numeric', month: 'long', timeZone: 'UTC' });
+  return `Winterpause! Ab dem ${f(wieder)} sind wir wieder täglich für euch da.`;
+}
+
 export const routenLink = (l: Laden) =>
   `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(`${l.name}, ${l.strasse}, ${l.plz} ${l.ort}`)}`;
 
@@ -23,7 +38,7 @@ export function ladenSchema(l: Laden) {
     address: { '@type': 'PostalAddress', streetAddress: l.strasse, postalCode: l.plz, addressLocality: l.ort, addressRegion: 'Niedersachsen', addressCountry: 'DE' },
     geo: { '@type': 'GeoCoordinates', latitude: l.lat, longitude: l.lon },
     sameAs: [l.instagram, l.facebook],
-    openingHoursSpecification: site.saison.winterpause
+    openingHoursSpecification: istWinterpause()
       ? []
       : l.oeffnungszeiten.map((o) => ({
           '@type': 'OpeningHoursSpecification',

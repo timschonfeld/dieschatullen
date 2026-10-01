@@ -3,15 +3,15 @@
  * Zeigt "Jetzt geöffnet · bis 18 Uhr" o. ä. Die Berechnung läuft im Browser (Europe/Berlin),
  * damit der Status auch auf einer statischen Seite immer aktuell ist.
  */
-import { site, type Laden } from '../lib/laden';
+import { site, istWinterpause, type Laden } from '../lib/laden';
 import { ui, tageLabel, type Lang } from '../i18n/ui';
 
 interface Props { laden: Laden; class?: string; lang?: Lang }
 const { laden, class: cls = '', lang = 'de' } = Astro.props;
 const t = ui[lang];
-const texte = { offen: t.offen, zuHeute: t.zuHeute, zuMorgen: t.zuMorgen, zuTag: t.zuTag, tage: t.tage, uhr: t.uhr, lang };
-const daten = JSON.stringify({ zeiten: laden.oeffnungszeiten, winterpause: site.saison.winterpause, ausnahmen: site.ausnahmen, texte });
-const fallback = site.saison.winterpause
+const texte = { winterpause: t.winterpause, offen: t.offen, zuHeute: t.zuHeute, zuMorgen: t.zuMorgen, zuTag: t.zuTag, tage: t.tage, uhr: t.uhr, lang };
+const daten = JSON.stringify({ zeiten: laden.oeffnungszeiten, winterpause: site.saison.winterpause, von: site.saison.winterpauseVon, bis: site.saison.winterpauseBis, ausnahmen: site.ausnahmen, texte });
+const fallback = istWinterpause()
   ? t.winterpause
   : laden.oeffnungszeiten.map((o) => `${lang === 'de' ? o.label : tageLabel(o.tage, lang)} ${o.von}–${o.bis}`).join(' · ');
 ---
@@ -22,7 +22,7 @@ const fallback = site.saison.winterpause
 
 <script>
   type Zeit = { tage: number[]; von: string; bis: string };
-  type Texte = { offen: string; zuHeute: string; zuMorgen: string; zuTag: string; tage: string[]; uhr: string; lang: string };
+  type Texte = { winterpause: string; offen: string; zuHeute: string; zuMorgen: string; zuTag: string; tage: string[]; uhr: string; lang: string };
   const minuten = (hm: string) => { const [h, m] = hm.split(':').map(Number); return h * 60 + m; };
 
   function berlinJetzt() {
@@ -37,13 +37,14 @@ const fallback = site.saison.winterpause
   const addTage = (datum: string, n: number) => { const d = new Date(`${datum}T12:00:00Z`); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
 
   for (const el of document.querySelectorAll<HTMLElement>('.open-status')) {
-    const { zeiten, winterpause, ausnahmen, texte: t } = JSON.parse(el.dataset.oeffnung!) as { zeiten: Zeit[]; winterpause: boolean; ausnahmen: { datum: string }[]; texte: Texte };
-    if (winterpause) continue;
+    const { zeiten, winterpause, von, bis, ausnahmen, texte: t } = JSON.parse(el.dataset.oeffnung!) as { zeiten: Zeit[]; winterpause: boolean; von: string; bis: string; ausnahmen: { datum: string }[]; texte: Texte };
+    const uhr = (hm: string) => (t.lang === 'de' ? hm.replace(/^0/, '').replace(':00', '') : hm) + t.uhr;
     const label = el.querySelector('.label')!;
     const dot = el.querySelector('.dot')!;
-    const uhr = (hm: string) => (t.lang === 'de' ? hm.replace(/^0/, '').replace(':00', '') : hm) + t.uhr;
     const jetzt = berlinJetzt();
-    const zu = (datum: string) => ausnahmen.some((a) => a.datum === datum);
+    const inPause = (datum: string) => !!von && !!bis && datum >= von && datum <= bis;
+    if (winterpause || inPause(jetzt.datum)) { label.textContent = t.winterpause; dot.className = 'dot h-2.5 w-2.5 shrink-0 rounded-full bg-signal'; continue; }
+    const zu = (datum: string) => ausnahmen.some((a) => a.datum === datum) || inPause(datum);
     const heute = zeiten.find((z) => z.tage.includes(jetzt.tag));
 
     if (heute && !zu(jetzt.datum) && jetzt.min >= minuten(heute.von) && jetzt.min < minuten(heute.bis)) {

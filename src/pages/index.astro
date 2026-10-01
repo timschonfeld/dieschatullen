@@ -8,12 +8,15 @@ import Steuerrad from '../components/Steuerrad.astro';
 import Bewertungen from '../components/Bewertungen.astro';
 import Drachenwetter from '../components/Drachenwetter.astro';
 import { bild } from '../lib/bilder';
-import { laeden, site, ladenSchema, routenLink, telLink } from '../lib/laden';
+import { laeden, site, ladenSchema, routenLink, telLink, istWinterpause, winterpauseHinweis } from '../lib/laden';
 import sortiment from '../data/sortiment.json';
-import news from '../data/news.json';
+import alleNews from '../data/news.json';
 import jobs from '../data/jobs.json';
 
 const [hooksiel, schillig] = laeden;
+// News ausblenden, sobald ihr Enddatum (oder Datum) vorbei ist; Seite wird täglich neu gebaut
+const heute = new Date().toISOString().slice(0, 10);
+const news = (alleNews as { titel: string; datum: string; ende?: string; text: string; link?: string }[]).filter((n) => (n.ende ?? n.datum) >= heute);
 const ladenFotos: Record<string, { foto: string; alt: string; pos: string }> = {
   hooksiel: { foto: 'laden-hooksiel', alt: 'Die Hooksieler Schatulle & Drachennest von außen', pos: 'object-center' },
   schillig: { foto: 'laden-schillig', alt: 'Schaufenster der Schilligen Schatulle', pos: 'object-center' },
@@ -33,7 +36,7 @@ const streifen = ['leuchttuerme', 'tee', 'windspiele', 'gummistiefel', 'drachen-
       </div>
     </div>
     <div class="container-page relative -mt-16 md:-mt-24">
-      {site.saison.hinweis && <p class="mb-3 rounded-2xl bg-sand px-5 py-3 font-semibold text-navy shadow-lg">{site.saison.hinweis}</p>}
+      {(site.saison.hinweis || istWinterpause()) && <p class="mb-3 rounded-2xl bg-sand px-5 py-3 font-semibold text-navy shadow-lg">{site.saison.hinweis || winterpauseHinweis()}</p>}
       <ul class="grid gap-3 md:grid-cols-2 md:gap-4">
         {laeden.map((l) => (
           <li class="flex flex-wrap items-center justify-between gap-x-4 gap-y-3 rounded-3xl bg-white p-5 shadow-xl shadow-navy/10 ring-1 ring-navy/5 md:p-6">
@@ -80,7 +83,7 @@ const streifen = ['leuchttuerme', 'tee', 'windspiele', 'gummistiefel', 'drachen-
             <div class="mt-10 grid max-w-xl gap-8 border-t border-navy/15 pt-8 sm:grid-cols-2 lg:text-lg">
               <div>
                 <p class="mb-2 font-display text-xl font-bold text-navy">Öffnungszeiten</p>
-                {site.saison.winterpause ? <p>Winterpause</p> : (
+                {istWinterpause() ? <p>Winterpause</p> : (
                   <dl class="space-y-2">
                     {l.oeffnungszeiten.map((o) => <div><dt class="text-navy-950/70">{o.label}</dt><dd class="font-semibold tabular-nums text-navy">{o.von}–{o.bis} Uhr</dd></div>)}
                   </dl>
@@ -149,8 +152,12 @@ const streifen = ['leuchttuerme', 'tee', 'windspiele', 'gummistiefel', 'drachen-
   </section>
 
   <!-- FOTOSTREIFEN: laufendes Band mit großen Bildern -->
-  <section class="full-bleed mt-4" aria-label="Eindrücke aus den Schatullen">
-    <div class="marquee flex w-max gap-4">
+  <section class="full-bleed group/streifen mt-4" aria-label="Eindrücke aus den Schatullen" data-streifen>
+    <button type="button" data-streifen-knopf aria-pressed="false" class="absolute right-4 top-4 z-10 inline-flex h-11 items-center gap-2 rounded-full bg-white/90 px-4 text-sm font-semibold text-navy shadow ring-1 ring-navy/10 hover:bg-white">
+      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path data-icon-pause d="M7 5h4v14H7zM13 5h4v14h-4z" /><path data-icon-play class="hidden" d="M8 5v14l11-7z" /></svg>
+      <span data-streifen-text>Animation anhalten</span>
+    </button>
+    <div class="marquee flex w-max gap-4 group-hover/streifen:[animation-play-state:paused] group-focus-within/streifen:[animation-play-state:paused]">
       {[...streifen, ...streifen].map((b, i) => (
         <Image src={bild(b)} alt="" widths={[400, 640]} sizes="(min-width: 768px) 28vw, 70vw" class="h-[45svh] max-h-[460px] w-auto rounded-3xl object-cover" aria-hidden={i >= streifen.length ? 'true' : undefined} />
       ))}
@@ -158,6 +165,22 @@ const streifen = ['leuchttuerme', 'tee', 'windspiele', 'gummistiefel', 'drachen-
   </section>
 
   <div class="mt-24 md:mt-32"><Bewertungen /></div>
+
+  <script>
+    // Fotostreifen anhalten/fortsetzen (WCAG 2.2.2)
+    for (const s of document.querySelectorAll<HTMLElement>('[data-streifen]')) {
+      const knopf = s.querySelector<HTMLButtonElement>('[data-streifen-knopf]')!;
+      const band = s.querySelector<HTMLElement>('.marquee')!;
+      knopf.addEventListener('click', () => {
+        const pausiert = knopf.getAttribute('aria-pressed') !== 'true';
+        knopf.setAttribute('aria-pressed', String(pausiert));
+        band.style.animationPlayState = pausiert ? 'paused' : '';
+        s.querySelector('[data-streifen-text]')!.textContent = pausiert ? 'Animation fortsetzen' : 'Animation anhalten';
+        s.querySelector('[data-icon-pause]')!.classList.toggle('hidden', pausiert);
+        s.querySelector('[data-icon-play]')!.classList.toggle('hidden', !pausiert);
+      });
+    }
+  </script>
 
   <!-- TEAM & JOBS -->
   <section class="container-page relative mt-24 grid items-center gap-10 md:mt-32 md:grid-cols-12" aria-labelledby="team-titel">
@@ -185,11 +208,12 @@ const streifen = ['leuchttuerme', 'tee', 'windspiele', 'gummistiefel', 'drachen-
     <section class="container-page mt-24" aria-labelledby="news-titel">
       <h2 id="news-titel" class="display-lg mb-8">Aktuelles</h2>
       <ul class="grid gap-4 md:grid-cols-2">
-        {news.map((n: { titel: string; datum: string; text: string }) => (
+        {news.map((n) => (
           <li class="rounded-3xl bg-white p-6 ring-1 ring-navy/10">
             <p class="eyebrow mb-1">{new Date(n.datum).toLocaleDateString('de-DE', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
             <h3 class="text-2xl">{n.titel}</h3>
             <p class="mt-2 text-navy-950/80">{n.text}</p>
+            {n.link && <a href={n.link} rel="noopener" class="mt-3 inline-block font-semibold text-navy">Mehr erfahren →</a>}
           </li>
         ))}
       </ul>

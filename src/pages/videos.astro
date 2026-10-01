@@ -6,9 +6,10 @@ import { bild } from '../lib/bilder';
 import { site } from '../lib/laden';
 import videos from '../data/videos.json';
 
+for (const v of videos) if (!/^[\w-]{11}$/.test(v.id)) throw new Error(`Ungültige YouTube-ID: ${v.id}`);
 const themen = [...new Set(videos.map((v) => v.thema))];
 ---
-<Base title="Drachen-Videos" description="Nicky von den Schatullen zeigt in kurzen Videos, wie ihr Lenkdrachen und Lenkmatten auf- und abbaut, Leinen befestigt und welches Zubehör hilft.">
+<Base title="Drachen-Videos: Lenkdrachen & Lenkmatten aufbauen" description="Nicky von den Schatullen zeigt in kurzen Videos, wie ihr Lenkdrachen und Lenkmatten auf- und abbaut, Leinen befestigt und welches Zubehör hilft.">
   <PageHero eyebrow="Videos" titel="Nicky erklärt's" foto={bild('lenkmatten')} alt="Bunte Lenkmatten im Drachennest"
     intro="Wie baue ich meinen Lenkdrachen auf? Wofür brauche ich eine Lenkbar? In kurzen Videos zeigt euch Nicky, worauf es beim jeweiligen Modell ankommt." />
 

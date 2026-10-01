@@ -6,6 +6,8 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  schedule:
+    - cron: '15 3 * * *' # täglich neu bauen (Winterpause, News-Ablauf)
 
 concurrency:
   group: hetzner
@@ -22,9 +24,9 @@ jobs:
         run: |
           if [ -z "$HOST" ]; then echo "Keine Hetzner-Secrets hinterlegt, Deploy übersprungen."; echo "ok=false" >> "$GITHUB_OUTPUT"; else echo "ok=true" >> "$GITHUB_OUTPUT"; fi
       - if: steps.check.outputs.ok == 'true'
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - if: steps.check.outputs.ok == 'true'
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 24
           cache: npm
@@ -41,4 +43,4 @@ jobs:
           ZIEL: ${{ secrets.HETZNER_PATH }}
         run: |
           sudo apt-get install -y lftp >/dev/null
-          lftp -u "$USER","$PASS" "sftp://$HOST" -e "set sftp:auto-confirm yes; mirror --reverse --delete --verbose --exclude-glob .git* dist/ $ZIEL; bye"
+          lftp -u "$USER","$PASS" "sftp://$HOST" -e "set sftp:auto-confirm yes; mirror --reverse --delete --verbose --exclude-glob .git* --exclude api/.cache/ dist/ $ZIEL; bye"

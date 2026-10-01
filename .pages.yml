@@ -15,7 +15,9 @@ content:
         label: Saison
         type: object
         fields:
-          - { name: winterpause, label: "Winterpause (Läden geschlossen)", type: boolean }
+          - { name: winterpause, label: "Winterpause sofort an (manuell)", type: boolean }
+          - { name: winterpauseVon, label: "Winterpause automatisch ab (Datum)", type: date }
+          - { name: winterpauseBis, label: "Winterpause bis einschließlich (Datum)", type: date }
           - { name: hinweis, label: "Hinweis-Banner oben auf der Startseite (leer = aus)", type: string }
       - name: ausnahmen
         label: "Zusätzliche Schließtage (z. B. Feiertage)"
@@ -72,7 +74,9 @@ content:
     fields:
       - { name: titel, label: Titel, type: string }
       - { name: datum, label: Datum, type: date }
+      - { name: ende, label: "Ausblenden nach (Datum, optional)", type: date }
       - { name: text, label: Text, type: text }
+      - { name: link, label: "Link (optional)", type: string }
 
   - name: jobs
     label: "🧑‍🤝‍🧑 Jobs"

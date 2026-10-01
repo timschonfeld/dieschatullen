@@ -4,9 +4,9 @@ import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import OpenStatus from '../components/OpenStatus.astro';
 import { bild } from '../lib/bilder';
-import { laeden, site, routenLink, telLink, ladenSchema } from '../lib/laden';
+import { laeden, site, routenLink, telLink, ladenSchema, istWinterpause } from '../lib/laden';
 ---
-<Base title="Kontakt & Anfahrt" description="Adressen, Telefonnummern, Öffnungszeiten und Anfahrt der Hooksieler Schatulle & Drachennest und der Schilligen Schatulle." schema={laeden.map(ladenSchema)}>
+<Base title="Kontakt, Öffnungszeiten & Anfahrt Hooksiel und Schillig" description="Adressen, Telefonnummern, Öffnungszeiten und Anfahrt der Hooksieler Schatulle & Drachennest und der Schilligen Schatulle." schema={laeden.map(ladenSchema)}>
   <PageHero eyebrow="Kontakt & Anfahrt" titel="Wo ihr uns findet" foto={bild('deich-schillig')} alt="Grüner Deich in Schillig"
     intro="Wir sind mitten im Wangerland an der Nordseeküste. Von uns aus seid ihr schnell auf den Ostfriesischen Inseln und am Jadebusen. Für jedes Strandabenteuer findet ihr bei uns das richtige Equipment." />
 
@@ -22,7 +22,7 @@ import { laeden, site, routenLink, telLink, ladenSchema } from '../lib/laden';
           <OpenStatus laden={l} class="mt-3" />
           <address class="mt-4 not-italic leading-relaxed">{l.strasse}<br />{l.plz} {l.ort}</address>
           <dl class="mt-4 space-y-1 text-sm">
-            {!site.saison.winterpause && l.oeffnungszeiten.map((o) => (
+            {!istWinterpause() && l.oeffnungszeiten.map((o) => (
               <div class="flex justify-between gap-3 border-b border-navy/5 py-1"><dt>{o.label}</dt><dd class="tabular-nums">{o.von}–{o.bis} Uhr</dd></div>
             ))}
           </dl>

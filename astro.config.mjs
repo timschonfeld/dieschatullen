@@ -10,5 +10,6 @@ export default defineConfig({
   trailingSlash: 'always',
   build: { format: 'directory', inlineStylesheets: 'always' },
   integrations: [sitemap()],
-  vite: { plugins: [tailwindcss()] },
+  // Skripte als Dateien ausliefern (nicht inline), damit die CSP ohne 'unsafe-inline' für Skripte auskommt
+  vite: { plugins: [tailwindcss()], build: { assetsInlineLimit: 0 } },
 });

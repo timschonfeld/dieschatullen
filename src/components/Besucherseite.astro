@@ -4,11 +4,12 @@ import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import OpenStatus from './OpenStatus.astro';
 import Drachenwetter from './Drachenwetter.astro';
+import Drachenwiesen from './Drachenwiesen.astro';
 import Bewertungen from './Bewertungen.astro';
 import Steuerrad from './Steuerrad.astro';
 import { bild } from '../lib/bilder';
 import { u } from '../lib/url';
-import { laeden, site, ladenSchema, routenLink, telLink } from '../lib/laden';
+import { laeden, site, ladenSchema, routenLink, telLink, istWinterpause } from '../lib/laden';
 import { ui, tageLabel } from '../i18n/ui';
 import uebersetzungen from '../data/uebersetzungen.json';
 
@@ -61,7 +62,7 @@ const fotos: Record<string, string> = { hooksiel: 'laden-hooksiel', schillig: 'l
             <div class="mt-8 grid gap-6 border-t border-navy/10 pt-6 sm:grid-cols-2">
               <div>
                 <p class="mb-2 font-display text-lg font-bold text-navy">{t.oeffnungszeiten}</p>
-                {site.saison.winterpause ? <p>{t.winterpause}</p> : l.oeffnungszeiten.map((o) => <p>{tageLabel(o.tage, lang)}<br /><span class="font-semibold tabular-nums">{o.von}–{o.bis}</span></p>)}
+                {istWinterpause() ? <p>{t.winterpause}</p> : l.oeffnungszeiten.map((o) => <p>{tageLabel(o.tage, lang)}<br /><span class="font-semibold tabular-nums">{o.von}–{o.bis}</span></p>)}
               </div>
               <div>
                 <p class="mb-2 font-display text-lg font-bold text-navy">{t.adresse}</p>
@@ -94,6 +95,7 @@ const fotos: Record<string, string> = { hooksiel: 'laden-hooksiel', schillig: 'l
       <p class="mt-5 text-lg leading-relaxed text-navy-950/85">{c.drachenText}</p>
     </div>
     <Drachenwetter lang={lang} />
+    <div class="mt-16"><Drachenwiesen lang={lang} /></div>
   </section>
 
   <div class="mt-24"><Bewertungen lang={lang} /></div>

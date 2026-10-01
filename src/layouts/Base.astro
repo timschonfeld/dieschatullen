@@ -13,7 +13,7 @@ interface Props {
   lang?: Lang;
 }
 const { title, description = site.beschreibung, schema = [], lang = 'de' } = Astro.props;
-const fullTitle = title ? `${title} | ${site.name}` : `${site.name}: ${site.claim}`;
+const fullTitle = title ? `${title} | ${site.name}` : `${site.name} in Hooksiel & Schillig: Souvenirs, Drachen & Tee an der Nordsee`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 ---
 <!doctype html>
@@ -37,7 +37,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={new URL(u('/og.jpg'), Astro.site)} />
     <link rel="sitemap" href={u('/sitemap-index.xml')} />
-    {schema.map((s) => <script type="application/ld+json" set:html={JSON.stringify(s)} />)}
+    {schema.map((s) => <script type="application/ld+json" set:html={JSON.stringify(s).replace(/</g, '\\u003c')} />)}
   </head>
   <body class="flex min-h-screen flex-col">
     <a href="#inhalt" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-white focus:px-4 focus:py-2">Zum Inhalt springen</a>

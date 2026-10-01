@@ -4,6 +4,7 @@ import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import Drachenwetter from '../components/Drachenwetter.astro';
+import Drachenwiesen from '../components/Drachenwiesen.astro';
 import { bild } from '../lib/bilder';
 
 const arten = [
@@ -17,7 +18,7 @@ const marken = [
   { name: 'HQ', logo: 'logo-hq', url: 'https://www.invento-hq.com/' },
 ];
 ---
-<Base title="Drachen und Drachenreparatur" description="Kinderdrachen, Lenkdrachen und Lenkmatten von HQ und Elliot, dazu Beratung und Drachenreparatur im Drachennest Hooksiel und in der Schilligen Schatulle.">
+<Base title="Drachen kaufen & reparieren in Hooksiel und Schillig" description="Kinderdrachen, Lenkdrachen und Lenkmatten von HQ und Elliot, dazu Beratung und Drachenreparatur im Drachennest Hooksiel und in der Schilligen Schatulle.">
   <PageHero eyebrow="Drachennest" titel="Drachen & Drachenreparatur" foto={bild('drachen-laden')} alt="Drachenabteilung mit vielen bunten Drachen"
     intro="Lokale Brands und Alltime Favorites: Bei uns findet ihr für jedes Alter und jeden Geschmack das passende Fluggerät, mit professioneller Kaufberatung gleich dazu." />
 
@@ -40,6 +41,8 @@ const marken = [
     </div>
     <Drachenwetter />
   </section>
+
+  <div class="container-page mt-24"><Drachenwiesen /></div>
 
   <section class="mt-24 bg-navy text-sand-50">
     <div class="container-page grid items-center gap-10 py-16 md:grid-cols-2">

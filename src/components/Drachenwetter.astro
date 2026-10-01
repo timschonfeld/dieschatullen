@@ -1,8 +1,9 @@
 ---
 /**
- * Drachenwetter: aktueller Wind in Beaufort mit Ampel (bis 4 Bft = gut), Böen, Richtung und 12-Stunden-Vorschau.
- * Datenquelle: Deutscher Wetterdienst über Bright Sky (frei nutzbar, auch kommerziell). Auf Hetzner (PUBLIC_WIND_PROXY gesetzt) kommen die Daten über /api/wind.php,
- * sodass der Browser keine Verbindung zu Dritten aufbaut.
+ * Drachenwetter: aktueller Wind in km/h mit Ampel (gut bis 28 km/h = Windstärke 4), Böen, Richtung
+ * und Vorhersage nach Tageszeiten für heute und morgen.
+ * Datenquelle: Deutscher Wetterdienst über Bright Sky (frei nutzbar, auch kommerziell). Auf Hetzner
+ * (PUBLIC_WIND_PROXY gesetzt) kommen die Daten über /api/wind.php, der Browser kontaktiert dann keine Dritten.
  */
 import { laeden } from '../lib/laden';
 import { u } from '../lib/url';
@@ -13,76 +14,92 @@ const { lang = 'de', variante = 'gross', link } = Astro.props;
 const t = ui[lang].wind;
 const orte = [...laeden].reverse().map((l) => ({ id: l.id, name: l.ort, lat: l.lat, lon: l.lon })); // Schillig (Strand) zuerst
 const proxy = import.meta.env.PUBLIC_WIND_PROXY ? u('/api/wind.php') : '';
-const config = JSON.stringify({ orte, proxy, t, lang });
-const skala = [0, 1, 2, 3, 4, 5, 6, 7, 8];
-const zoneFarbe = (b: number) => (b <= 1 ? 'var(--wind-wenig)' : b <= 4 ? 'var(--wind-gut)' : 'var(--wind-viel)');
+const config = JSON.stringify({ orte, proxy, t });
+// Skala 0–50 km/h: Zonen zu wenig (<6), gut (6–28), zu viel (>28)
+const skala = [
+  { von: 0, bis: 6, farbe: 'var(--wind-wenig-hell)' },
+  { von: 6, bis: 28, farbe: 'var(--wind-gut-hell)' },
+  { von: 28, bis: 50, farbe: 'var(--wind-viel-hell)' },
+];
 ---
 {variante === 'kompakt' ? (
   <a href={link} class="drachenwetter group inline-flex items-center gap-3 rounded-full bg-white/10 py-2 pl-2 pr-5 text-white no-underline ring-1 ring-white/25 backdrop-blur hover:bg-white/20" data-config={config} data-variante="kompakt">
-    <span data-w="bft" class="grid h-11 w-11 place-items-center rounded-full bg-white/20 font-display text-lg font-bold">–</span>
-    <span class="text-sm leading-tight"><span class="block text-white/75">{t.jetzt} in {orte[0].name}</span><span data-w="urteil" class="font-semibold">{t.laedt}</span></span>
+    <span data-w="wert" class="grid h-11 min-w-11 place-items-center rounded-full bg-white/20 px-2 font-display text-sm font-bold">–</span>
+    <span class="text-sm leading-tight"><span class="block text-white/80">{t.jetzt} in {orte[0].name}</span><span data-w="urteil" class="font-semibold">{t.laedt}</span></span>
     <span aria-hidden="true" class="transition-transform group-hover:translate-x-0.5">→</span>
   </a>
 ) : (
   <div id="drachenwetter" class="drachenwetter scroll-mt-24 overflow-hidden rounded-[2rem] bg-white shadow-xl shadow-navy/5 ring-1 ring-navy/10" data-config={config} data-variante="gross">
     <div class="flex flex-wrap items-center justify-between gap-4 border-b border-navy/10 px-6 py-5 md:px-10">
       <h2 class="text-3xl md:text-4xl">{t.titel}</h2>
-      <div class="flex rounded-full bg-sand-100 p-1" role="tablist" aria-label={t.ort}>
+      <div class="flex rounded-full bg-sand-100 p-1" role="group" aria-label={t.ort}>
         {orte.map((o, i) => (
-          <button type="button" role="tab" data-ort={o.id} aria-selected={i === 0 ? 'true' : 'false'} class="rounded-full px-4 py-2 text-sm font-semibold text-navy aria-selected:bg-navy aria-selected:text-white">{o.name}</button>
+          <button type="button" data-ort={o.id} aria-pressed={i === 0 ? 'true' : 'false'} class="rounded-full px-4 py-2 text-sm font-semibold text-navy aria-pressed:bg-navy aria-pressed:text-white">{o.name}</button>
         ))}
       </div>
     </div>
 
     <div class="grid gap-8 p-6 md:grid-cols-[auto_1fr] md:gap-12 md:p-10">
       <!-- Aktueller Wert -->
-      <div class="flex items-center gap-6">
+      <div class="flex flex-wrap items-center gap-6">
         <div data-w="kreis" class="relative grid h-36 w-36 shrink-0 place-items-center rounded-full text-white transition-colors md:h-44 md:w-44" style="background: var(--wind-leer)">
           <div class="text-center">
-            <span data-w="bft" class="block font-display text-6xl font-bold leading-none md:text-7xl">–</span>
-            <span class="text-sm font-semibold tracking-wider">Bft</span>
+            <span data-w="wert" class="block font-display text-5xl font-bold leading-none md:text-6xl">–</span>
+            <span class="text-sm font-semibold">{t.kmh}</span>
           </div>
           <svg data-w="pfeil" class="absolute -right-2 -top-2 h-12 w-12 rounded-full bg-white p-2 text-navy shadow-md transition-transform duration-700" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l5 14-5-3-5 3z" /></svg>
         </div>
-        <div>
+        <div class="min-w-0">
           <p class="text-sm font-semibold uppercase tracking-wider text-navy-950/70">{t.jetzt}</p>
           <p data-w="beschreibung" class="font-display text-2xl font-bold text-navy">{t.laedt}</p>
-          <p data-w="details" class="mt-1 text-navy-950/70"></p>
+          <p data-w="details" class="mt-1 text-navy-950/75"></p>
         </div>
       </div>
 
       <!-- Urteil + Skala -->
-      <div class="flex flex-col justify-center">
+      <div class="flex flex-col justify-center" aria-live="polite" aria-atomic="true">
         <p data-w="urteil" class="inline-flex self-start rounded-full px-4 py-1.5 text-sm font-bold text-white" style="background: var(--wind-leer)">…</p>
         <p data-w="urteilText" class="mt-3 text-lg leading-relaxed text-navy-950/85"></p>
-        <p data-w="boeen" class="mt-3 hidden rounded-2xl bg-signal/10 px-4 py-3 text-sm font-medium text-signal"></p>
+        <p data-w="boeen" class="mt-3 hidden rounded-2xl bg-signal/10 px-4 py-3 text-sm font-medium text-[#9e2f20]"></p>
 
         <div class="mt-8" aria-hidden="true">
-          <div class="relative">
-            <div class="grid grid-cols-9 gap-1">
-              {skala.map((b) => (
-                <div class="h-4 rounded-full first:rounded-l-full" style={`background:${zoneFarbe(b)}; opacity:.9`}></div>
-              ))}
+          <div class="relative h-4">
+            <div class="flex h-4 gap-1">
+              {skala.map((z) => <div class="h-4 rounded-full" style={`flex:${z.bis - z.von}; background:${z.farbe}`}></div>)}
             </div>
             <div data-w="marker" class="absolute -top-3 hidden h-10 w-1.5 -translate-x-1/2 rounded-full bg-navy shadow ring-2 ring-white transition-[left] duration-700"></div>
-            <div data-w="boemarker" class="absolute -top-2 hidden h-8 w-0 -translate-x-1/2 border-l-2 border-dashed border-navy/60 transition-[left] duration-700"></div>
+            <div data-w="boemarker" class="absolute -top-2 hidden h-8 w-0 -translate-x-1/2 border-l-2 border-dashed border-navy/70 transition-[left] duration-700"></div>
           </div>
-          <div class="mt-2 grid grid-cols-9 text-center text-xs font-semibold text-navy-950/70">
-            {skala.map((b) => <span>{b === 8 ? '8+' : b}</span>)}
+          <div class="relative mt-2 h-4 text-xs font-semibold text-navy-950/70">
+            {[0, 6, 28, 50].map((k) => <span class="absolute -translate-x-1/2" style={`left:${(k / 50) * 100}%`}>{k === 50 ? '50+' : k}</span>)}
           </div>
-          <div class="mt-1 grid grid-cols-9 text-center text-[11px] uppercase tracking-wider">
-            <span class="col-span-2" style="color: var(--wind-wenig-text)">{t.zone[0]}</span>
-            <span class="col-span-3 font-bold" style="color: var(--wind-gut-text)">{t.zone[1]} · 2–4</span>
-            <span class="col-span-4" style="color: var(--wind-viel)">{t.zone[2]}</span>
+          <div class="mt-1 flex text-[11px] uppercase tracking-wider">
+            <span style="flex:6"></span>
+            <span class="text-center font-bold" style="flex:22; color: var(--wind-gut)">{t.zone[1]}</span>
+            <span class="text-center" style="flex:22; color: var(--wind-viel)">{t.zone[2]}</span>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- 12-Stunden-Vorschau -->
-    <div class="border-t border-navy/10 px-6 py-6 md:px-10">
-      <p class="mb-4 text-sm font-semibold uppercase tracking-wider text-navy-950/70">{t.naechste}</p>
-      <div data-w="stunden" class="grid grid-cols-12 items-end gap-1.5 md:gap-3"></div>
+    <!-- Tageszeiten heute / morgen -->
+    <div class="border-t border-navy/10 px-4 py-6 md:px-10">
+      <table class="w-full table-fixed border-separate border-spacing-1 text-center md:border-spacing-2">
+        <thead>
+          <tr>
+            <th class="w-16 md:w-28"><span class="sr-only">Tag</span></th>
+            {t.tageszeiten.map((z) => <th scope="col" class="text-[10px] font-semibold uppercase tracking-wide text-navy-950/70 sm:text-xs md:text-sm">{z}</th>)}
+          </tr>
+        </thead>
+        <tbody data-w="tageszeiten">
+          {[t.heute, t.morgen].map((tag) => (
+            <tr>
+              <th scope="row" class="text-left text-sm font-semibold text-navy">{tag}</th>
+              {t.tageszeiten.map(() => <td class="rounded-xl bg-sand-100 py-3 text-sm text-navy-950/70">–</td>)}
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
 
     <!-- Regel -->
@@ -98,31 +115,46 @@ const zoneFarbe = (b: number) => (b <= 1 ? 'var(--wind-wenig)' : b <= 4 ? 'var(-
 )}
 
 <style is:global>
-  :root { --wind-wenig: #9db6cc; --wind-wenig-text: #4a6784; --wind-gut-text: #1d7650; --wind-gut: #2f9e6e; --wind-viel: #c8412f; --wind-leer: #b9c3cf; }
+  :root {
+    /* kräftige Farben (weiße Schrift, Kontrast ≥ 4,5) und helle Varianten für die Skala */
+    --wind-wenig: #4a6784; --wind-gut: #1d7650; --wind-viel: #b23a29; --wind-leer: #6b7787;
+    --wind-wenig-hell: #b7c8d8; --wind-gut-hell: #5fb98e; --wind-viel-hell: #e08a7c;
+  }
 </style>
 
 <script>
   type Ort = { id: string; name: string; lat: number; lon: number };
   type Daten = { current: { time: string; wind_speed_10m: number; wind_gusts_10m: number; wind_direction_10m: number }; hourly: { time: string[]; wind_speed_10m: number[]; wind_gusts_10m: number[] } };
 
-  const GRENZEN = [1, 6, 12, 20, 29, 39, 50, 62, 75, 89, 103, 118];
-  const bft = (kmh: number) => { const i = GRENZEN.findIndex((g) => kmh < g); return i === -1 ? 12 : i; };
-  const zone = (b: number) => (b <= 1 ? 'wenig' : b <= 4 ? 'gut' : 'viel');
-  const farbe = (b: number) => `var(--wind-${zone(b)})`;
+  const GUT_MIN = 6, GUT_MAX = 28, BOE_WARNUNG = 38, SKALA_MAX = 50;
+  const BFT_GRENZEN = [1, 6, 12, 20, 29, 39, 50, 62, 75, 89, 103, 118];
+  const bft = (kmh: number) => { const i = BFT_GRENZEN.findIndex((g) => kmh < g); return i === -1 ? 12 : i; };
+  const zone = (kmh: number) => (kmh < GUT_MIN ? 'wenig' : kmh <= GUT_MAX ? 'gut' : 'viel');
+  const farbe = (kmh: number) => `var(--wind-${zone(kmh)})`;
+  // Tageszeiten: Stunden [von, bis)
+  const TAGESZEITEN: [number, number][] = [[6, 11], [11, 14], [14, 18], [18, 22]];
   const cache = new Map<string, Promise<Daten>>();
 
-  // Bright Sky (Daten des Deutschen Wetterdienstes): aktuelle Messung der nächsten Station + stündliche Vorhersage
+  function berlinHeute() {
+    const f = (d: Date) => new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Berlin', year: 'numeric', month: '2-digit', day: '2-digit' }).format(d);
+    const heute = f(new Date());
+    const morgen = f(new Date(Date.now() + 24 * 3600e3));
+    const stunde = Number(new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Berlin', hour: '2-digit', hourCycle: 'h23' }).format(new Date()));
+    return { heute, morgen, stunde };
+  }
+
+  // Bright Sky (DWD): aktuelle Messung der nächsten Station + stündliche Werte für heute und morgen
   const erster = (...w: (number | null | undefined)[]) => w.find((x) => typeof x === 'number') ?? 0;
   async function brightSky(ort: Ort): Promise<Daten> {
     const q = `lat=${ort.lat}&lon=${ort.lon}&tz=Europe/Berlin`;
-    const von = new Date(); von.setMinutes(0, 0, 0);
-    const bis = new Date(von.getTime() + 13 * 3600e3);
+    const { heute } = berlinHeute();
+    const uebermorgen = new Date(`${heute}T12:00:00Z`); uebermorgen.setUTCDate(uebermorgen.getUTCDate() + 2);
     const [jetzt, vorhersage] = await Promise.all([
       fetch(`https://api.brightsky.dev/current_weather?${q}`).then((r) => r.json()),
-      fetch(`https://api.brightsky.dev/weather?${q}&date=${von.toISOString()}&last_date=${bis.toISOString()}`).then((r) => r.json()),
+      fetch(`https://api.brightsky.dev/weather?${q}&date=${heute}&last_date=${uebermorgen.toISOString().slice(0, 10)}`).then((r) => r.json()),
     ]);
     const w = jetzt.weather;
-    const std = vorhersage.weather as { timestamp: string; wind_speed: number; wind_gust_speed: number }[];
+    const std = vorhersage.weather as { timestamp: string; wind_speed: number | null; wind_gust_speed: number | null }[];
     return {
       current: { time: w.timestamp, wind_speed_10m: erster(w.wind_speed_10, w.wind_speed_30, w.wind_speed_60), wind_gusts_10m: erster(w.wind_gust_speed_10, w.wind_gust_speed_30, w.wind_gust_speed_60), wind_direction_10m: erster(w.wind_direction_10, w.wind_direction_30, w.wind_direction_60) },
       hourly: { time: std.map((x) => x.timestamp), wind_speed_10m: std.map((x) => x.wind_speed ?? 0), wind_gusts_10m: std.map((x) => x.wind_gust_speed ?? 0) },
@@ -139,46 +171,74 @@ const zoneFarbe = (b: number) => (b <= 1 ? 'var(--wind-wenig)' : b <= 4 ? 'var(-
     return cache.get(key)!;
   }
 
+  /** Mittelwert Wind und max. Böe je Tageszeit, Datum im Format YYYY-MM-DD */
+  function tageszeit(d: Daten, datum: string, [von, bis]: [number, number]) {
+    const idx = d.hourly.time.map((zeit, i) => ({ zeit, i })).filter(({ zeit }) => zeit.slice(0, 10) === datum && +zeit.slice(11, 13) >= von && +zeit.slice(11, 13) < bis).map(({ i }) => i);
+    if (!idx.length) return null;
+    const wind = idx.reduce((s, i) => s + d.hourly.wind_speed_10m[i], 0) / idx.length;
+    const boe = Math.max(...idx.map((i) => d.hourly.wind_gusts_10m[i]));
+    return { wind: Math.round(wind), boe: Math.round(boe) };
+  }
+
   for (const el of document.querySelectorAll<HTMLElement>('.drachenwetter')) {
-    const { orte, proxy, t, lang } = JSON.parse(el.dataset.config!) as { orte: Ort[]; proxy: string; t: any; lang: string };
+    const { orte, proxy, t } = JSON.parse(el.dataset.config!) as { orte: Ort[]; proxy: string; t: any };
     const $ = (k: string) => el.querySelector<HTMLElement>(`[data-w="${k}"]`);
     const kompakt = el.dataset.variante === 'kompakt';
 
     async function zeigen(ort: Ort) {
       try {
         const d = await laden(ort, proxy);
-        const b = bft(d.current.wind_speed_10m);
-        const bb = bft(d.current.wind_gusts_10m);
-        const z = zone(b);
+        const kmh = Math.round(d.current.wind_speed_10m);
+        const boe = Math.round(d.current.wind_gusts_10m);
+        const z = zone(kmh);
         const urteil = { wenig: t.zuWenig, gut: t.gut, viel: t.zuViel }[z];
-        $('bft')!.textContent = String(b);
-        if (kompakt) { $('urteil')!.textContent = `${urteil}`; $('bft')!.style.background = farbe(b); return; }
+        $('wert')!.textContent = kompakt ? `${kmh} ${t.kmh}` : String(kmh);
+        if (kompakt) { $('urteil')!.textContent = urteil; $('wert')!.style.background = farbe(kmh); return; }
 
+        const b = bft(kmh);
         const richtung = t.richtungen[Math.round(d.current.wind_direction_10m / 45) % 8];
-        $('kreis')!.style.background = farbe(b);
+        $('kreis')!.style.background = farbe(kmh);
         $('pfeil')!.style.transform = `rotate(${d.current.wind_direction_10m + 180}deg)`;
-        $('beschreibung')!.textContent = t.beaufort[b].charAt(0).toUpperCase() + t.beaufort[b].slice(1);
-        $('details')!.textContent = `${Math.round(d.current.wind_speed_10m)} ${t.kmh} ${t.aus} ${richtung} · ${t.boeen} ${Math.round(d.current.wind_gusts_10m)} ${t.kmh}`;
-        const u = $('urteil')!; u.textContent = urteil; u.style.background = farbe(b);
+        $('beschreibung')!.textContent = `${t.beaufort[b].charAt(0).toUpperCase()}${t.beaufort[b].slice(1)} · ${b} Bft`;
+        $('details')!.textContent = `${t.aus} ${richtung} · ${t.boeen} ${boe} ${t.kmh}`;
+        const u = $('urteil')!; u.textContent = `${urteil}: ${kmh} ${t.kmh}`; u.style.background = farbe(kmh);
         $('urteilText')!.textContent = { wenig: t.zuWenigText, gut: t.gutText, viel: t.zuVielText }[z];
-        const boe = $('boeen')!;
-        boe.classList.toggle('hidden', !(z !== 'viel' && bb >= 5));
-        boe.textContent = t.boeWarnung.replace('{bft}', String(bb));
-        const pos = (x: number) => `${((Math.min(x, 8) + 0.5) / 9) * 100}%`;
-        const m = $('marker')!; m.classList.remove('hidden'); m.style.left = pos(b);
-        const bm = $('boemarker')!; bm.classList.toggle('hidden', bb === b); bm.style.left = pos(bb);
+        const warnung = $('boeen')!;
+        warnung.classList.toggle('hidden', !(z !== 'viel' && boe > BOE_WARNUNG));
+        warnung.textContent = t.boeWarnung.replace('{kmh}', String(boe));
+        const pos = (x: number) => `${(Math.min(x, SKALA_MAX) / SKALA_MAX) * 100}%`;
+        const m = $('marker')!; m.classList.remove('hidden'); m.style.left = pos(kmh);
+        const bm = $('boemarker')!; bm.classList.toggle('hidden', boe <= kmh); bm.style.left = pos(boe);
 
-        // Stundenbalken
-        const jetzt = d.current.time.slice(0, 13);
-        const start = Math.max(0, d.hourly.time.findIndex((x) => x.slice(0, 13) >= jetzt));
-        const stunden = $('stunden')!; stunden.replaceChildren();
-        d.hourly.time.slice(start, start + 12).forEach((zeit, i) => {
-          const hb = bft(d.hourly.wind_speed_10m[start + i]);
-          const col = document.createElement('div');
-          col.className = 'flex h-full flex-col items-center justify-end gap-1';
-          col.title = `${zeit.slice(11, 16)}: ${hb} Bft`;
-          col.innerHTML = `<span class="text-xs font-bold text-navy">${hb}</span><span class="flex h-20 w-full items-end"><span class="block w-full rounded-t-lg rounded-b-sm" style="height:${Math.max(6, (Math.min(hb, 8) / 8) * 100)}%;background:${farbe(hb)}"></span></span><span class="text-[11px] text-navy-950/70">${zeit.slice(11, 13)}</span>`;
-          stunden.append(col);
+        // Tageszeiten heute + morgen
+        const { heute, morgen, stunde } = berlinHeute();
+        const zeilen = $('tageszeiten')!.querySelectorAll('tr');
+        [heute, morgen].forEach((datum, r) => {
+          zeilen[r].querySelectorAll('td').forEach((td, k) => {
+            const [von, bis] = TAGESZEITEN[k];
+            td.replaceChildren();
+            td.removeAttribute('style');
+            if (datum === heute && stunde >= bis) {
+              td.className = 'rounded-xl bg-sand-100 py-3 text-xs text-navy-950/70';
+              td.textContent = t.vorbei;
+              return;
+            }
+            const w = tageszeit(d, datum, [von, bis]);
+            if (!w) { td.textContent = '–'; return; }
+            td.className = 'rounded-xl py-2.5 text-white';
+            td.style.background = farbe(w.wind);
+            const wert = document.createElement('span');
+            wert.className = 'block font-display text-lg font-bold leading-tight md:text-xl';
+            wert.textContent = String(w.wind);
+            const einheit = document.createElement('span');
+            einheit.className = 'block text-[11px] leading-tight';
+            einheit.textContent = t.kmh;
+            const sr = document.createElement('span');
+            sr.className = 'sr-only';
+            sr.textContent = `, ${t.boeen} ${w.boe} ${t.kmh}`;
+            td.title = `${t.boeen} ${w.boe} ${t.kmh}`;
+            td.append(wert, einheit, sr);
+          });
         });
       } catch {
         if (kompakt) { $('urteil')!.textContent = t.titel; return; }
@@ -187,10 +247,9 @@ const zoneFarbe = (b: number) => (b <= 1 ? 'var(--wind-wenig)' : b <= 4 ? 'var(-
     }
 
     el.querySelectorAll<HTMLButtonElement>('[data-ort]').forEach((btn) => btn.addEventListener('click', () => {
-      el.querySelectorAll('[data-ort]').forEach((b) => b.setAttribute('aria-selected', String(b === btn)));
+      el.querySelectorAll('[data-ort]').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
       zeigen(orte.find((o) => o.id === btn.dataset.ort)!);
     }));
     zeigen(orte[0]);
-    void lang;
   }
 </script>

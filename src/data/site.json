@@ -6,6 +6,8 @@
   "youtube": "https://www.youtube.com/channel/UCsPe_VbbnuNkM_7EbrzW4Ng",
   "saison": {
     "winterpause": false,
+    "winterpauseVon": "",
+    "winterpauseBis": "2027-02-28",
     "hinweis": ""
   },
   "ausnahmen": []

@@ -6,7 +6,7 @@ import jobs from '../data/jobs.json';
 
 const betreff = encodeURIComponent('Bewerbung Die Schatullen');
 ---
-<Base title="Jobs" description="Aushilfen, Semesterferien-Jobs und Schülerjobs in Hooksiel und Schillig: Werdet Teil der Schatullen.">
+<Base title="Jobs & Aushilfen in Hooksiel und Schillig" description="Aushilfen, Semesterferien-Jobs und Schülerjobs in Hooksiel und Schillig: Werdet Teil der Schatullen.">
   <PageHero eyebrow="Jobs" titel={jobs.aktiv ? jobs.titel : 'Werde Teil der Schatullen'} foto={bild('nadja-nicky')} alt="Nadja und Nicky in der Schilligen Schatulle"
     intro={jobs.aktiv ? jobs.text : 'Gerade suchen wir niemanden, aber Initiativbewerbungen freuen uns immer.'}>
     {jobs.aktiv && (

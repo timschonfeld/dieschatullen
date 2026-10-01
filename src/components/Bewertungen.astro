@@ -7,9 +7,9 @@ import type { Lang } from '../i18n/ui';
 interface Props { lang?: Lang }
 const { lang = 'de' } = Astro.props;
 const txt = {
-  de: { eyebrow: 'Das sagen unsere Gäste', titel: 'Bewertungen', bei: 'bei Google', rez: 'Rezensionen', themen: 'Häufig erwähnt', profil: 'Auf Google ansehen', stand: 'Stand' },
-  en: { eyebrow: 'What our guests say', titel: 'Reviews', bei: 'on Google', rez: 'reviews', themen: 'Often mentioned', profil: 'View on Google', stand: 'as of' },
-  nl: { eyebrow: 'Wat onze gasten zeggen', titel: 'Beoordelingen', bei: 'op Google', rez: 'reviews', themen: 'Vaak genoemd', profil: 'Bekijk op Google', stand: 'stand' },
+  de: { eyebrow: 'Das sagen unsere Gäste', titel: 'Bewertungen', bei: 'bei Google', rez: 'Rezensionen', themen: 'Häufig erwähnt', profil: 'Auf Google ansehen', stand: 'Stand', hinweis: 'Die Sterne, Zahlen und Themen stammen aus unseren Google-Unternehmensprofilen. Wir prüfen nicht, ob die Bewertungen von Personen stammen, die bei uns eingekauft haben.' },
+  en: { eyebrow: 'What our guests say', titel: 'Reviews', bei: 'on Google', rez: 'reviews', themen: 'Often mentioned', profil: 'View on Google', stand: 'as of', hinweis: 'Stars, numbers and topics are taken from our Google Business Profiles. We do not check whether reviews come from people who actually shopped with us.' },
+  nl: { eyebrow: 'Wat onze gasten zeggen', titel: 'Beoordelingen', bei: 'op Google', rez: 'reviews', themen: 'Vaak genoemd', profil: 'Bekijk op Google', stand: 'stand', hinweis: 'Sterren, aantallen en onderwerpen komen uit onze Google-bedrijfsprofielen. Wij controleren niet of de beoordelingen afkomstig zijn van mensen die bij ons hebben gekocht.' },
 }[lang];
 const profile = bewertungen.google.map((g) => ({ ...g, laden: laeden.find((l) => l.id === g.laden)! }));
 const fuellung = (sterne: number, i: number) => Math.max(0, Math.min(1, sterne - i)) * 100;
@@ -56,6 +56,6 @@ const zahl = (n: number) => n.toLocaleString(lang === 'en' ? 'en-GB' : lang === 
         <figcaption class="mt-5 text-white/70">{z.name}</figcaption>
       </figure>
     ))}
-    <p class="mt-4 text-xs text-navy-950/70">Google, {txt.stand} {bewertungen.stand}</p>
+    <p class="mt-4 max-w-3xl text-xs leading-relaxed text-navy-950/75">{txt.hinweis} Google, {txt.stand} {bewertungen.stand}.</p>
   </div>
 </section>

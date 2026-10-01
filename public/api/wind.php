@@ -1,5 +1,6 @@
 <?php
 // Wind-Proxy für die Drachenwetter-Anzeige: holt DWD-Daten (über Bright Sky) serverseitig und cached sie 10 Minuten.
+// Es werden nur Zahlen weitergegeben (keine ungeprüften Texte aus der Fremd-API).
 // So baut der Browser der Besucher keine Verbindung zu Dritten auf (kein Cookie-Banner nötig).
 // Antwort im selben Format wie im Browser-Skript: { current: {...}, hourly: {...} }
 header('Content-Type: application/json; charset=utf-8');
@@ -12,7 +13,13 @@ $orte = [
 $ort = $_GET['ort'] ?? 'schillig';
 if (!isset($orte[$ort])) { http_response_code(400); echo '{"error":"unbekannter Ort"}'; exit; }
 
-$cacheDatei = sys_get_temp_dir() . "/schatullen-wind-$ort.json";
+// Eigener Cache-Ordner (per .htaccess gesperrt) statt des geteilten Temp-Verzeichnisses des Webhostings
+$cacheOrdner = __DIR__ . '/.cache';
+if (!is_dir($cacheOrdner)) {
+  @mkdir($cacheOrdner, 0700, true);
+  @file_put_contents("$cacheOrdner/.htaccess", "Require all denied\n");
+}
+$cacheDatei = "$cacheOrdner/wind-$ort.json";
 if (is_file($cacheDatei) && time() - filemtime($cacheDatei) < 600) { readfile($cacheDatei); exit; }
 
 function holen(string $url) {
@@ -23,8 +30,10 @@ function erster(...$werte) { foreach ($werte as $w) { if (is_numeric($w)) return
 
 [$lat, $lon] = $orte[$ort];
 $q = "lat=$lat&lon=$lon&tz=Europe/Berlin";
-$von = gmdate('Y-m-d\TH:00:00\Z');
-$bis = gmdate('Y-m-d\TH:00:00\Z', time() + 13 * 3600);
+// Stündliche Werte für heute und morgen (deutsche Zeit) → Tageszeiten in der Anzeige
+$berlin = new DateTimeZone('Europe/Berlin');
+$von = (new DateTime('today', $berlin))->format('Y-m-d');
+$bis = (new DateTime('today +2 days', $berlin))->format('Y-m-d');
 $jetzt = holen("https://api.brightsky.dev/current_weather?$q");
 $vorhersage = holen("https://api.brightsky.dev/weather?$q&date=$von&last_date=$bis");
 
@@ -36,13 +45,13 @@ if (!$jetzt || !$vorhersage) {
 $w = $jetzt['weather'];
 $daten = [
   'current' => [
-    'time' => $w['timestamp'],
+    'time' => preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/', $w['timestamp'] ?? '') ? $w['timestamp'] : '',
     'wind_speed_10m' => erster($w['wind_speed_10'] ?? null, $w['wind_speed_30'] ?? null, $w['wind_speed_60'] ?? null),
     'wind_gusts_10m' => erster($w['wind_gust_speed_10'] ?? null, $w['wind_gust_speed_30'] ?? null, $w['wind_gust_speed_60'] ?? null),
     'wind_direction_10m' => erster($w['wind_direction_10'] ?? null, $w['wind_direction_30'] ?? null, $w['wind_direction_60'] ?? null),
   ],
   'hourly' => [
-    'time' => array_column($vorhersage['weather'], 'timestamp'),
+    'time' => array_map(fn($x) => preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/', $x['timestamp'] ?? '') ? $x['timestamp'] : '', $vorhersage['weather']),
     'wind_speed_10m' => array_map(fn($x) => (float) ($x['wind_speed'] ?? 0), $vorhersage['weather']),
     'wind_gusts_10m' => array_map(fn($x) => (float) ($x['wind_gust_speed'] ?? 0), $vorhersage['weather']),
   ],

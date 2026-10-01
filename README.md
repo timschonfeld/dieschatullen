@@ -36,3 +36,8 @@ Bilder liegen in `src/assets/img/` und werden über den Dateinamen ohne Endung a
 - **Vorschau:** Push auf `dev` → GitHub Pages (`https://<user>.github.io/dieschatullen/`, `noindex`).
 - **Live:** Push/Merge auf `main` → Workflow `deploy-hetzner.yml` spiegelt `dist/` per SFTP auf Hetzner. Nötig sind die Secrets `HETZNER_HOST`, `HETZNER_USER`, `HETZNER_PASSWORD` und `HETZNER_PATH` (eigener Ordner!). Ohne Secrets wird der Schritt übersprungen.
 - `.htaccess` enthält Weiterleitungen und Caching, `public/api/wind.php` holt die Winddaten (DWD über Bright Sky) serverseitig.
+
+## Rechte
+
+Alle Rechte vorbehalten. Texte, Fotos und Logo © Die Schatullen (Nicole Schwarting), Code © timschonfeld (GitHub).
+Fremdinhalte: Schriften unter SIL Open Font License, Kartenausschnitte © OpenStreetMap-Mitwirkende (ODbL), Wetterdaten © Deutscher Wetterdienst (über Bright Sky), Marken-Logos mit Erlaubnis der Hersteller.

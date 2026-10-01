@@ -61,3 +61,14 @@ const pfad = Astro.url.pathname;
     </details>
   </div>
 </header>
+
+<script>
+  // Mobile-Menü mit Escape schließen und Fokus zurück auf den Knopf
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    for (const d of document.querySelectorAll<HTMLDetailsElement>('header details[open]')) {
+      d.open = false;
+      d.querySelector('summary')?.focus();
+    }
+  });
+</script>

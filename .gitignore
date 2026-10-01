@@ -4,3 +4,4 @@ dist/
 _wp-export/
 .DS_Store
 .env
+dist-live/
