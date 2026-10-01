@@ -33,9 +33,17 @@ Bilder liegen in `src/assets/img/` und werden über den Dateinamen ohne Endung a
 
 ## Veröffentlichen
 
-- **Vorschau:** Push auf `dev` → GitHub Pages (`https://<user>.github.io/dieschatullen/`, `noindex`).
-- **Live:** Push/Merge auf `main` → Workflow `deploy-hetzner.yml` spiegelt `dist/` per SFTP auf Hetzner. Nötig sind die Secrets `HETZNER_HOST`, `HETZNER_USER`, `HETZNER_PASSWORD` und `HETZNER_PATH` (eigener Ordner!). Ohne Secrets wird der Schritt übersprungen.
-- `.htaccess` enthält Weiterleitungen und Caching, `public/api/wind.php` holt die Winddaten (DWD über Bright Sky) serverseitig.
+Workflow `.github/workflows/deploy.yml`, beides auf Nickys Hetzner-Webhosting:
+
+| Zweig | Ziel | Hinweis |
+|---|---|---|
+| `dev` | Staging https://neu.dieschatullen.de | `noindex`, zum Prüfen und Zeigen |
+| `main` | Live https://dieschatullen.de | nur nach Freigabe (dev → main) |
+
+Läuft bei jedem Push, täglich um 05:15 Uhr (Winterpause, News-Ablauf) und von Hand. Jedes Ziel baut immer seinen eigenen Zweig.
+Benötigte Secrets: `HETZNER_HOST`, `HETZNER_USER`, `HETZNER_PASSWORD`, `HETZNER_KNOWN_HOSTS` (Server-Schlüssel, `ssh-keyscan -t ed25519 <host>`), `HETZNER_PATH_STAGING`, `HETZNER_PATH_LIVE` (eigene Ordner, nie der WordPress-Ordner). Fehlt etwas, wird übersprungen.
+
+`npm run build` erzeugt immer die Live-Variante: Das Drachenwetter holt die Daten über `public/api/wind.php` (PHP mit cURL), passend zur CSP in `.htaccess`. Nur `npm run dev` (oder `PUBLIC_WIND_DIREKT=1`) fragt Bright Sky direkt aus dem Browser.
 
 ## Rechte
 

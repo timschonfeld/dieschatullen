@@ -3,7 +3,7 @@ import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 
-// Für die Vorschau auf GitHub Pages setzt der Workflow SITE_URL und BASE_PATH (z. B. /dieschatullen).
+// SITE_URL setzt der Deploy-Workflow (Staging: https://neu.dieschatullen.de). BASE_PATH nur für Unterordner-Hosting.
 export default defineConfig({
   site: process.env.SITE_URL ?? 'https://dieschatullen.de',
   base: process.env.BASE_PATH ?? '/',

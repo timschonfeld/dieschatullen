@@ -1,12 +1,12 @@
 ---
-/** Großes, blasses Steuerrad aus dem Logo als Hintergrund-Element (statisch; `drehen` nur bewusst einsetzen, WCAG 2.2.2). */
+/** Großes, blasses Steuerrad aus dem Logo als Hintergrund-Element (statisch). */
 import { Image } from 'astro:assets';
 import navy from '../assets/img/logo-navy.png';
 import sand from '../assets/img/logo-sand.png';
 
-interface Props { class?: string; farbe?: 'navy' | 'sand'; drehen?: boolean }
-const { class: cls = '', farbe = 'navy', drehen = false } = Astro.props;
+interface Props { class?: string; farbe?: 'navy' | 'sand' }
+const { class: cls = '', farbe = 'navy' } = Astro.props;
 ---
 <div class={`pointer-events-none absolute select-none ${cls}`} aria-hidden="true">
-  <Image src={farbe === 'navy' ? navy : sand} alt="" width={600} height={600} class={`h-full w-full ${drehen ? 'steuerrad-drehen' : ''}`} />
+  <Image src={farbe === 'navy' ? navy : sand} alt="" width={600} height={600} class="h-full w-full" />
 </div>

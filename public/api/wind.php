@@ -22,9 +22,21 @@ if (!is_dir($cacheOrdner)) {
 $cacheDatei = "$cacheOrdner/wind-$ort.json";
 if (is_file($cacheDatei) && time() - filemtime($cacheDatei) < 600) { readfile($cacheDatei); exit; }
 
+// Abruf über cURL, sonst über file_get_contents (je nachdem, was das Webhosting erlaubt)
 function holen(string $url) {
-  $antwort = @file_get_contents($url, false, stream_context_create(['http' => ['timeout' => 6, 'header' => "User-Agent: dieschatullen.de\r\n"]]));
-  return $antwort === false ? null : json_decode($antwort, true);
+  $antwort = false;
+  if (function_exists('curl_init')) {
+    $c = curl_init($url);
+    curl_setopt_array($c, [CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 6, CURLOPT_USERAGENT => 'dieschatullen.de', CURLOPT_FOLLOWLOCATION => false]);
+    $antwort = curl_exec($c);
+    if (curl_getinfo($c, CURLINFO_HTTP_CODE) !== 200) $antwort = false;
+    curl_close($c);
+  } elseif (filter_var(ini_get('allow_url_fopen'), FILTER_VALIDATE_BOOLEAN)) {
+    $antwort = @file_get_contents($url, false, stream_context_create(['http' => ['timeout' => 6, 'header' => "User-Agent: dieschatullen.de\r\n"]]));
+  }
+  if ($antwort === false) return null;
+  $daten = json_decode($antwort, true);
+  return is_array($daten) && isset($daten['weather']) ? $daten : null;
 }
 function erster(...$werte) { foreach ($werte as $w) { if (is_numeric($w)) return (float) $w; } return 0.0; }
 

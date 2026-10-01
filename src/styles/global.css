@@ -51,7 +51,3 @@
 @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 @utility marquee { animation: marquee 60s linear infinite; }
 @media (prefers-reduced-motion: reduce) { .marquee { animation: none; } }
-
-@keyframes steuerrad { to { transform: rotate(360deg); } }
-.steuerrad-drehen { animation: steuerrad 240s linear infinite; }
-@media (prefers-reduced-motion: reduce) { .steuerrad-drehen { animation: none; } }

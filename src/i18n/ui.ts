@@ -1,3 +1,5 @@
+import { istFortlaufend } from '../lib/zeit';
+
 /** Feste Oberflächen-Texte in drei Sprachen. Inhalte (Texte der EN/NL-Seite) stehen in src/data/uebersetzungen.json. */
 export type Lang = 'de' | 'en' | 'nl';
 export const sprachen: { code: Lang; name: string; pfad: string }[] = [
@@ -14,7 +16,7 @@ const tage = {
 
 export const ui = {
   de: {
-    tage: tage.de, bis: 'bis', und: 'und', uhr: ' Uhr',
+    tage: tage.de, bis: 'bis', und: 'und',
     offen: 'Jetzt geöffnet bis {bis} Uhr', zuHeute: 'Heute geöffnet von {von} bis {bis} Uhr',
     zuMorgen: 'Morgen wieder geöffnet von {von} bis {bis} Uhr', zuTag: 'Am {tag} wieder geöffnet von {von} bis {bis} Uhr', winterpause: 'Winterpause',
     route: 'Route planen', anrufen: 'Anrufen', oeffnungszeiten: 'Öffnungszeiten', adresse: 'Adresse', seit: 'seit',
@@ -51,7 +53,7 @@ export const ui = {
     },
   },
   en: {
-    tage: tage.en, bis: 'to', und: '&', uhr: '',
+    tage: tage.en, bis: 'to', und: '&',
     offen: 'Open now until {bis}', zuHeute: 'Open today from {von} to {bis}',
     zuMorgen: 'Open again tomorrow from {von} to {bis}', zuTag: 'Open again on {tag} from {von} to {bis}', winterpause: 'Winter break',
     route: 'Directions', anrufen: 'Call', oeffnungszeiten: 'Opening hours', adresse: 'Address', seit: 'since',
@@ -88,7 +90,7 @@ export const ui = {
     },
   },
   nl: {
-    tage: tage.nl, bis: 't/m', und: 'en', uhr: ' uur',
+    tage: tage.nl, bis: 't/m', und: 'en',
     offen: 'Nu geopend tot {bis} uur', zuHeute: 'Vandaag geopend van {von} tot {bis} uur',
     zuMorgen: 'Morgen weer geopend van {von} tot {bis} uur', zuTag: 'Op {tag} weer geopend van {von} tot {bis} uur', winterpause: 'Winterstop',
     route: 'Route plannen', anrufen: 'Bellen', oeffnungszeiten: 'Openingstijden', adresse: 'Adres', seit: 'sinds',
@@ -129,11 +131,10 @@ export const ui = {
 /** "Montag bis Freitag" / "Saturday & Sunday" aus den Wochentag-Nummern (0 = Sonntag) */
 export function tageLabel(tageNr: number[], lang: Lang): string {
   const t = ui[lang];
-  const name = (n: number) => (lang === 'nl' ? t.tage[n] : t.tage[n]);
+  const name = (n: number) => t.tage[n];
   if (tageNr.length === 1) return name(tageNr[0]);
-  const fortlaufend = tageNr.every((n, i) => i === 0 || n === (tageNr[i - 1] + 1) % 7);
-  const erster = name(tageNr[0]);
+    const erster = name(tageNr[0]);
   const letzter = name(tageNr[tageNr.length - 1]);
-  const text = fortlaufend && tageNr.length > 2 ? `${erster} ${t.bis} ${letzter}` : tageNr.map(name).join(` ${t.und} `);
+  const text = istFortlaufend(tageNr) ? `${erster} ${t.bis} ${letzter}` : tageNr.map(name).join(` ${t.und} `);
   return lang === 'nl' ? text.charAt(0).toUpperCase() + text.slice(1) : text;
 }

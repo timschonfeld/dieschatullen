@@ -1,0 +1,102 @@
+# Deploy auf Hetzner Webhosting (Vertrag Nicky)
+#   Zweig dev  → Staging  https://neu.dieschatullen.de (noindex)
+#   Zweig main → Live     https://dieschatullen.de
+# Jedes Ziel baut immer seinen eigenen Zweig – auch beim täglichen Neubau (Winterpause, News-Ablauf).
+#
+# Benötigte Repository-Secrets:
+#   HETZNER_HOST, HETZNER_USER, HETZNER_PASSWORD   SFTP-Zugang aus konsoleH
+#   HETZNER_KNOWN_HOSTS                            Server-Schlüssel, z. B. Ausgabe von: ssh-keyscan -t ed25519 <host>
+#   HETZNER_PATH_STAGING, HETZNER_PATH_LIVE        eigene Ordner, NIE der WordPress-Ordner (Upload löscht dort Fremdes)
+name: Deploy (Hetzner)
+
+on:
+  push:
+    branches: [dev, main]
+  schedule:
+    - cron: '15 3 * * *' # 05:15 Uhr deutscher Sommerzeit
+  workflow_dispatch:
+    inputs:
+      ziel:
+        description: Welches Ziel?
+        type: choice
+        options: [staging, live]
+        default: staging
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - ziel: staging
+            zweig: dev
+            site: https://neu.dieschatullen.de
+            noindex: '1'
+          - ziel: live
+            zweig: main
+            site: https://dieschatullen.de
+            noindex: ''
+    concurrency:
+      group: deploy-${{ matrix.ziel }}
+      cancel-in-progress: false
+    steps:
+      - name: Soll ${{ matrix.ziel }} laufen?
+        id: plan
+        env:
+          EVENT: ${{ github.event_name }}
+          REF: ${{ github.ref_name }}
+          WAHL: ${{ github.event.inputs.ziel }}
+          HOST: ${{ secrets.HETZNER_HOST }}
+          KNOWN: ${{ secrets.HETZNER_KNOWN_HOSTS }}
+          PFAD: ${{ matrix.ziel == 'live' && secrets.HETZNER_PATH_LIVE || secrets.HETZNER_PATH_STAGING }}
+        run: |
+          ok=false
+          case "$EVENT" in
+            push) [ "$REF" = "${{ matrix.zweig }}" ] && ok=true ;;
+            schedule) ok=true ;;
+            workflow_dispatch) [ "$WAHL" = "${{ matrix.ziel }}" ] && ok=true ;;
+          esac
+          if [ "$ok" = true ] && { [ -z "$HOST" ] || [ -z "$KNOWN" ] || [ -z "$PFAD" ]; }; then
+            echo "::notice::Hetzner-Secrets für ${{ matrix.ziel }} fehlen, Deploy übersprungen."; ok=false
+          fi
+          if [ "$ok" = true ] && ! git ls-remote --exit-code "https://github.com/${{ github.repository }}" "refs/heads/${{ matrix.zweig }}" >/dev/null; then
+            echo "::notice::Zweig ${{ matrix.zweig }} existiert noch nicht, ${{ matrix.ziel }} übersprungen."; ok=false
+          fi
+          echo "ok=$ok" >> "$GITHUB_OUTPUT"
+
+      - if: steps.plan.outputs.ok == 'true'
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ matrix.zweig }}
+          persist-credentials: false
+
+      - if: steps.plan.outputs.ok == 'true'
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          cache: npm
+
+      - if: steps.plan.outputs.ok == 'true'
+        run: npm ci && npm run build
+        env:
+          SITE_URL: ${{ matrix.site }}
+          PUBLIC_NOINDEX: ${{ matrix.noindex }}
+
+      - if: steps.plan.outputs.ok == 'true'
+        name: Upload per SFTP (Server-Schlüssel wird geprüft)
+        env:
+          HOST: ${{ secrets.HETZNER_HOST }}
+          USER: ${{ secrets.HETZNER_USER }}
+          PASS: ${{ secrets.HETZNER_PASSWORD }}
+          KNOWN: ${{ secrets.HETZNER_KNOWN_HOSTS }}
+          ZIEL: ${{ matrix.ziel == 'live' && secrets.HETZNER_PATH_LIVE || secrets.HETZNER_PATH_STAGING }}
+        run: |
+          sudo apt-get install -y lftp >/dev/null
+          mkdir -p ~/.ssh && printf '%s\n' "$KNOWN" > ~/.ssh/known_hosts && chmod 600 ~/.ssh/known_hosts
+          lftp -e "set sftp:connect-program 'ssh -a -x -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$HOME/.ssh/known_hosts'; \
+            mirror --reverse --delete --verbose --exclude-glob .git* --exclude api/.cache/ dist/ $ZIEL; bye" \
+            -u "$USER","$PASS" "sftp://$HOST"

@@ -1,10 +1,11 @@
 import laeden from '../data/laeden.json';
 import site from '../data/site.json';
+import { heuteBerlin } from './zeit';
 
 export type Laden = (typeof laeden)[number];
 
 /** Winterpause: manuell (winterpause: true) oder automatisch im Zeitraum winterpauseVon–winterpauseBis (YYYY-MM-DD). */
-export function istWinterpause(datum = new Date().toISOString().slice(0, 10)) {
+export function istWinterpause(datum = heuteBerlin()) {
   const { winterpause, winterpauseVon: von, winterpauseBis: bis } = site.saison;
   return winterpause || (!!von && !!bis && datum >= von && datum <= bis);
 }

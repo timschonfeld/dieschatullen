@@ -2,8 +2,9 @@
 /**
  * Drachenwetter: aktueller Wind in km/h mit Ampel (gut bis 28 km/h = Windstärke 4), Böen, Richtung
  * und Vorhersage nach Tageszeiten für heute und morgen.
- * Datenquelle: Deutscher Wetterdienst über Bright Sky (frei nutzbar, auch kommerziell). Auf Hetzner
- * (PUBLIC_WIND_PROXY gesetzt) kommen die Daten über /api/wind.php, der Browser kontaktiert dann keine Dritten.
+ * Datenquelle: Deutscher Wetterdienst über Bright Sky (frei nutzbar, auch kommerziell). Standard ist der
+ * Server-Proxy /api/wind.php (passt zur CSP, Browser kontaktiert keine Dritten). Nur beim lokalen Entwickeln
+ * (`npm run dev`) oder mit PUBLIC_WIND_DIREKT=1 fragt der Browser Bright Sky direkt.
  */
 import { laeden } from '../lib/laden';
 import { u } from '../lib/url';
@@ -13,7 +14,8 @@ interface Props { lang?: Lang; variante?: 'gross' | 'kompakt'; link?: string }
 const { lang = 'de', variante = 'gross', link } = Astro.props;
 const t = ui[lang].wind;
 const orte = [...laeden].reverse().map((l) => ({ id: l.id, name: l.ort, lat: l.lat, lon: l.lon })); // Schillig (Strand) zuerst
-const proxy = import.meta.env.PUBLIC_WIND_PROXY ? u('/api/wind.php') : '';
+const direkt = import.meta.env.DEV || !!import.meta.env.PUBLIC_WIND_DIREKT;
+const proxy = direkt ? '' : u('/api/wind.php');
 const config = JSON.stringify({ orte, proxy, t });
 // Skala 0–50 km/h: Zonen zu wenig (<6), gut (6–28), zu viel (>28)
 const skala = [
@@ -122,6 +124,7 @@ const skala = [
 </style>
 
 <script>
+  import { heuteBerlin } from '../lib/zeit';
   type Ort = { id: string; name: string; lat: number; lon: number };
   type Daten = { current: { time: string; wind_speed_10m: number; wind_gusts_10m: number; wind_direction_10m: number }; hourly: { time: string[]; wind_speed_10m: number[]; wind_gusts_10m: number[] } };
 
@@ -135,9 +138,8 @@ const skala = [
   const cache = new Map<string, Promise<Daten>>();
 
   function berlinHeute() {
-    const f = (d: Date) => new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Berlin', year: 'numeric', month: '2-digit', day: '2-digit' }).format(d);
-    const heute = f(new Date());
-    const morgen = f(new Date(Date.now() + 24 * 3600e3));
+    const heute = heuteBerlin();
+    const morgen = heuteBerlin(new Date(Date.now() + 24 * 3600e3));
     const stunde = Number(new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Berlin', hour: '2-digit', hourCycle: 'h23' }).format(new Date()));
     return { heute, morgen, stunde };
   }
