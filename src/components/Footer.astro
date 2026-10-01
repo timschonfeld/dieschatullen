@@ -47,7 +47,7 @@ const kontakt = { de: 'Kontakt', en: 'Contact', nl: 'Contact' }[lang];
         <svg class="mr-1 h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18" /></svg>
         {sprachen.map((s) => (
           <a href={u(s.pfad)} hreflang={s.code} lang={s.code} aria-current={s.code === lang ? 'true' : undefined}
-            class="rounded-full px-3 py-1.5 text-sm text-sand-100/80 no-underline hover:bg-white/10 aria-[current=true]:bg-sand aria-[current=true]:font-semibold aria-[current=true]:text-navy">{s.name}</a>
+            class="rounded-[3px] px-3 py-1.5 text-sm text-sand-100/80 no-underline hover:text-sand aria-[current=true]:bg-sand aria-[current=true]:font-semibold aria-[current=true]:text-navy">{s.name}</a>
         ))}
       </nav>
       <p>© {new Date().getFullYear()} {site.name} · Hooksiel & Schillig · Wangerland</p>

@@ -24,7 +24,7 @@ const links = lang === 'de' ? nav : navFremd[lang];
 const start = lang === 'de' ? '/' : `/${lang}/`;
 const pfad = Astro.url.pathname;
 ---
-<header class="sticky top-0 z-40 border-b border-navy/10 bg-sand-50/90 backdrop-blur">
+<header class="sticky top-0 z-40 border-b-2 border-navy bg-sand-50">
   <div class="container-page flex h-16 items-center justify-between gap-4">
     <a href={u(start)} class="flex items-center gap-2.5 no-underline" aria-label="Die Schatullen, zur Startseite">
       <Image src={logo} alt="" width={44} height={44} densities={[1, 2, 3]} class="h-11 w-11" loading="eager" />
@@ -38,7 +38,7 @@ const pfad = Astro.url.pathname;
             <a
               href={u(n.href)}
               aria-current={lang === 'de' && pfad.startsWith(u(n.href)) ? 'page' : undefined}
-              class="rounded-full px-3 py-2 text-navy no-underline hover:bg-navy/5 aria-[current=page]:bg-navy aria-[current=page]:text-sand-50"
+              class="border-b-2 border-transparent px-3 py-2 font-semibold text-navy no-underline hover:border-navy aria-[current=page]:border-navy"
             >{n.label}</a>
           </li>
         ))}
@@ -46,15 +46,15 @@ const pfad = Astro.url.pathname;
     </nav>
 
     <details class="group relative lg:hidden">
-      <summary class="flex h-11 w-11 cursor-pointer list-none items-center justify-center rounded-full text-navy hover:bg-navy/5 [&::-webkit-details-marker]:hidden" aria-label="Menü">
+      <summary class="flex h-11 w-11 cursor-pointer list-none items-center justify-center rounded-[3px] border-2 border-navy text-navy hover:bg-navy hover:text-sand-50 [&::-webkit-details-marker]:hidden" aria-label="Menü">
         <svg class="h-6 w-6 group-open:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round" /></svg>
         <svg class="hidden h-6 w-6 group-open:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke-linecap="round" /></svg>
       </summary>
-      <nav aria-label="Mobile Navigation" class="absolute right-0 top-12 w-60 rounded-2xl border border-navy/10 bg-white p-2 shadow-xl">
+      <nav aria-label="Mobile Navigation" class="absolute right-0 top-13 w-60 rounded-[3px] border-2 border-navy bg-white p-1">
         <ul>
-          <li><a href={u(start)} class="block rounded-xl px-4 py-3 text-navy no-underline hover:bg-sand-100">{lang === 'de' ? 'Start' : 'Home'}</a></li>
+          <li><a href={u(start)} class="block px-4 py-3 font-semibold text-navy no-underline hover:bg-sand-100">{lang === 'de' ? 'Start' : 'Home'}</a></li>
           {links.map((n) => (
-            <li><a href={u(n.href)} class="block rounded-xl px-4 py-3 text-navy no-underline hover:bg-sand-100">{n.label}</a></li>
+            <li><a href={u(n.href)} class="block px-4 py-3 font-semibold text-navy no-underline hover:bg-sand-100">{n.label}</a></li>
           ))}
         </ul>
       </nav>

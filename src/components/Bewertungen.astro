@@ -28,7 +28,7 @@ const zahl = (n: number) => n.toLocaleString(lang === 'en' ? 'en-GB' : lang === 
 
     <div class="mt-10 grid gap-6 md:grid-cols-2">
       {profile.map((g) => (
-        <a href={`https://www.google.com/maps?cid=${g.laden.googleCid}`} rel="noopener" class="group block rounded-[2rem] bg-white p-8 no-underline shadow-xl shadow-navy/5 ring-1 ring-navy/5 transition-shadow hover:shadow-2xl md:p-10">
+        <a href={`https://www.google.com/maps?cid=${g.laden.googleCid}`} rel="noopener" class="group block rounded-lg bg-white p-8 no-underline ring-1 ring-navy/15 md:p-10">
           <p class="font-display text-xl font-bold text-navy">{g.laden.name}</p>
           <div class="mt-4 flex items-end gap-5">
             <p class="font-display text-7xl font-bold leading-none text-navy md:text-8xl">{zahl(g.sterne)}</p>
@@ -43,15 +43,15 @@ const zahl = (n: number) => n.toLocaleString(lang === 'en' ? 'en-GB' : lang === 
           </div>
           <p class="mt-6 text-sm font-semibold uppercase tracking-wider text-navy-950/70">{txt.themen}</p>
           <ul class="mt-2 flex flex-wrap gap-2">
-            {g.themen.map((th) => <li class="rounded-full bg-petrol-50 px-3 py-1.5 text-sm font-semibold text-petrol-700">{thema(th)}</li>)}
+            {g.themen.map((th) => <li class="etikett text-sm">{thema(th)}</li>)}
           </ul>
-          <p class="mt-6 font-semibold text-navy group-hover:underline">{txt.profil} →</p>
+          <p class="mt-6 font-semibold text-navy group-hover:underline">{txt.profil}</p>
         </a>
       ))}
     </div>
 
     {lang === 'de' && bewertungen.zitate.map((z) => (
-      <figure class="mt-6 rounded-[2rem] bg-navy p-8 text-white md:p-12">
+      <figure class="mt-6 rounded-lg bg-navy p-8 text-white md:p-12">
         <blockquote class="font-display text-2xl font-semibold leading-snug md:text-4xl">„{z.text}“</blockquote>
         <figcaption class="mt-5 text-white/70">{z.name}</figcaption>
       </figure>

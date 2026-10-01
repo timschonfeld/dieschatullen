@@ -9,10 +9,9 @@ import jobs from '../data/jobs.json';
 const team = [
   { name: 'Nicky', rolle: 'Inhaberin', bild: 'team-nicky', text: 'Aufgewachsen in Wilhelmshaven, hatte Nicky schon von klein auf eine Affinität zur Nordsee. Vom Drachenfliegen ist sie zum Kitesurfen gekommen und reist zwischen den Saisons gerne an andere Meere. Immer für einen guten Schnack zu haben.' },
   { name: 'Nadja', rolle: 'Kernteam', bild: 'team-nadja' },
-  { name: 'Stinker', rolle: 'Ladenkater', bild: 'stinker', text: 'Hält in Hooksiel die Stellung, am liebsten im Körbchen.' },
 ];
 ---
-<Base title="Über uns: seit 2000 im Wangerland" description="Seit 2000 in Hooksiel, seit 2021 auch in Schillig: Lernt Nicky, Nadja und Ladenkater Stinker von den Schatullen kennen.">
+<Base title="Über uns: seit 2000 im Wangerland" description="Seit 2000 in Hooksiel, seit 2021 auch in Schillig: Lernt Nicky, Nadja und das Team der Schatullen kennen.">
   <PageHero eyebrow="Über uns" titel="Ein Stück Meer zum Mitnehmen" foto={bild('laden-hooksiel-himmel')} alt="Die Hooksieler Schatulle und das Drachennest unter blauem Himmel"
     intro="Uns, den Souvenirladen Hooksieler Schatulle und das Drachennest, gibt es schon seit 2000 in der Langen Straße 38 in Hooksiel. Gegründet von Britta Schwarting, hat Nicky das Geschäft 2015 übernommen und stetig weiter ausgebaut. 2021 ist die Schillige Schatulle dazugekommen." />
 
@@ -23,7 +22,7 @@ const team = [
     </div>
     <ul class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {team.map((t) => (
-        <li class="overflow-hidden rounded-3xl bg-white ring-1 ring-navy/10">
+        <li class="overflow-hidden rounded-lg bg-white ring-1 ring-navy/15">
           <Image src={bild(t.bild)} alt={`${t.name}, ${t.rolle}`} widths={[400, 700]} sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" class="aspect-[4/3] w-full object-cover" />
           <div class="p-6">
             <p class="eyebrow">{t.rolle}</p>
@@ -36,7 +35,7 @@ const team = [
   </section>
 
   <section class="container-page mt-20">
-    <div class="rounded-3xl bg-petrol-50 p-8 sm:p-12">
+    <div class="rounded-lg bg-petrol-50 p-8 sm:p-12">
       <h2 class="text-2xl sm:text-3xl">Du möchtest Teil unseres Teams werden?</h2>
       <p class="mt-3 max-w-2xl text-navy-950/80">Neben dem Kernteam haben wir immer tolle Aushilfen und Semesterferien-Jobber. {jobs.aktiv && jobs.text}</p>
       <a href={u('/jobs/')} class="btn-primary mt-6">Zu den Jobs</a>

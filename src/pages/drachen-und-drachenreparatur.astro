@@ -24,7 +24,7 @@ const marken = [
 
   <section class="container-page mt-20 grid gap-6 md:mt-28 md:grid-cols-3">
     {arten.map((a) => (
-      <article class="overflow-hidden rounded-3xl bg-white ring-1 ring-navy/10">
+      <article class="overflow-hidden rounded-lg bg-white ring-1 ring-navy/15">
         <Image src={bild(a.bild)} alt={a.titel} widths={[480, 800, 1200]} sizes="(min-width: 768px) 33vw, 100vw" class="aspect-[4/5] w-full object-cover" />
         <div class="p-6 md:p-8">
           <h2 class="text-2xl">{a.titel}</h2>
@@ -57,7 +57,7 @@ const marken = [
         </ul>
         <p class="mt-5 leading-relaxed text-sand-100/85">Schaut einfach mit eurem defekten Drachen in einer der Schatullen vorbei und lasst euch beraten.</p>
       </div>
-      <Image src={bild('windspiele-ballons')} alt="Bunte Windspiele und Drachen in der Schatulle" widths={[600, 1000]} sizes="(min-width: 768px) 50vw, 100vw" class="aspect-[4/3] w-full rounded-3xl object-cover" />
+      <Image src={bild('windspiele-ballons')} alt="Bunte Windspiele und Drachen in der Schatulle" widths={[600, 1000]} sizes="(min-width: 768px) 50vw, 100vw" class="aspect-[4/3] w-full rounded-lg object-cover" />
     </div>
   </section>
 
@@ -71,7 +71,7 @@ const marken = [
       <h2 class="text-3xl">Unsere Marken</h2>
       <ul class="mt-6 flex flex-wrap items-center gap-6">
         {marken.map((m) => (
-          <li><a href={m.url} rel="noopener" class="block rounded-2xl bg-white p-4 ring-1 ring-navy/10 hover:ring-navy/30"><Image src={bild(m.logo)} alt={`${m.name} Drachen`} height={56} class="h-14 w-auto" /></a></li>
+          <li><a href={m.url} rel="noopener" class="block rounded-md bg-white p-4 ring-1 ring-navy/15 hover:ring-navy/30"><Image src={bild(m.logo)} alt={`${m.name} Drachen`} height={56} class="h-14 w-auto" /></a></li>
         ))}
       </ul>
     </div>

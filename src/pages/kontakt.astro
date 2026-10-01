@@ -12,7 +12,7 @@ import { laeden, site, routenLink, telLink, ladenSchema, istWinterpause } from '
 
   <section class="container-page mt-12 grid gap-6 md:grid-cols-2">
     {laeden.map((l) => (
-      <article id={l.id} class="scroll-mt-24 overflow-hidden rounded-3xl bg-white ring-1 ring-navy/10">
+      <article id={l.id} class="scroll-mt-24 overflow-hidden rounded-lg bg-white ring-1 ring-navy/15">
         <a href={routenLink(l)} rel="noopener" class="relative block">
           <Image src={bild(`karte-${l.id}`)} alt={`Kartenausschnitt ${l.ort} mit Standort der ${l.name}`} widths={[480, 720]} sizes="(min-width: 768px) 50vw, 100vw" class="aspect-[18/11] w-full object-cover" />
           <span class="absolute bottom-2 right-2 rounded bg-white/85 px-1.5 text-[10px] text-navy-950/70">© OpenStreetMap-Mitwirkende</span>
@@ -36,12 +36,12 @@ import { laeden, site, routenLink, telLink, ladenSchema, istWinterpause } from '
   </section>
 
   <section class="container-page mt-16 grid gap-6 md:grid-cols-2">
-    <div class="rounded-3xl bg-petrol-50 p-8">
+    <div class="rounded-lg bg-petrol-50 p-8">
       <h2 class="text-2xl">Schreibt uns</h2>
       <p class="mt-3 text-navy-950/80">Fragen, Bestellungen zum Verschicken oder einfach ein Moin:</p>
       <a href={`mailto:${site.email}`} class="btn-primary mt-5">{site.email}</a>
     </div>
-    <figure class="flex flex-col justify-center rounded-3xl bg-navy p-8 text-sand-50">
+    <figure class="flex flex-col justify-center rounded-lg bg-navy p-8 text-sand-50">
       <blockquote class="font-display text-2xl leading-snug">„Sehr freundliche und fachkundige Mitarbeiter. Tolle Beratung. War sicherlich nicht der letzte Besuch.“</blockquote>
       <figcaption class="mt-4 text-sm text-sand-100/75">Daniela Faller</figcaption>
     </figure>

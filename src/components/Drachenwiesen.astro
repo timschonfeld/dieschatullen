@@ -45,7 +45,7 @@ const routeWiese = `https://www.google.com/maps/dir/?api=1&destination=${wiese.l
     <p class="mt-5 text-lg leading-relaxed text-navy-950/85">{txt.intro}</p>
   </div>
   <div class="grid gap-6 lg:grid-cols-[1.6fr_1fr]">
-    <figure class="overflow-hidden rounded-[2rem] bg-white ring-1 ring-navy/10">
+    <figure class="overflow-hidden rounded-lg bg-white ring-1 ring-navy/15">
       <a href={routeWiese} rel="noopener" class="relative block">
         <Image src={karte} alt={txt.alt} widths={[600, 900, 1200]} sizes="(min-width: 1024px) 60vw, 100vw" class="aspect-[5/3] w-full object-cover" />
         <span class="absolute bottom-2 right-2 rounded bg-white/85 px-1.5 text-[10px] text-navy-950/80">© OpenStreetMap-Mitwirkende</span>
@@ -56,12 +56,12 @@ const routeWiese = `https://www.google.com/maps/dir/?api=1&destination=${wiese.l
       </figcaption>
     </figure>
     <div class="flex flex-col gap-6">
-      <div class="rounded-[2rem] bg-white p-6 ring-1 ring-navy/10 md:p-8">
+      <div class="rounded-lg bg-white p-6 ring-1 ring-navy/15 md:p-8">
         <h3 class="text-2xl">{txt.schilligTitel}</h3>
         <p class="mt-3 leading-relaxed text-navy-950/85">{txt.schilligText}</p>
         <a href={routeWiese} rel="noopener" class="btn-primary mt-5">{txt.route}</a>
       </div>
-      <div class="rounded-[2rem] bg-white p-6 ring-1 ring-navy/10 md:p-8">
+      <div class="rounded-lg bg-white p-6 ring-1 ring-navy/15 md:p-8">
         <h3 class="text-2xl">{txt.hooksielTitel}</h3>
         <p class="mt-3 leading-relaxed text-navy-950/85">{txt.hooksielText}</p>
         <p class="mt-3 text-sm text-navy-950/75">{hooksiel.name}, {hooksiel.strasse}</p>

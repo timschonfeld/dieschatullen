@@ -15,7 +15,7 @@ const fallback = istWinterpause()
   ? t.winterpause
   : laden.oeffnungszeiten.map((o) => `${lang === 'de' ? o.label : tageLabel(o.tage, lang)} ${o.von}–${o.bis}`).join(' · ');
 ---
-<p class={`open-status inline-flex items-center gap-2 rounded-full bg-white/90 px-3 py-1.5 text-sm font-medium text-navy shadow-sm ring-1 ring-navy/10 ${cls}`} data-oeffnung={daten}>
+<p class={`open-status inline-flex items-center gap-2 rounded-[3px] bg-white px-3 py-1.5 text-sm font-semibold text-navy ${cls}`} data-oeffnung={daten}>
   <span class="dot h-2.5 w-2.5 shrink-0 rounded-full bg-navy/30" aria-hidden="true"></span>
   <span class="label">{fallback}</span>
 </p>

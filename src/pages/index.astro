@@ -21,7 +21,7 @@ const ladenFotos: Record<string, { foto: string; alt: string; pos: string }> = {
   hooksiel: { foto: 'laden-hooksiel', alt: 'Die Hooksieler Schatulle & Drachennest von außen', pos: 'object-center' },
   schillig: { foto: 'laden-schillig', alt: 'Schaufenster der Schilligen Schatulle', pos: 'object-center' },
 };
-const streifen = ['leuchttuerme', 'tee', 'windspiele', 'gummistiefel', 'drachen-bunt', 'stinker', 'spiele', 'feinkost', 'deich-schillig'];
+const streifen = ['leuchttuerme', 'tee', 'windspiele', 'gummistiefel', 'drachen-bunt', 'lenkmatten', 'spiele', 'feinkost', 'deich-schillig'];
 ---
 <Base schema={laeden.map(ladenSchema)}>
   <!-- HERO: randloses Großbild, Status-Karten überlappen den unteren Rand -->
@@ -36,10 +36,10 @@ const streifen = ['leuchttuerme', 'tee', 'windspiele', 'gummistiefel', 'drachen-
       </div>
     </div>
     <div class="container-page relative -mt-16 md:-mt-24">
-      {(site.saison.hinweis || istWinterpause()) && <p class="mb-3 rounded-2xl bg-sand px-5 py-3 font-semibold text-navy shadow-lg">{site.saison.hinweis || winterpauseHinweis()}</p>}
+      {(site.saison.hinweis || istWinterpause()) && <p class="mb-3 rounded-md bg-sand px-5 py-3 font-semibold text-navy">{site.saison.hinweis || winterpauseHinweis()}</p>}
       <ul class="grid gap-3 md:grid-cols-2 md:gap-4">
         {laeden.map((l) => (
-          <li class="flex flex-wrap items-center justify-between gap-x-4 gap-y-3 rounded-3xl bg-white p-5 shadow-xl shadow-navy/10 ring-1 ring-navy/5 md:p-6">
+          <li class="flex flex-wrap items-center justify-between gap-x-4 gap-y-3 rounded-lg bg-white p-5 ring-1 ring-navy/15 md:p-6">
             <div class="min-w-0">
               <a href={`#${l.id}`} class="font-display text-lg font-bold text-navy no-underline hover:underline">{l.name}</a>
               <OpenStatus laden={l} class="mt-1 !flex !bg-transparent !p-0 !shadow-none !ring-0" />
@@ -73,7 +73,7 @@ const streifen = ['leuchttuerme', 'tee', 'windspiele', 'gummistiefel', 'drachen-
             <h3 class="text-4xl leading-[1.05] lg:text-6xl">{l.name}</h3>
             <p class="mt-6 max-w-xl text-lg leading-relaxed text-navy-950/85 lg:text-xl">{l.text}</p>
             <ul class="mt-7 flex flex-wrap gap-2">
-              {l.besonderheiten.map((b) => <li class="rounded-full bg-petrol-50 px-4 py-2 text-sm font-semibold text-petrol-700 lg:text-base">{b}</li>)}
+              {l.besonderheiten.map((b) => <li class="etikett text-sm lg:text-base">{b}</li>)}
             </ul>
             {l.gutZuWissen.length > 0 && (
               <ul class="mt-6 space-y-2 text-navy-950/80 lg:text-lg">
@@ -104,6 +104,25 @@ const streifen = ['leuchttuerme', 'tee', 'windspiele', 'gummistiefel', 'drachen-
     </div>
   </section>
 
+  <!-- 360°-RUNDGÄNGE -->
+  <section class="container-page mt-24 md:mt-32" aria-labelledby="rundgang-titel">
+    <div class="mb-10 max-w-2xl">
+      <p class="eyebrow mb-3">Virtuell reinschauen</p>
+      <h2 id="rundgang-titel" class="display-lg">360°-Rundgang durch die Läden</h2>
+      <p class="mt-4 text-lg text-navy-950/80">Kleiner Tipp: In Hooksiel könnt ihr sogar draußen zwischen Postkartenständern und Windspielen stöbern und euch die Nordseeluft um die Ohren wehen lassen.</p>
+    </div>
+    <div class="grid gap-6 md:grid-cols-2">
+      <div>
+        <ClickEmbed src={hooksiel.rundgang} titel="Rundgang Hooksiel starten" anbieter="Google" poster={bild('laden-hooksiel')} alt="" />
+        <p class="mt-3 font-display text-lg font-bold text-navy">{hooksiel.name}</p>
+      </div>
+      <div>
+        <ClickEmbed src={schillig.rundgang} titel="Rundgang Schillig starten" anbieter="Google" poster={bild('windspiele-ballons')} alt="" />
+        <p class="mt-3 font-display text-lg font-bold text-navy">{schillig.name}</p>
+      </div>
+    </div>
+  </section>
+
   <!-- SORTIMENT: Bento-Raster (Desktop) / Wisch-Karussell (Handy) -->
   <section class="relative mt-24 md:mt-32" aria-labelledby="sortiment-titel">
     <Steuerrad class="-left-40 top-10 hidden h-[30rem] w-[30rem] opacity-[0.05] md:block" />
@@ -112,12 +131,12 @@ const streifen = ['leuchttuerme', 'tee', 'windspiele', 'gummistiefel', 'drachen-
         <p class="eyebrow mb-3">Sortiment</p>
         <h2 id="sortiment-titel" class="display-lg">Nichts, was ihr nicht bei uns findet</h2>
       </div>
-      <a href={u('/sortiment/')} class="btn-ghost">Ganzes Sortiment →</a>
+      <a href={u('/sortiment/')} class="btn-ghost">Ganzes Sortiment</a>
     </div>
     <ul class="flex snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto px-4 sm:scroll-px-6 pb-4 [scrollbar-width:none] sm:px-6 md:mx-auto md:grid md:max-w-6xl md:grid-cols-4 md:grid-rows-2 md:gap-4 md:overflow-visible md:px-6 md:pb-0">
       {sortiment.slice(0, 5).map((s, i) => (
         <li class={`w-[80vw] shrink-0 snap-start sm:w-[55vw] md:w-auto ${i === 0 ? 'md:col-span-2 md:row-span-2' : ''}`}>
-          <a href={u(s.link ?? '/sortiment/')} class="group relative block h-full overflow-hidden rounded-3xl no-underline">
+          <a href={u(s.link ?? '/sortiment/')} class="group relative block h-full overflow-hidden rounded-lg no-underline">
             <Image src={bild(s.bild)} alt="" widths={[480, 800, 1200]} sizes={i === 0 ? '(min-width: 768px) 50vw, 80vw' : '(min-width: 768px) 25vw, 80vw'} class={`h-full w-full object-cover transition-transform duration-700 group-hover:scale-105 ${i === 0 ? 'aspect-[4/5] md:aspect-auto' : 'aspect-[4/5] md:aspect-square'}`} />
             <span class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-navy-950/85 to-transparent p-5 pt-16">
               <span class={`block font-display font-bold leading-tight text-white ${i === 0 ? 'text-2xl md:text-4xl' : 'text-xl'}`}>{s.titel}</span>
@@ -143,8 +162,8 @@ const streifen = ['leuchttuerme', 'tee', 'windspiele', 'gummistiefel', 'drachen-
           <p class="mt-6 text-lg leading-relaxed text-white/85">Mehr als 80 Kinderdrachen, Lenkdrachen von HQ und Elliot und Lenkmatten für richtig Power. Nicky ist selbst vom Drachenfliegen zum Kitesurfen gekommen und berät euch gern.</p>
           <p class="mt-4 text-lg leading-relaxed text-white/85"><strong class="text-sand">Bruchlandung?</strong> Wir ersetzen Gestänge und Leinen, nähen und flicken. Bringt euren Drachen einfach vorbei.</p>
           <div class="mt-8 flex flex-wrap gap-3">
-            <a href={u('/drachen-und-drachenreparatur/')} class="btn bg-sand text-navy hover:bg-white">Drachen & Reparatur</a>
-            <a href={u('/videos/')} class="btn border border-white/40 text-white hover:bg-white/10">Nickys Drachen-Videos</a>
+            <a href={u('/drachen-und-drachenreparatur/')} class="btn-hell">Drachen & Reparatur</a>
+            <a href={u('/videos/')} class="btn-umriss-hell">Nickys Drachen-Videos</a>
           </div>
         </div>
       </div>
@@ -153,18 +172,17 @@ const streifen = ['leuchttuerme', 'tee', 'windspiele', 'gummistiefel', 'drachen-
 
   <!-- FOTOSTREIFEN: laufendes Band mit großen Bildern -->
   <section class="full-bleed group/streifen mt-4" aria-label="Eindrücke aus den Schatullen" data-streifen>
-    <button type="button" data-streifen-knopf aria-pressed="false" class="absolute right-4 top-4 z-10 inline-flex h-11 items-center gap-2 rounded-full bg-white/90 px-4 text-sm font-semibold text-navy shadow ring-1 ring-navy/10 hover:bg-white">
+    <button type="button" data-streifen-knopf aria-pressed="false" class="absolute right-4 top-4 z-10 inline-flex h-11 items-center gap-2 rounded-[3px] border-2 border-navy bg-white px-4 text-sm font-semibold text-navy hover:bg-sand-100">
       <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path data-icon-pause d="M7 5h4v14H7zM13 5h4v14h-4z" /><path data-icon-play class="hidden" d="M8 5v14l11-7z" /></svg>
       <span data-streifen-text>Animation anhalten</span>
     </button>
     <div class="marquee flex w-max gap-4 group-hover/streifen:[animation-play-state:paused] group-focus-within/streifen:[animation-play-state:paused]">
       {[...streifen, ...streifen].map((b, i) => (
-        <Image src={bild(b)} alt="" widths={[400, 640]} sizes="(min-width: 768px) 28vw, 70vw" class="h-[45svh] max-h-[460px] w-auto rounded-3xl object-cover" aria-hidden={i >= streifen.length ? 'true' : undefined} />
+        <Image src={bild(b)} alt="" widths={[400, 640]} sizes="(min-width: 768px) 28vw, 70vw" class="h-[45svh] max-h-[460px] w-auto rounded-lg object-cover" aria-hidden={i >= streifen.length ? 'true' : undefined} />
       ))}
     </div>
   </section>
 
-  <div class="mt-24 md:mt-32"><Bewertungen /></div>
 
   <script>
     // Fotostreifen anhalten/fortsetzen (WCAG 2.2.2)
@@ -186,19 +204,18 @@ const streifen = ['leuchttuerme', 'tee', 'windspiele', 'gummistiefel', 'drachen-
   <section class="container-page relative mt-24 grid items-center gap-10 md:mt-32 md:grid-cols-12" aria-labelledby="team-titel">
     <Steuerrad class="-right-10 -top-16 h-72 w-72 opacity-[0.05] md:-right-56 md:h-[34rem] md:w-[34rem]" />
     <div class="relative md:col-span-7">
-      <Image src={bild('nadja-nicky')} alt="Nadja und Nicky zur Eröffnung der Schilligen Schatulle" widths={[640, 1000, 1400]} sizes="(min-width: 768px) 58vw, 100vw" class="aspect-[4/3] w-full rounded-[2rem] object-cover" />
-      <Image src={bild('stinker')} alt="Ladenkater Stinker" widths={[240, 400]} sizes="180px" class="absolute -bottom-8 right-4 aspect-square w-32 rounded-3xl border-4 border-sand-50 object-cover shadow-xl md:-right-8 md:w-48" />
+      <Image src={bild('nadja-nicky')} alt="Nadja und Nicky zur Eröffnung der Schilligen Schatulle" widths={[640, 1000, 1400]} sizes="(min-width: 768px) 58vw, 100vw" class="aspect-[4/3] w-full rounded-lg object-cover" />
     </div>
     <div class="md:col-span-5">
       <p class="eyebrow mb-3">Über uns</p>
       <h2 id="team-titel" class="display-lg">Große Nordsee-Fans, seit 2000</h2>
-      <p class="mt-5 text-lg leading-relaxed text-navy-950/80">Gegründet von Britta Schwarting, hat Nicky die Hooksieler Schatulle 2015 übernommen und stetig ausgebaut. 2021 kam die Schillige Schatulle dazu. Mit Nadja und Ladenkater Stinker freut sie sich auf euren Besuch.</p>
+      <p class="mt-5 text-lg leading-relaxed text-navy-950/80">Gegründet von Britta Schwarting, hat Nicky die Hooksieler Schatulle 2015 übernommen und stetig ausgebaut. 2021 kam die Schillige Schatulle dazu. Gemeinsam mit Nadja und dem Team freut sie sich auf euren Besuch.</p>
       <a href={u('/ueber-uns/')} class="btn-ghost mt-6">Mehr über uns</a>
       {jobs.aktiv && (
-        <a href={u('/jobs/')} class="mt-8 block rounded-3xl bg-navy p-6 no-underline transition-colors hover:bg-navy-700">
+        <a href={u('/jobs/')} class="mt-8 block rounded-lg bg-navy p-6 no-underline transition-colors hover:bg-navy-700">
           <p class="text-xs font-semibold uppercase tracking-[0.2em] text-sand">Wir suchen dich</p>
           <p class="mt-2 font-display text-2xl font-bold text-white">{jobs.titel}</p>
-          <p class="mt-1 text-sm text-white/75">{jobs.gesucht.join(' · ')} →</p>
+          <p class="mt-1 text-sm text-white/75">{jobs.gesucht.join(' · ')}</p>
         </a>
       )}
     </div>
@@ -209,33 +226,16 @@ const streifen = ['leuchttuerme', 'tee', 'windspiele', 'gummistiefel', 'drachen-
       <h2 id="news-titel" class="display-lg mb-8">Aktuelles</h2>
       <ul class="grid gap-4 md:grid-cols-2">
         {news.map((n) => (
-          <li class="rounded-3xl bg-white p-6 ring-1 ring-navy/10">
+          <li class="rounded-lg bg-white p-6 ring-1 ring-navy/15">
             <p class="eyebrow mb-1">{new Date(n.datum).toLocaleDateString('de-DE', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
             <h3 class="text-2xl">{n.titel}</h3>
             <p class="mt-2 text-navy-950/80">{n.text}</p>
-            {n.link && <a href={n.link} rel="noopener" class="mt-3 inline-block font-semibold text-navy">Mehr erfahren →</a>}
+            {n.link && <a href={n.link} rel="noopener" class="mt-3 inline-block font-semibold text-navy">Mehr erfahren</a>}
           </li>
         ))}
       </ul>
     </section>
   )}
 
-  <!-- 360°-RUNDGÄNGE -->
-  <section class="container-page mt-24 md:mt-32" aria-labelledby="rundgang-titel">
-    <div class="mb-10 max-w-2xl">
-      <p class="eyebrow mb-3">Virtuell reinschauen</p>
-      <h2 id="rundgang-titel" class="display-lg">360°-Rundgang durch die Läden</h2>
-      <p class="mt-4 text-lg text-navy-950/80">Kleiner Tipp: In Hooksiel könnt ihr sogar draußen zwischen Postkartenständern und Windspielen stöbern und euch die Nordseeluft um die Ohren wehen lassen.</p>
-    </div>
-    <div class="grid gap-6 md:grid-cols-2">
-      <div>
-        <ClickEmbed src={hooksiel.rundgang} titel="Rundgang Hooksiel starten" anbieter="Google" poster={bild('laden-hooksiel')} alt="" />
-        <p class="mt-3 font-display text-lg font-bold text-navy">{hooksiel.name}</p>
-      </div>
-      <div>
-        <ClickEmbed src={schillig.rundgang} titel="Rundgang Schillig starten" anbieter="Google" poster={bild('windspiele-ballons')} alt="" />
-        <p class="mt-3 font-display text-lg font-bold text-navy">{schillig.name}</p>
-      </div>
-    </div>
-  </section>
+  <div class="mt-24 md:mt-32"><Bewertungen /></div>
 </Base>

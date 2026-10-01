@@ -33,7 +33,7 @@ const fotos: Record<string, string> = { hooksiel: 'laden-hooksiel', schillig: 'l
     <div class="container-page relative -mt-16 md:-mt-20">
       <ul class="grid gap-3 md:grid-cols-2 md:gap-4">
         {laeden.map((l) => (
-          <li class="flex flex-wrap items-center justify-between gap-x-4 gap-y-3 rounded-3xl bg-white p-5 shadow-xl shadow-navy/10 ring-1 ring-navy/5 md:p-6">
+          <li class="flex flex-wrap items-center justify-between gap-x-4 gap-y-3 rounded-lg bg-white p-5 ring-1 ring-navy/15 md:p-6">
             <div class="min-w-0">
               <a href={`#${l.id}`} class="font-display text-lg font-bold text-navy no-underline hover:underline">{l.name}</a>
               <OpenStatus laden={l} lang={lang} class="mt-1 !flex !bg-transparent !p-0 !shadow-none !ring-0" />
@@ -53,7 +53,7 @@ const fotos: Record<string, string> = { hooksiel: 'laden-hooksiel', schillig: 'l
     <div class="container-page relative mb-10"><h2 class="display-lg">{c.laedenTitel}</h2></div>
     <div class="container-page relative grid gap-6 md:grid-cols-2">
       {laeden.map((l) => (
-        <article id={l.id} class="scroll-mt-24 overflow-hidden rounded-[2rem] bg-white ring-1 ring-navy/10">
+        <article id={l.id} class="scroll-mt-24 overflow-hidden rounded-lg bg-white ring-1 ring-navy/15">
           <Image src={bild(fotos[l.id])} alt={l.name} widths={[480, 800, 1200]} sizes="(min-width: 768px) 50vw, 100vw" class="aspect-[3/2] w-full object-cover" />
           <div class="p-6 md:p-10">
             <p class="eyebrow mb-2">{l.ort} · {t.seit} {l.seit}</p>
@@ -80,7 +80,7 @@ const fotos: Record<string, string> = { hooksiel: 'laden-hooksiel', schillig: 'l
   </section>
 
   <section class="container-page mt-24 grid items-center gap-10 md:grid-cols-2">
-    <Image src={bild('leuchttuerme')} alt="" widths={[600, 1000]} sizes="(min-width: 768px) 50vw, 100vw" class="aspect-[4/3] w-full rounded-[2rem] object-cover" />
+    <Image src={bild('leuchttuerme')} alt="" widths={[600, 1000]} sizes="(min-width: 768px) 50vw, 100vw" class="aspect-[4/3] w-full rounded-lg object-cover" />
     <div>
       <h2 class="display-lg">{c.sortimentTitel}</h2>
       <ul class="mt-6 space-y-3 text-lg">
@@ -101,12 +101,12 @@ const fotos: Record<string, string> = { hooksiel: 'laden-hooksiel', schillig: 'l
   <div class="mt-24"><Bewertungen lang={lang} /></div>
 
   <section id="kontakt" class="container-page mt-24 scroll-mt-20">
-    <div class="rounded-[2rem] bg-petrol-50 p-8 md:p-12">
+    <div class="rounded-lg bg-petrol-50 p-8 md:p-12">
       <h2 class="display-lg">{c.kontaktTitel}</h2>
       <p class="mt-4 text-lg text-navy-950/80">{c.kontaktText}</p>
       <div class="mt-6 flex flex-wrap gap-3">
         <a href={`mailto:${site.email}`} class="btn-primary">{site.email}</a>
-        <a href={u('/')} class="btn-ghost" hreflang="de">{c.deutsch} →</a>
+        <a href={u('/')} class="btn-ghost" hreflang="de">{c.deutsch}</a>
       </div>
     </div>
   </section>
