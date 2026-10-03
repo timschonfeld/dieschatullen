@@ -12,5 +12,11 @@
     "ende": "2026-10-01",
     "text": "Hier neue Mitteilung",
     "link": "www.wangerland.de"
+  },
+  {
+    "titel": "Test 3 ",
+    "datum": "2026-10-03",
+    "ende": "2026-10-03",
+    "text": "Hier steht was ganz tolles "
   }
 ]
