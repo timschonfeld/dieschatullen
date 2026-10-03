@@ -4,6 +4,7 @@ import { Image } from 'astro:assets';
 import Steuerrad from './Steuerrad.astro';
 import logo from '../assets/img/logo-sand.png';
 import { laeden, site, telLink } from '../lib/laden';
+import { consent } from '../lib/daten';
 import { ui, sprachen, type Lang } from '../i18n/ui';
 
 interface Props { lang?: Lang }
@@ -23,9 +24,9 @@ const kontakt = { de: 'Kontakt', en: 'Contact', nl: 'Contact' }[lang];
       <div>
         <h2 class="mb-3 font-sans text-sm font-semibold uppercase tracking-wider text-sand">{l.name}</h2>
         <p class="text-sm leading-relaxed">{l.strasse}<br />{l.plz} {l.ort}</p>
-        <p class="mt-2 text-sm"><a href={telLink(l.telefon)} class="text-sand-100 hover:text-sand">{l.telefon}</a></p>
+        <p class="mt-2 text-sm"><a href={telLink(l.telefon)} class="text-sand-100 hover:text-sand" data-messen="anruf_klick" data-messen-wert={l.id}>{l.telefon}</a></p>
         <p class="mt-3 flex gap-4 text-sm">
-          <a href={l.instagram} class="text-sand-100/80 hover:text-sand" rel="noopener">Instagram</a>
+          <a href={l.instagram} class="text-sand-100/80 hover:text-sand" rel="noopener" data-messen="instagram_klick" data-messen-wert={l.id}>Instagram</a>
           <a href={l.facebook} class="text-sand-100/80 hover:text-sand" rel="noopener">Facebook</a>
         </p>
       </div>
@@ -38,6 +39,7 @@ const kontakt = { de: 'Kontakt', en: 'Contact', nl: 'Contact' }[lang];
         {lang === 'de' && <li><a href={u('/jobs/')} class="hover:text-sand">Jobs</a></li>}
         <li><a href={u('/impressum/')} class="hover:text-sand">{t.impressum}</a></li>
         <li><a href={u('/datenschutz/')} class="hover:text-sand">{t.datenschutz}</a></li>
+        {consent.skriptUrl && <li><button type="button" data-cookie-einstellungen class="text-left hover:text-sand hover:underline">{t.cookies}</button></li>}
       </ul>
     </div>
   </div>
@@ -46,7 +48,7 @@ const kontakt = { de: 'Kontakt', en: 'Contact', nl: 'Contact' }[lang];
       <nav aria-label={t.sprache} class="flex items-center gap-1">
         <svg class="mr-1 h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18" /></svg>
         {sprachen.map((s) => (
-          <a href={u(s.pfad)} hreflang={s.code} lang={s.code} aria-current={s.code === lang ? 'true' : undefined}
+          <a href={u(s.pfad)} hreflang={s.code} lang={s.code} aria-current={s.code === lang ? 'true' : undefined} data-messen="sprache_wechsel" data-messen-wert={s.code}
             class="rounded-lg px-3 py-1.5 text-sm text-sand-100/80 no-underline hover:text-sand aria-[current=true]:bg-sand aria-[current=true]:font-semibold aria-[current=true]:text-navy">{s.name}</a>
         ))}
       </nav>
@@ -54,3 +56,10 @@ const kontakt = { de: 'Kontakt', en: 'Contact', nl: 'Contact' }[lang];
     </div>
   </div>
 </footer>
+
+<script>
+  // „Cookie-Einstellungen“ öffnet das CCM19-Widget erneut (nur vorhanden, wenn der Banner eingebunden ist)
+  document.querySelectorAll('[data-cookie-einstellungen]').forEach((knopf) =>
+    knopf.addEventListener('click', () => (window as unknown as { CCM?: { openWidget: () => void } }).CCM?.openWidget()),
+  );
+</script>

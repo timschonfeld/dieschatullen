@@ -20,7 +20,7 @@ export const ui = {
     offen: 'Jetzt geöffnet bis {bis} Uhr', zuHeute: 'Heute geöffnet von {von} bis {bis} Uhr',
     zuMorgen: 'Morgen wieder geöffnet von {von} bis {bis} Uhr', zuTag: 'Am {tag} wieder geöffnet von {von} bis {bis} Uhr', winterpause: 'Winterpause',
     route: 'Route planen', anrufen: 'Anrufen', oeffnungszeiten: 'Öffnungszeiten', adresse: 'Adresse', seit: 'seit',
-    impressum: 'Impressum', datenschutz: 'Datenschutz', sprache: 'Sprache',
+    impressum: 'Impressum', datenschutz: 'Datenschutz', cookies: 'Cookie-Einstellungen', sprache: 'Sprache',
     wind: {
       titel: 'Drachenwetter',
       jetzt: 'Jetzt',
@@ -57,7 +57,7 @@ export const ui = {
     offen: 'Open now until {bis}', zuHeute: 'Open today from {von} to {bis}',
     zuMorgen: 'Open again tomorrow from {von} to {bis}', zuTag: 'Open again on {tag} from {von} to {bis}', winterpause: 'Winter break',
     route: 'Directions', anrufen: 'Call', oeffnungszeiten: 'Opening hours', adresse: 'Address', seit: 'since',
-    impressum: 'Legal notice (German)', datenschutz: 'Privacy (German)', sprache: 'Language',
+    impressum: 'Legal notice (German)', datenschutz: 'Privacy (German)', cookies: 'Cookie settings', sprache: 'Language',
     wind: {
       titel: 'Kite weather',
       jetzt: 'Now',
@@ -94,7 +94,7 @@ export const ui = {
     offen: 'Nu geopend tot {bis} uur', zuHeute: 'Vandaag geopend van {von} tot {bis} uur',
     zuMorgen: 'Morgen weer geopend van {von} tot {bis} uur', zuTag: 'Op {tag} weer geopend van {von} tot {bis} uur', winterpause: 'Winterstop',
     route: 'Route plannen', anrufen: 'Bellen', oeffnungszeiten: 'Openingstijden', adresse: 'Adres', seit: 'sinds',
-    impressum: 'Colofon (Duits)', datenschutz: 'Privacy (Duits)', sprache: 'Taal',
+    impressum: 'Colofon (Duits)', datenschutz: 'Privacy (Duits)', cookies: 'Cookie-instellingen', sprache: 'Taal',
     wind: {
       titel: 'Vliegerweer',
       jetzt: 'Nu',

@@ -4,6 +4,7 @@ import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import OpenStatus from './OpenStatus.astro';
 import Drachenwetter from './Drachenwetter.astro';
+import HeroSlider from './HeroSlider.astro';
 import Drachenwiesen from './Drachenwiesen.astro';
 import Bewertungen from './Bewertungen.astro';
 import Steuerrad from './Steuerrad.astro';
@@ -22,8 +23,8 @@ const fotos: Record<string, string> = { hooksiel: 'laden-hooksiel', schillig: 'l
 <Base title={c.titel} description={c.beschreibung} lang={lang} schema={laeden.map(ladenSchema)}>
   <section class="full-bleed">
     <div class="relative h-[52svh] min-h-[360px] md:h-[70svh]">
-      <Image src={bild('drachen-bunt')} alt="" widths={[480, 828, 1200, 1800]} sizes="100vw" format="avif" quality={55} class="absolute inset-0 h-full w-full object-cover" loading="eager" fetchpriority="high" />
-      <div class="absolute inset-0 bg-gradient-to-t from-navy-950/85 via-navy-950/25 to-transparent"></div>
+      <HeroSlider lang={lang} />
+      <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-navy-950/85 via-navy-950/25 to-transparent"></div>
       <div class="container-page relative flex h-full flex-col justify-end pb-24 md:pb-32">
         <p class="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-sand">Hooksiel & Schillig · Wangerland</p>
         <h1 class="display-xl !text-white">Moin!</h1>
@@ -39,8 +40,8 @@ const fotos: Record<string, string> = { hooksiel: 'laden-hooksiel', schillig: 'l
               <OpenStatus laden={l} lang={lang} class="mt-1 !flex !bg-transparent !p-0 !shadow-none !ring-0" />
             </div>
             <div class="flex gap-2">
-              <a href={telLink(l.telefon)} class="btn-ghost !px-4 !py-2.5">{t.anrufen}</a>
-              <a href={routenLink(l)} class="btn-primary !px-4 !py-2.5" rel="noopener">{t.route}</a>
+              <a href={telLink(l.telefon)} data-messen="anruf_klick" data-messen-wert={l.id} class="btn-ghost !px-4 !py-2.5">{t.anrufen}</a>
+              <a href={routenLink(l)} data-messen="route_klick" data-messen-wert={l.id} class="btn-primary !px-4 !py-2.5" rel="noopener">{t.route}</a>
             </div>
           </li>
         ))}
@@ -66,12 +67,12 @@ const fotos: Record<string, string> = { hooksiel: 'laden-hooksiel', schillig: 'l
               </div>
               <div>
                 <p class="mb-2 font-display text-lg font-bold text-navy">{t.adresse}</p>
-                <address class="not-italic">{l.strasse}<br />{l.plz} {l.ort}<br /><a href={telLink(l.telefon)} class="font-semibold text-navy">+49 {l.telefon.replace(/^0/, '')}</a></address>
+                <address class="not-italic">{l.strasse}<br />{l.plz} {l.ort}<br /><a href={telLink(l.telefon)} data-messen="anruf_klick" data-messen-wert={l.id} class="font-semibold text-navy">+49 {l.telefon.replace(/^0/, '')}</a></address>
               </div>
             </div>
             <div class="mt-8 flex flex-wrap gap-3">
-              <a href={routenLink(l)} class="btn-primary" rel="noopener">{t.route}</a>
-              <a href={telLink(l.telefon)} class="btn-ghost">{t.anrufen}</a>
+              <a href={routenLink(l)} data-messen="route_klick" data-messen-wert={l.id} class="btn-primary" rel="noopener">{t.route}</a>
+              <a href={telLink(l.telefon)} data-messen="anruf_klick" data-messen-wert={l.id} class="btn-ghost">{t.anrufen}</a>
             </div>
           </div>
         </article>

@@ -125,6 +125,7 @@ const skala = [
 
 <script>
   import { heuteBerlin } from '../lib/zeit';
+  import { messen } from '../lib/messen';
   type Ort = { id: string; name: string; lat: number; lon: number };
   type Daten = { current: { time: string; wind_speed_10m: number; wind_gusts_10m: number; wind_direction_10m: number }; hourly: { time: string[]; wind_speed_10m: number[]; wind_gusts_10m: number[] } };
 
@@ -250,6 +251,7 @@ const skala = [
     el.querySelectorAll<HTMLButtonElement>('[data-ort]').forEach((btn) => btn.addEventListener('click', () => {
       el.querySelectorAll('[data-ort]').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
       zeigen(orte.find((o) => o.id === btn.dataset.ort)!);
+      messen('drachenwetter_ort', { ort: btn.dataset.ort! });
     }));
     zeigen(orte[0]);
   }

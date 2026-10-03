@@ -13,7 +13,7 @@ import { laeden, site, routenLink, telLink, ladenSchema, istWinterpause } from '
   <section class="container-page mt-12 grid gap-6 md:grid-cols-2">
     {laeden.map((l) => (
       <article id={l.id} class="scroll-mt-24 overflow-hidden rounded-lg bg-white ring-1 ring-navy/15">
-        <a href={routenLink(l)} rel="noopener" class="relative block">
+        <a href={routenLink(l)} data-messen="route_klick" data-messen-wert={l.id} rel="noopener" class="relative block">
           <Image src={bild(`karte-${l.id}`)} alt={`Kartenausschnitt ${l.ort} mit Standort der ${l.name}`} widths={[480, 720]} sizes="(min-width: 768px) 50vw, 100vw" class="aspect-[18/11] w-full object-cover" />
           <span class="absolute bottom-2 right-2 rounded bg-white/85 px-1.5 text-[10px] text-navy-950/70">© OpenStreetMap-Mitwirkende</span>
         </a>
@@ -27,8 +27,8 @@ import { laeden, site, routenLink, telLink, ladenSchema, istWinterpause } from '
             ))}
           </dl>
           <div class="mt-6 flex flex-wrap gap-3">
-            <a href={telLink(l.telefon)} class="btn-primary">{l.telefon}</a>
-            <a href={routenLink(l)} class="btn-ghost" rel="noopener">Route planen</a>
+            <a href={telLink(l.telefon)} data-messen="anruf_klick" data-messen-wert={l.id} class="btn-primary">{l.telefon}</a>
+            <a href={routenLink(l)} data-messen="route_klick" data-messen-wert={l.id} class="btn-ghost" rel="noopener">Route planen</a>
           </div>
         </div>
       </article>

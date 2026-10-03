@@ -7,6 +7,7 @@ import ClickEmbed from '../components/ClickEmbed.astro';
 import Steuerrad from '../components/Steuerrad.astro';
 import Bewertungen from '../components/Bewertungen.astro';
 import Drachenwetter from '../components/Drachenwetter.astro';
+import HeroSlider from '../components/HeroSlider.astro';
 import { bild } from '../lib/bilder';
 import { heuteBerlin, zeitenKurz } from '../lib/zeit';
 import { laeden, site, saison, ladenSchema, routenLink, telLink, istWinterpause, winterpauseHinweis } from '../lib/laden';
@@ -26,8 +27,8 @@ const streifen = ['leuchttuerme', 'tee', 'windspiele', 'gummistiefel', 'drachen-
   <!-- HERO: randloses Großbild, Status-Karten überlappen den unteren Rand -->
   <section class="full-bleed">
     <div class="relative h-[58svh] min-h-[380px] md:h-[86svh]">
-      <Image src={bild('drachen-bunt')} alt="Bunter Drache im Drachennest der Hooksieler Schatulle" widths={[480, 828, 1200, 1800, 2400]} sizes="100vw" format="avif" quality={55} class="absolute inset-0 h-full w-full object-cover" loading="eager" fetchpriority="high" />
-      <div class="absolute inset-0 bg-gradient-to-t from-navy-950/85 via-navy-950/25 to-transparent"></div>
+      <HeroSlider />
+      <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-navy-950/85 via-navy-950/25 to-transparent"></div>
       <div class="container-page relative flex h-full flex-col justify-end pb-24 md:pb-40">
         <p class="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-sand">Hooksiel & Schillig · Wangerland</p>
         <h1 class="display-xl !text-white">Moin!</h1>
@@ -45,8 +46,8 @@ const streifen = ['leuchttuerme', 'tee', 'windspiele', 'gummistiefel', 'drachen-
               {!istWinterpause() && <p class="mt-1 text-sm text-navy-950/70">{zeitenKurz(l.oeffnungszeiten)}</p>}
             </div>
             <div class="flex gap-2">
-              <a href={telLink(l.telefon)} class="btn-ghost !px-4 !py-2.5" aria-label={`${l.name} anrufen`}>Anrufen</a>
-              <a href={routenLink(l)} class="btn-primary !px-4 !py-2.5" rel="noopener" aria-label={`Route zu ${l.name}`}>Route</a>
+              <a href={telLink(l.telefon)} data-messen="anruf_klick" data-messen-wert={l.id} class="btn-ghost !px-4 !py-2.5" aria-label={`${l.name} anrufen`}>Anrufen</a>
+              <a href={routenLink(l)} data-messen="route_klick" data-messen-wert={l.id} class="btn-primary !px-4 !py-2.5" rel="noopener" aria-label={`Route zu ${l.name}`}>Route</a>
             </div>
           </li>
         ))}
@@ -95,11 +96,11 @@ const streifen = ['leuchttuerme', 'tee', 'windspiele', 'gummistiefel', 'drachen-
     </div>
     <div class="grid gap-6 md:grid-cols-2">
       <div>
-        <ClickEmbed src={hooksiel.rundgang} titel="Rundgang Hooksiel starten" anbieter="Google" poster={bild('laden-hooksiel')} alt="" />
+        <ClickEmbed src={hooksiel.rundgang} titel="Rundgang Hooksiel starten" anbieter="Google" dienst="Google Maps" ereignis="rundgang_start" poster={bild('laden-hooksiel')} alt="" />
         <p class="mt-3 font-display text-lg font-bold text-navy">{hooksiel.name}</p>
       </div>
       <div>
-        <ClickEmbed src={schillig.rundgang} titel="Rundgang Schillig starten" anbieter="Google" poster={bild('windspiele-ballons')} alt="" />
+        <ClickEmbed src={schillig.rundgang} titel="Rundgang Schillig starten" anbieter="Google" dienst="Google Maps" ereignis="rundgang_start" poster={bild('windspiele-ballons')} alt="" />
         <p class="mt-3 font-display text-lg font-bold text-navy">{schillig.name}</p>
       </div>
     </div>

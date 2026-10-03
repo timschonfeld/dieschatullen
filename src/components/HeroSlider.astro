@@ -1,0 +1,143 @@
+---
+/**
+ * Bild-Slider im Kopf der Startseite: wechselt alle 6 s mit Überblendung, Pause-Knopf (WCAG 2.2.2),
+ * Punkte zum Springen, Pfeile ab Desktop, Wischen am Handy. Bei „reduzierte Bewegung“ kein Autoplay.
+ * Bilder und Unterschriften kommen aus src/data/slider.json (pflegbar in Pages CMS).
+ */
+import { Image } from 'astro:assets';
+import { bild } from '../lib/bilder';
+import { slider } from '../lib/daten';
+import type { Lang } from '../i18n/ui';
+
+interface Props { lang?: Lang }
+const { lang = 'de' } = Astro.props;
+const t = {
+  de: { region: 'Bilder aus den Schatullen', von: 'von', pause: 'Diashow anhalten', weiter: 'Diashow fortsetzen', zurueck: 'Vorheriges Bild', vor: 'Nächstes Bild', bild: 'Bild' },
+  en: { region: 'Pictures from our shops', von: 'of', pause: 'Pause slideshow', weiter: 'Play slideshow', zurueck: 'Previous picture', vor: 'Next picture', bild: 'Picture' },
+  nl: { region: 'Foto’s uit onze winkels', von: 'van', pause: 'Diavoorstelling pauzeren', weiter: 'Diavoorstelling afspelen', zurueck: 'Vorige foto', vor: 'Volgende foto', bild: 'Foto' },
+}[lang];
+const titel = (s: (typeof slider)[number]) => (lang === 'en' ? s.titel_en : lang === 'nl' ? s.titel_nl : s.titel);
+const texte = JSON.stringify({ pause: t.pause, weiter: t.weiter });
+---
+<div class="hero-slider absolute inset-0" role="region" aria-roledescription="carousel" aria-label={t.region} data-texte={texte}>
+  <div class="absolute inset-0" aria-live="off" data-slides>
+    {slider.map((s, i) => (
+      <div
+        class={`slide absolute inset-0 transition-opacity duration-1000 motion-reduce:transition-none ${i === 0 ? 'opacity-100' : 'opacity-0'}`}
+        role="group" aria-roledescription="slide" aria-label={`${i + 1} ${t.von} ${slider.length}: ${titel(s)}`}
+        aria-hidden={i === 0 ? undefined : 'true'}
+        hidden={i === 0 ? undefined : true}
+      >
+        <Image
+          src={bild(s.bild)} alt={s.alt} widths={i === 0 ? [480, 828, 1200, 1800, 2400] : [828, 1600]} sizes="100vw" format="avif" quality={55}
+          class="h-full w-full object-cover"
+          loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : 'low'}
+        />
+      </div>
+    ))}
+  </div>
+
+  {slider.length > 1 && (
+    <div class="absolute right-4 top-4 z-10 flex max-w-[calc(100%-2rem)] flex-wrap items-center justify-end gap-2 md:right-8 md:top-8">
+      <p data-unterschrift class="hidden rounded-md bg-navy-900 px-3 py-2 text-sm font-semibold text-sand-50 sm:block" aria-hidden="true">{titel(slider[0])}</p>
+      <div class="flex items-center gap-1 rounded-lg border-2 border-sand-100/70 bg-navy-900 p-1">
+        <button type="button" data-zurueck class="hidden h-9 w-9 place-items-center rounded-md text-sand-50 hover:bg-navy-700 md:grid" aria-label={t.zurueck}>
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+        </button>
+        {slider.map((s, i) => (
+          <button type="button" data-punkt={i} class="grid h-9 w-6 place-items-center" aria-label={`${t.bild} ${i + 1} ${t.von} ${slider.length}: ${titel(s)}`} aria-current={i === 0 ? 'true' : undefined}>
+            <span class="block h-2.5 w-2.5 rounded-full border-2 border-sand bg-transparent transition-colors" data-punkt-anzeige></span>
+          </button>
+        ))}
+        <button type="button" data-vor class="hidden h-9 w-9 place-items-center rounded-md text-sand-50 hover:bg-navy-700 md:grid" aria-label={t.vor}>
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+        </button>
+        <button type="button" data-pause aria-label={t.pause} class="ml-1 grid h-9 w-9 place-items-center rounded-md bg-sand text-navy hover:bg-white">
+          <svg data-icon-pause class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z" /></svg>
+          <svg data-icon-play class="hidden h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
+        </button>
+      </div>
+    </div>
+  )}
+</div>
+
+<style>
+  .hero-slider [data-punkt][aria-current='true'] [data-punkt-anzeige] { background: var(--color-sand); }
+</style>
+
+<script>
+  const INTERVALL = 6000;
+
+  for (const el of document.querySelectorAll<HTMLElement>('.hero-slider')) {
+    const slides = [...el.querySelectorAll<HTMLElement>('.slide')];
+    if (slides.length < 2) continue;
+    const texte = JSON.parse(el.dataset.texte!) as { pause: string; weiter: string };
+    const punkte = [...el.querySelectorAll<HTMLButtonElement>('[data-punkt]')];
+    const pauseKnopf = el.querySelector<HTMLButtonElement>('[data-pause]')!;
+    const unterschrift = el.querySelector<HTMLElement>('[data-unterschrift]');
+    const ruhig = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    let aktuell = 0;
+    let angehalten = ruhig; // reduzierte Bewegung: kein Autoplay
+    let unterbrochen = false; // Hover oder Fokus
+    let timer: number | undefined;
+
+    /** Bild einblenden lassen (lädt es) – vorab für das jeweils nächste Bild */
+    const vorladen = (i: number) => slides[(i + slides.length) % slides.length].removeAttribute('hidden');
+
+    function zeigen(i: number) {
+      aktuell = (i + slides.length) % slides.length;
+      vorladen(aktuell);
+      vorladen(aktuell + 1);
+      slides.forEach((s, k) => {
+        s.classList.toggle('opacity-100', k === aktuell);
+        s.classList.toggle('opacity-0', k !== aktuell);
+        if (k === aktuell) s.removeAttribute('aria-hidden'); else s.setAttribute('aria-hidden', 'true');
+      });
+      punkte.forEach((p, k) => (k === aktuell ? p.setAttribute('aria-current', 'true') : p.removeAttribute('aria-current')));
+      if (unterschrift) unterschrift.textContent = (slides[aktuell].getAttribute('aria-label') ?? '').replace(/^\d+ \S+ \d+: /, '');
+      planen();
+    }
+
+    function planen() {
+      window.clearTimeout(timer);
+      if (!angehalten && !unterbrochen) timer = window.setTimeout(() => zeigen(aktuell + 1), INTERVALL);
+    }
+
+    function pausieren(an: boolean) {
+      angehalten = an;
+      pauseKnopf.setAttribute('aria-label', an ? texte.weiter : texte.pause);
+      pauseKnopf.querySelector('[data-icon-pause]')!.classList.toggle('hidden', an);
+      pauseKnopf.querySelector('[data-icon-play]')!.classList.toggle('hidden', !an);
+      // Während die Diashow steht, Bildwechsel für Screenreader ansagen
+      el.querySelector('[data-slides]')!.setAttribute('aria-live', an ? 'polite' : 'off');
+      planen();
+    }
+
+    pauseKnopf.addEventListener('click', () => pausieren(!angehalten));
+    punkte.forEach((p, k) => p.addEventListener('click', () => zeigen(k)));
+    el.querySelector('[data-zurueck]')?.addEventListener('click', () => zeigen(aktuell - 1));
+    el.querySelector('[data-vor]')?.addEventListener('click', () => zeigen(aktuell + 1));
+
+    // Hover und Wischen auf dem ganzen Hero-Bereich (Text und Verlauf liegen über dem Slider)
+    const flaeche = el.parentElement ?? el;
+    // Pause bei Hover und Tastatur-Fokus
+    flaeche.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') { unterbrochen = true; planen(); } });
+    flaeche.addEventListener('pointerleave', () => { unterbrochen = false; planen(); });
+    el.addEventListener('focusin', () => { unterbrochen = true; planen(); });
+    el.addEventListener('focusout', (e) => { if (!el.contains(e.relatedTarget as Node)) { unterbrochen = false; planen(); } });
+
+    // Wischen am Handy
+    let startX: number | null = null;
+    flaeche.addEventListener('pointerdown', (e) => { if (e.pointerType !== 'mouse') startX = e.clientX; });
+    flaeche.addEventListener('pointerup', (e) => {
+      if (startX === null) return;
+      const dx = e.clientX - startX; startX = null;
+      if (Math.abs(dx) > 40) zeigen(aktuell + (dx < 0 ? 1 : -1));
+    });
+
+    // Erst nach dem vollständigen Laden der Seite starten (erstes Bild hat Vorrang)
+    const start = () => { vorladen(1); pausieren(angehalten); };
+    if (document.readyState === 'complete') start(); else window.addEventListener('load', start, { once: true });
+  }
+</script>

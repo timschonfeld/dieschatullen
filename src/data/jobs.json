@@ -2,6 +2,10 @@
   "aktiv": true,
   "titel": "Aushilfen für die Saison 2027 gesucht",
   "text": "Für die kommende Saison suchen wir wieder Verstärkung in Hooksiel und Schillig: Aushilfen, Semesterferien-Jobber und gerne auch Schülerinnen und Schüler.",
-  "gesucht": ["Aushilfen", "Semesterferien-Jobs", "Schülerjobs"],
-  "email": "info@dieschatullen.de"
+  "gesucht": [
+    "Aushilfen",
+    "Semesterferien-Jobs",
+    "Schülerjobs"
+  ],
+  "email": "jobs@dieschatullen.de"
 }

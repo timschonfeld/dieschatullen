@@ -30,6 +30,24 @@ content:
       - { name: name, label: Name, type: string }
       - { name: claim, label: Claim, type: string }
       - { name: beschreibung, label: "Beschreibung für Google", type: text }
+      - name: consent
+        label: "Einwilligungs-Banner (CCM19)"
+        type: object
+        fields:
+          - { name: skriptUrl, label: "Integrations-URL aus CCM19 (leer = kein Banner)", type: string }
+
+  - name: slider
+    label: "🖼️ Slider Startseite"
+    type: file
+    path: src/data/slider.json
+    format: json
+    list: true
+    fields:
+      - { name: bild, label: "Bild (Dateiname ohne Endung aus src/assets/img)", type: string }
+      - { name: alt, label: "Bildbeschreibung (für Screenreader)", type: string }
+      - { name: titel, label: "Bildunterschrift Deutsch", type: string }
+      - { name: titel_en, label: "Bildunterschrift Englisch", type: string }
+      - { name: titel_nl, label: "Bildunterschrift Niederländisch", type: string }
 
   - name: laeden
     label: "🏠 Läden & Öffnungszeiten"

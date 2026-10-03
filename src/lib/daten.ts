@@ -11,6 +11,7 @@ import bewertungenRoh from '../data/bewertungen.json';
 import sortimentRoh from '../data/sortiment.json';
 import videosRoh from '../data/videos.json';
 import faqRoh from '../data/faq.json';
+import sliderRoh from '../data/slider.json';
 
 export interface Oeffnungszeit { label: string; tage: number[]; von: string; bis: string }
 export interface Laden {
@@ -29,7 +30,7 @@ const text = (x: unknown) => (typeof x === 'string' ? x : '');
 export const externerLink = (link?: string) =>
   !link ? undefined : /^(https?:|mailto:|tel:|\/|#)/.test(link) ? link : `https://${link}`;
 
-const s = siteRoh as Roh<{ saison: Record<string, unknown>; ausnahmen: unknown[] }> & Record<string, unknown>;
+const s = siteRoh as Roh<{ saison: Record<string, unknown>; ausnahmen: unknown[]; consent: Record<string, unknown> }> & Record<string, unknown>;
 export const site = {
   name: text(s.name) || 'Die Schatullen',
   claim: text(s.claim),
@@ -44,6 +45,10 @@ export const saison = {
   hinweis: text(s.saison?.hinweis),
 };
 export const ausnahmen = liste<{ datum: string }>(s.ausnahmen).filter((a) => typeof a?.datum === 'string');
+
+/** Einwilligungs-Banner CCM19 (selbst gehostet). Leer = kein Banner (lokal, GitHub-Pages-Vorschau). */
+const skriptUrl = text(s.consent?.skriptUrl);
+export const consent = { skriptUrl: /^https:\/\/[\w.-]+\//.test(skriptUrl) ? skriptUrl : '' };
 
 export const laeden: Laden[] = liste<Roh<Laden>>(laedenRoh).map((l) => ({
   ...(l as Laden),
@@ -69,3 +74,8 @@ export const bewertungen = {
 export const sortiment = liste<{ titel: string; bild: string; text: string; hinweis?: string; link?: string }>(sortimentRoh);
 export const videos = liste<Video>(videosRoh);
 export const faq = liste<{ frage: string; antwort: string }>(faqRoh);
+
+export interface Slide { bild: string; alt: string; titel: string; titel_en: string; titel_nl: string }
+export const slider: Slide[] = liste<Roh<Slide>>(sliderRoh)
+  .filter((x) => x.bild)
+  .map((x) => ({ bild: text(x.bild), alt: text(x.alt), titel: text(x.titel), titel_en: text(x.titel_en) || text(x.titel), titel_nl: text(x.titel_nl) || text(x.titel) }));
