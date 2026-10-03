@@ -3,11 +3,12 @@ import { u } from '../lib/url';
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
-import { bild } from '../lib/bilder';
+import { bild, seitenbild } from '../lib/bilder';
+const kopf = seitenbild('sortiment', 'kopf');
 import { sortiment } from '../lib/daten';
 ---
 <Base title="Sortiment: Souvenirs, Tee & Strandbedarf in Hooksiel und Schillig" description="Drachen, Windspiele, über 60 Teesorten, maritime Souvenirs, Geschenke, Strandbedarf und Lebensmittel: das Sortiment der Schatullen in Hooksiel und Schillig.">
-  <PageHero eyebrow="Unser Sortiment" titel="Nichts, was ihr nicht bei uns findet" foto={bild('leuchttuerme')} alt="Leuchtturm-Deko in der Schatulle"
+  <PageHero eyebrow="Unser Sortiment" titel="Nichts, was ihr nicht bei uns findet" foto={kopf.src} alt={kopf.alt}
     intro="Bei uns gibt es alles, was ihr für euren Nordseeurlaub braucht. Ob Lenkdrachen oder Sonnencreme, Wattschuhe oder ein großes Sortiment an Teesorten. Mit personalisierten Geschenkideen und maritimen Souvenirs könnt ihr das Wangerland mit nach Hause nehmen." />
 
   <div class="mt-20 space-y-16 md:mt-28 md:space-y-0">

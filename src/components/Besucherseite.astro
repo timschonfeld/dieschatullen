@@ -1,6 +1,7 @@
 ---
 /** Kompakte Besucherseite für Englisch und Niederländisch (alles Wichtige auf einer Seite). */
 import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
 import Base from '../layouts/Base.astro';
 import OpenStatus from './OpenStatus.astro';
 import Drachenwetter from './Drachenwetter.astro';
@@ -8,7 +9,7 @@ import HeroSlider from './HeroSlider.astro';
 import Drachenwiesen from './Drachenwiesen.astro';
 import Bewertungen from './Bewertungen.astro';
 import Steuerrad from './Steuerrad.astro';
-import { bild } from '../lib/bilder';
+import { seitenbild } from '../lib/bilder';
 import { u } from '../lib/url';
 import { laeden, site, ladenSchema, routenLink, telLink, istWinterpause } from '../lib/laden';
 import { ui, tageLabel } from '../i18n/ui';
@@ -18,7 +19,8 @@ interface Props { lang: 'en' | 'nl' }
 const { lang } = Astro.props;
 const c = uebersetzungen[lang];
 const t = ui[lang];
-const fotos: Record<string, string> = { hooksiel: 'laden-hooksiel', schillig: 'laden-schillig' };
+const fotos: Record<string, ImageMetadata> = { hooksiel: seitenbild('startseite', 'ladenHooksiel').src, schillig: seitenbild('startseite', 'ladenSchillig').src };
+const sortimentBild = seitenbild('englischNiederlaendisch', 'sortiment');
 ---
 <Base title={c.titel} description={c.beschreibung} lang={lang} schema={laeden.map(ladenSchema)}>
   <section class="full-bleed">
@@ -55,7 +57,7 @@ const fotos: Record<string, string> = { hooksiel: 'laden-hooksiel', schillig: 'l
     <div class="container-page relative grid gap-6 md:grid-cols-2">
       {laeden.map((l) => (
         <article id={l.id} class="scroll-mt-24 overflow-hidden rounded-lg bg-white ring-1 ring-navy/15">
-          <Image src={bild(fotos[l.id])} alt={l.name} widths={[480, 800, 1200]} sizes="(min-width: 768px) 50vw, 100vw" class="aspect-[3/2] w-full object-cover" />
+          <Image src={fotos[l.id]} alt={l.name} widths={[480, 800, 1200]} sizes="(min-width: 768px) 50vw, 100vw" class="aspect-[3/2] w-full object-cover" />
           <div class="p-6 md:p-10">
             <p class="eyebrow mb-2">{l.ort} · {t.seit} {l.seit}</p>
             <h3 class="text-3xl md:text-4xl">{l.name}</h3>
@@ -81,7 +83,7 @@ const fotos: Record<string, string> = { hooksiel: 'laden-hooksiel', schillig: 'l
   </section>
 
   <section class="container-page mt-24 grid items-center gap-10 md:grid-cols-2">
-    <Image src={bild('leuchttuerme')} alt="" widths={[600, 1000]} sizes="(min-width: 768px) 50vw, 100vw" class="aspect-[4/3] w-full rounded-lg object-cover" />
+    <Image src={sortimentBild.src} alt={sortimentBild.alt} widths={[600, 1000]} sizes="(min-width: 768px) 50vw, 100vw" class="aspect-[4/3] w-full rounded-lg object-cover" />
     <div>
       <h2 class="display-lg">{c.sortimentTitel}</h2>
       <ul class="mt-6 space-y-3 text-lg">

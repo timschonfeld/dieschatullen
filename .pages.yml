@@ -1,8 +1,10 @@
 # Pages CMS (https://pagescms.org): Bearbeitungsoberfläche im Browser für die Inhalte in src/data/.
-# Anmelden mit GitHub → Repository wählen → Branch wählen → Inhalte bearbeiten → "Speichern" löst den Deploy aus.
+# Anmelden (GitHub oder Einladung per E-Mail) → Repository wählen → Branch wählen → Inhalte bearbeiten → "Speichern" löst den Deploy aus.
 media:
   input: src/assets/img
   output: src/assets/img
+  extensions: [jpg, jpeg, png, webp]
+  rename: safe # Dateinamen ohne Leerzeichen/Umlaute
 
 content:
   - name: allgemein
@@ -43,11 +45,177 @@ content:
     format: json
     list: true
     fields:
-      - { name: bild, label: "Bild (Dateiname ohne Endung aus src/assets/img)", type: string }
-      - { name: alt, label: "Bildbeschreibung (für Screenreader)", type: string }
+      - { name: bild, label: Bild, type: image }
+      - { name: alt, label: "Bildbeschreibung (was ist zu sehen?)", type: string }
       - { name: titel, label: "Bildunterschrift Deutsch", type: string }
       - { name: titel_en, label: "Bildunterschrift Englisch", type: string }
       - { name: titel_nl, label: "Bildunterschrift Niederländisch", type: string }
+
+  - name: bilder
+    label: "📷 Bilder auf den Seiten"
+    type: file
+    path: src/data/bilder.json
+    format: json
+    fields:
+      - name: startseite
+        label: "Startseite"
+        type: object
+        fields:
+          - name: ladenHooksiel
+            label: "Laden Hooksiel (großes Bild bei „Unsere Läden“, auch EN/NL)"
+            type: object
+            fields:
+              - { name: bild, label: Bild, type: image }
+              - { name: alt, label: "Bildbeschreibung (was ist zu sehen?)", type: string }
+          - name: ladenSchillig
+            label: "Laden Schillig (großes Bild bei „Unsere Läden“, auch EN/NL)"
+            type: object
+            fields:
+              - { name: bild, label: Bild, type: image }
+              - { name: alt, label: "Bildbeschreibung (was ist zu sehen?)", type: string }
+          - name: rundgangHooksiel
+            label: "Vorschaubild 360°-Rundgang Hooksiel"
+            type: object
+            fields:
+              - { name: bild, label: Bild, type: image }
+          - name: rundgangSchillig
+            label: "Vorschaubild 360°-Rundgang Schillig"
+            type: object
+            fields:
+              - { name: bild, label: Bild, type: image }
+          - name: drachen
+            label: "Breites Bild hinter „Drachen“"
+            type: object
+            fields:
+              - { name: bild, label: Bild, type: image }
+              - { name: alt, label: "Bildbeschreibung (was ist zu sehen?)", type: string }
+          - name: fotostreifen
+            label: "Fotostreifen (laufendes Band, Reihenfolge per Ziehen)"
+            type: image
+            options:
+              multiple: { max: 14 }
+              unique: true
+          - name: team
+            label: "Team-Bild (Über uns & Jobs)"
+            type: object
+            fields:
+              - { name: bild, label: Bild, type: image }
+              - { name: alt, label: "Bildbeschreibung (was ist zu sehen?)", type: string }
+      - name: sortiment
+        label: "Seite Sortiment"
+        type: object
+        fields:
+          - name: kopf
+            label: "Großes Bild oben"
+            type: object
+            fields:
+              - { name: bild, label: Bild, type: image }
+              - { name: alt, label: "Bildbeschreibung (was ist zu sehen?)", type: string }
+      - name: drachen
+        label: "Seite Drachen & Drachenreparatur"
+        type: object
+        fields:
+          - name: kopf
+            label: "Großes Bild oben"
+            type: object
+            fields:
+              - { name: bild, label: Bild, type: image }
+              - { name: alt, label: "Bildbeschreibung (was ist zu sehen?)", type: string }
+          - name: kinderdrachen
+            label: "Karte Kinderdrachen"
+            type: object
+            fields:
+              - { name: bild, label: Bild, type: image }
+              - { name: alt, label: "Bildbeschreibung (was ist zu sehen?)", type: string }
+          - name: lenkdrachen
+            label: "Karte Lenkdrachen"
+            type: object
+            fields:
+              - { name: bild, label: Bild, type: image }
+              - { name: alt, label: "Bildbeschreibung (was ist zu sehen?)", type: string }
+          - name: lenkmatten
+            label: "Karte Lenkmatten"
+            type: object
+            fields:
+              - { name: bild, label: Bild, type: image }
+              - { name: alt, label: "Bildbeschreibung (was ist zu sehen?)", type: string }
+          - name: reparatur
+            label: "Bild bei Drachenreparatur"
+            type: object
+            fields:
+              - { name: bild, label: Bild, type: image }
+              - { name: alt, label: "Bildbeschreibung (was ist zu sehen?)", type: string }
+      - name: videos
+        label: "Seite Videos"
+        type: object
+        fields:
+          - name: kopf
+            label: "Großes Bild oben"
+            type: object
+            fields:
+              - { name: bild, label: Bild, type: image }
+              - { name: alt, label: "Bildbeschreibung (was ist zu sehen?)", type: string }
+      - name: ueberUns
+        label: "Seite Über uns"
+        type: object
+        fields:
+          - name: kopf
+            label: "Großes Bild oben"
+            type: object
+            fields:
+              - { name: bild, label: Bild, type: image }
+              - { name: alt, label: "Bildbeschreibung (was ist zu sehen?)", type: string }
+          - name: nicky
+            label: "Foto Nicky"
+            type: object
+            fields:
+              - { name: bild, label: Bild, type: image }
+              - { name: alt, label: "Bildbeschreibung (was ist zu sehen?)", type: string }
+          - name: nadja
+            label: "Foto Nadja"
+            type: object
+            fields:
+              - { name: bild, label: Bild, type: image }
+              - { name: alt, label: "Bildbeschreibung (was ist zu sehen?)", type: string }
+      - name: jobs
+        label: "Seite Jobs"
+        type: object
+        fields:
+          - name: kopf
+            label: "Großes Bild oben"
+            type: object
+            fields:
+              - { name: bild, label: Bild, type: image }
+              - { name: alt, label: "Bildbeschreibung (was ist zu sehen?)", type: string }
+      - name: faq
+        label: "Seite FAQ"
+        type: object
+        fields:
+          - name: kopf
+            label: "Großes Bild oben"
+            type: object
+            fields:
+              - { name: bild, label: Bild, type: image }
+              - { name: alt, label: "Bildbeschreibung (was ist zu sehen?)", type: string }
+      - name: kontakt
+        label: "Seite Kontakt"
+        type: object
+        fields:
+          - name: kopf
+            label: "Großes Bild oben"
+            type: object
+            fields:
+              - { name: bild, label: Bild, type: image }
+              - { name: alt, label: "Bildbeschreibung (was ist zu sehen?)", type: string }
+      - name: englischNiederlaendisch
+        label: "Englische & niederländische Seite"
+        type: object
+        fields:
+          - name: sortiment
+            label: "Bild neben der Sortiment-Liste"
+            type: object
+            fields:
+              - { name: bild, label: Bild, type: image }
 
   - name: laeden
     label: "🏠 Läden & Öffnungszeiten"
@@ -162,7 +330,7 @@ content:
     list: true
     fields:
       - { name: titel, label: Titel, type: string }
-      - { name: bild, label: "Bild (Dateiname ohne Endung aus src/assets/img)", type: string }
+      - { name: bild, label: Bild, type: image }
       - { name: text, label: Text, type: text }
       - { name: hinweis, label: "Hinweis (z. B. nur in Schillig)", type: string }
       - { name: link, label: "Link (optional)", type: string }

@@ -2,7 +2,8 @@
 import { u } from '../lib/url';
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
-import { bild } from '../lib/bilder';
+import { seitenbild } from '../lib/bilder';
+const kopf = seitenbild('faq', 'kopf');
 import { faq } from '../lib/daten';
 
 const schema = {
@@ -12,7 +13,7 @@ const schema = {
 };
 ---
 <Base title="FAQ: Gravur, Briefmarken, Drachenreparatur" description="Die meistgestellten Fragen an die Schatullen: Sortiment, Gravur, Briefmarken, Versand, Drachenreparatur, Tee und Wangerland-Souvenirs." schema={[schema]}>
-  <PageHero eyebrow="FAQ" titel="Die meistgestellten Fragen" foto={bild('gummistiefel')} alt="Gummistiefel im Regal" />
+  <PageHero eyebrow="FAQ" titel="Die meistgestellten Fragen" foto={kopf.src} alt={kopf.alt} />
   <section class="container-page mt-10 max-w-3xl">
     <div class="divide-y divide-navy/10 rounded-lg bg-white ring-1 ring-navy/15">
       {faq.map((f) => (

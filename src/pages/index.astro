@@ -1,6 +1,7 @@
 ---
 import { u } from '../lib/url';
 import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
 import Base from '../layouts/Base.astro';
 import OpenStatus from '../components/OpenStatus.astro';
 import ClickEmbed from '../components/ClickEmbed.astro';
@@ -8,7 +9,7 @@ import Steuerrad from '../components/Steuerrad.astro';
 import Bewertungen from '../components/Bewertungen.astro';
 import Drachenwetter from '../components/Drachenwetter.astro';
 import HeroSlider from '../components/HeroSlider.astro';
-import { bild } from '../lib/bilder';
+import { bild, seitenbild, fotostreifen } from '../lib/bilder';
 import { heuteBerlin, zeitenKurz } from '../lib/zeit';
 import { laeden, site, saison, ladenSchema, routenLink, telLink, istWinterpause, winterpauseHinweis } from '../lib/laden';
 import { sortiment, news as alleNews, jobs } from '../lib/daten';
@@ -17,11 +18,13 @@ const [hooksiel, schillig] = laeden;
 // News ausblenden, sobald ihr Enddatum (oder Datum) vorbei ist; Seite wird täglich neu gebaut
 const heute = heuteBerlin();
 const news = alleNews.filter((n) => (n.ende ?? n.datum) >= heute);
-const ladenFotos: Record<string, { foto: string; alt: string; pos: string }> = {
-  hooksiel: { foto: 'laden-hooksiel', alt: 'Die Hooksieler Schatulle & Drachennest von außen', pos: 'object-center' },
-  schillig: { foto: 'laden-schillig', alt: 'Schaufenster der Schilligen Schatulle', pos: 'object-center' },
+const ladenFotos: Record<string, { src: ImageMetadata; alt: string }> = {
+  hooksiel: seitenbild('startseite', 'ladenHooksiel'),
+  schillig: seitenbild('startseite', 'ladenSchillig'),
 };
-const streifen = ['leuchttuerme', 'tee', 'windspiele', 'gummistiefel', 'drachen-bunt', 'lenkmatten', 'spiele', 'feinkost', 'deich-schillig'];
+const streifen = fotostreifen();
+const drachenBild = seitenbild('startseite', 'drachen');
+const teamBild = seitenbild('startseite', 'team');
 ---
 <Base schema={laeden.map(ladenSchema)}>
   <!-- HERO: randloses Großbild, Status-Karten überlappen den unteren Rand -->
@@ -66,7 +69,7 @@ const streifen = ['leuchttuerme', 'tee', 'windspiele', 'gummistiefel', 'drachen-
       {laeden.map((l, i) => (
         <article id={l.id} class="grid scroll-mt-20 md:min-h-[88svh] md:grid-cols-2">
           <div class={`relative min-h-[60svh] md:min-h-0 ${i % 2 ? 'md:order-2' : ''}`}>
-            <Image src={bild(ladenFotos[l.id].foto)} alt={ladenFotos[l.id].alt} widths={[640, 1024, 1600, 2000]} sizes="(min-width: 768px) 50vw, 100vw" class={`absolute inset-0 h-full w-full object-cover ${ladenFotos[l.id].pos}`} />
+            <Image src={ladenFotos[l.id].src} alt={ladenFotos[l.id].alt} widths={[640, 1024, 1600, 2000]} sizes="(min-width: 768px) 50vw, 100vw" class={`absolute inset-0 h-full w-full object-cover`} />
           </div>
           <div class={`flex flex-col justify-center px-4 pt-10 sm:px-6 md:px-12 md:py-20 lg:px-20 xl:px-24 ${i % 2 ? 'md:bg-sand-100' : 'md:bg-white'}`}>
             <p class="eyebrow mb-3 !text-sm">{l.ort} · seit {l.seit}</p>
@@ -96,11 +99,11 @@ const streifen = ['leuchttuerme', 'tee', 'windspiele', 'gummistiefel', 'drachen-
     </div>
     <div class="grid gap-6 md:grid-cols-2">
       <div>
-        <ClickEmbed src={hooksiel.rundgang} titel="Rundgang Hooksiel starten" anbieter="Google" dienst="Google Maps" ereignis="rundgang_start" poster={bild('laden-hooksiel')} alt="" />
+        <ClickEmbed src={hooksiel.rundgang} titel="Rundgang Hooksiel starten" anbieter="Google" dienst="Google Maps" ereignis="rundgang_start" poster={seitenbild('startseite', 'rundgangHooksiel').src} alt="" />
         <p class="mt-3 font-display text-lg font-bold text-navy">{hooksiel.name}</p>
       </div>
       <div>
-        <ClickEmbed src={schillig.rundgang} titel="Rundgang Schillig starten" anbieter="Google" dienst="Google Maps" ereignis="rundgang_start" poster={bild('windspiele-ballons')} alt="" />
+        <ClickEmbed src={schillig.rundgang} titel="Rundgang Schillig starten" anbieter="Google" dienst="Google Maps" ereignis="rundgang_start" poster={seitenbild('startseite', 'rundgangSchillig').src} alt="" />
         <p class="mt-3 font-display text-lg font-bold text-navy">{schillig.name}</p>
       </div>
     </div>
@@ -134,7 +137,7 @@ const streifen = ['leuchttuerme', 'tee', 'windspiele', 'gummistiefel', 'drachen-
   <!-- DRACHEN: randloses Vollbild mit Text-Overlay -->
   <section class="full-bleed mt-24 md:mt-32" aria-labelledby="drachen-titel">
     <div class="relative min-h-[85svh]">
-      <Image src={bild('drachen-wand')} alt="Wand voller Lenkdrachen im Drachennest" widths={[640, 1024, 1600, 2400]} sizes="100vw" class="absolute inset-0 h-full w-full object-cover" />
+      <Image src={drachenBild.src} alt={drachenBild.alt} widths={[640, 1024, 1600, 2400]} sizes="100vw" class="absolute inset-0 h-full w-full object-cover" />
       <div class="absolute inset-0 bg-navy-950/75 md:bg-transparent md:bg-gradient-to-r md:from-navy-950/90 md:via-navy-950/60 md:to-navy-950/10"></div>
       <Steuerrad farbe="sand" class="-bottom-32 -right-32 h-[26rem] w-[26rem] opacity-[0.12] md:h-[40rem] md:w-[40rem]" />
       <div class="container-page relative flex min-h-[85svh] flex-col justify-center py-20">
@@ -161,7 +164,7 @@ const streifen = ['leuchttuerme', 'tee', 'windspiele', 'gummistiefel', 'drachen-
     </button>
     <div class="marquee flex w-max gap-4 group-hover/streifen:[animation-play-state:paused] group-focus-within/streifen:[animation-play-state:paused]">
       {[...streifen, ...streifen].map((b, i) => (
-        <Image src={bild(b)} alt="" widths={[400, 640]} sizes="(min-width: 768px) 28vw, 70vw" class="h-[45svh] max-h-[460px] w-auto rounded-lg object-cover" aria-hidden={i >= streifen.length ? 'true' : undefined} />
+        <Image src={b} alt="" widths={[400, 640]} sizes="(min-width: 768px) 28vw, 70vw" class="h-[45svh] max-h-[460px] w-auto rounded-lg object-cover" aria-hidden={i >= streifen.length ? 'true' : undefined} />
       ))}
     </div>
   </section>
@@ -187,7 +190,7 @@ const streifen = ['leuchttuerme', 'tee', 'windspiele', 'gummistiefel', 'drachen-
   <section class="container-page relative mt-24 grid items-center gap-10 md:mt-32 md:grid-cols-12" aria-labelledby="team-titel">
     <Steuerrad class="-right-10 -top-16 h-72 w-72 opacity-[0.05] md:-right-56 md:h-[34rem] md:w-[34rem]" />
     <div class="relative md:col-span-7">
-      <Image src={bild('nadja-nicky')} alt="Nadja und Nicky zur Eröffnung der Schilligen Schatulle" widths={[640, 1000, 1400]} sizes="(min-width: 768px) 58vw, 100vw" class="aspect-[4/3] w-full rounded-lg object-cover" />
+      <Image src={teamBild.src} alt={teamBild.alt} widths={[640, 1000, 1400]} sizes="(min-width: 768px) 58vw, 100vw" class="aspect-[4/3] w-full rounded-lg object-cover" />
     </div>
     <div class="md:col-span-5">
       <p class="eyebrow mb-3">Über uns</p>

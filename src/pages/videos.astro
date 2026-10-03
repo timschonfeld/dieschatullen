@@ -2,7 +2,8 @@
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import ClickEmbed from '../components/ClickEmbed.astro';
-import { bild, bildOder } from '../lib/bilder';
+import { bildOder, seitenbild } from '../lib/bilder';
+const kopf = seitenbild('videos', 'kopf');
 import { site } from '../lib/laden';
 import { videos } from '../lib/daten';
 
@@ -10,7 +11,7 @@ for (const v of videos) if (!/^[\w-]{11}$/.test(v.id)) throw new Error(`Ungülti
 const themen = [...new Set(videos.map((v) => v.thema))];
 ---
 <Base title="Drachen-Videos: Lenkdrachen & Lenkmatten aufbauen" description="Nicky von den Schatullen zeigt in kurzen Videos, wie ihr Lenkdrachen und Lenkmatten auf- und abbaut, Leinen befestigt und welches Zubehör hilft.">
-  <PageHero eyebrow="Videos" titel="Nicky erklärt's" foto={bild('lenkmatten')} alt="Bunte Lenkmatten im Drachennest"
+  <PageHero eyebrow="Videos" titel="Nicky erklärt's" foto={kopf.src} alt={kopf.alt}
     intro="Wie baue ich meinen Lenkdrachen auf? Wofür brauche ich eine Lenkbar? In kurzen Videos zeigt euch Nicky, worauf es beim jeweiligen Modell ankommt." />
 
   {themen.map((thema) => (

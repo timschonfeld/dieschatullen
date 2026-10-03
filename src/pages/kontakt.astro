@@ -3,11 +3,12 @@ import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import OpenStatus from '../components/OpenStatus.astro';
-import { bild } from '../lib/bilder';
+import { bild, seitenbild } from '../lib/bilder';
+const kopf = seitenbild('kontakt', 'kopf');
 import { laeden, site, routenLink, telLink, ladenSchema, istWinterpause } from '../lib/laden';
 ---
 <Base title="Kontakt, Öffnungszeiten & Anfahrt Hooksiel und Schillig" description="Adressen, Telefonnummern, Öffnungszeiten und Anfahrt der Hooksieler Schatulle & Drachennest und der Schilligen Schatulle." schema={laeden.map(ladenSchema)}>
-  <PageHero eyebrow="Kontakt & Anfahrt" titel="Wo ihr uns findet" foto={bild('deich-schillig')} alt="Grüner Deich in Schillig"
+  <PageHero eyebrow="Kontakt & Anfahrt" titel="Wo ihr uns findet" foto={kopf.src} alt={kopf.alt}
     intro="Wir sind mitten im Wangerland an der Nordseeküste. Von uns aus seid ihr schnell auf den Ostfriesischen Inseln und am Jadebusen. Für jedes Strandabenteuer findet ihr bei uns das richtige Equipment." />
 
   <section class="container-page mt-12 grid gap-6 md:grid-cols-2">

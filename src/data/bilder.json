@@ -1,0 +1,111 @@
+{
+  "startseite": {
+    "ladenHooksiel": {
+      "bild": "src/assets/img/laden-hooksiel.jpg",
+      "alt": "Die Hooksieler Schatulle & Drachennest von außen"
+    },
+    "ladenSchillig": {
+      "bild": "src/assets/img/laden-schillig.jpg",
+      "alt": "Schaufenster der Schilligen Schatulle"
+    },
+    "rundgangHooksiel": {
+      "bild": "src/assets/img/laden-hooksiel.jpg",
+      "alt": ""
+    },
+    "rundgangSchillig": {
+      "bild": "src/assets/img/windspiele-ballons.jpg",
+      "alt": ""
+    },
+    "drachen": {
+      "bild": "src/assets/img/drachen-wand.jpg",
+      "alt": "Wand voller Lenkdrachen im Drachennest"
+    },
+    "fotostreifen": [
+      "src/assets/img/leuchttuerme.jpg",
+      "src/assets/img/tee.jpg",
+      "src/assets/img/windspiele.jpg",
+      "src/assets/img/gummistiefel.jpg",
+      "src/assets/img/drachen-bunt.jpg",
+      "src/assets/img/lenkmatten.jpg",
+      "src/assets/img/spiele.jpg",
+      "src/assets/img/feinkost.jpg",
+      "src/assets/img/deich-schillig.jpg"
+    ],
+    "team": {
+      "bild": "src/assets/img/nadja-nicky.jpg",
+      "alt": "Nadja und Nicky zur Eröffnung der Schilligen Schatulle"
+    }
+  },
+  "sortiment": {
+    "kopf": {
+      "bild": "src/assets/img/leuchttuerme.jpg",
+      "alt": "Leuchtturm-Deko in der Schatulle"
+    }
+  },
+  "drachen": {
+    "kopf": {
+      "bild": "src/assets/img/drachen-laden.jpg",
+      "alt": "Drachenabteilung mit vielen bunten Drachen"
+    },
+    "kinderdrachen": {
+      "bild": "src/assets/img/drachen-bunt.jpg",
+      "alt": "Kinderdrachen"
+    },
+    "lenkdrachen": {
+      "bild": "src/assets/img/drachen-wand.jpg",
+      "alt": "Lenkdrachen"
+    },
+    "lenkmatten": {
+      "bild": "src/assets/img/lenkmatten.jpg",
+      "alt": "Lenkmatten"
+    },
+    "reparatur": {
+      "bild": "src/assets/img/windspiele-ballons.jpg",
+      "alt": "Bunte Windspiele und Drachen in der Schatulle"
+    }
+  },
+  "videos": {
+    "kopf": {
+      "bild": "src/assets/img/lenkmatten.jpg",
+      "alt": "Bunte Lenkmatten im Drachennest"
+    }
+  },
+  "ueberUns": {
+    "kopf": {
+      "bild": "src/assets/img/laden-hooksiel-himmel.jpg",
+      "alt": "Die Hooksieler Schatulle und das Drachennest unter blauem Himmel"
+    },
+    "nicky": {
+      "bild": "src/assets/img/team-nicky.jpg",
+      "alt": "Nicky, Inhaberin"
+    },
+    "nadja": {
+      "bild": "src/assets/img/team-nadja.jpg",
+      "alt": "Nadja, Kernteam"
+    }
+  },
+  "jobs": {
+    "kopf": {
+      "bild": "src/assets/img/nadja-nicky.jpg",
+      "alt": "Nadja und Nicky in der Schilligen Schatulle"
+    }
+  },
+  "faq": {
+    "kopf": {
+      "bild": "src/assets/img/gummistiefel.jpg",
+      "alt": "Gummistiefel im Regal"
+    }
+  },
+  "kontakt": {
+    "kopf": {
+      "bild": "src/assets/img/deich-schillig.jpg",
+      "alt": "Grüner Deich in Schillig"
+    }
+  },
+  "englischNiederlaendisch": {
+    "sortiment": {
+      "bild": "src/assets/img/leuchttuerme.jpg",
+      "alt": ""
+    }
+  }
+}

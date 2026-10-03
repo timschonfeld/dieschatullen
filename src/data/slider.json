@@ -1,48 +1,48 @@
 [
   {
-    "bild": "drachen-bunt",
+    "bild": "src/assets/img/drachen-bunt.jpg",
     "alt": "Bunter Lenkdrache im Drachennest der Hooksieler Schatulle",
     "titel": "Drachennest Hooksiel",
     "titel_en": "Kite shop in Hooksiel",
     "titel_nl": "Vliegerwinkel in Hooksiel"
   },
   {
-    "bild": "tee",
+    "bild": "src/assets/img/tee.jpg",
     "alt": "Regal mit Teedosen, beschriftet mit Schwarzer Tee",
     "titel": "Über 60 Teesorten",
     "titel_en": "More than 60 teas",
     "titel_nl": "Meer dan 60 theesoorten"
   },
   {
-    "bild": "feinkost",
+    "bild": "src/assets/img/feinkost.jpg",
     "alt": "Regal mit Feinkost-Dips und Gewürzen",
     "titel": "Feinkost, Dips & Sanddorn",
     "titel_en": "Deli, dips & sea buckthorn",
     "titel_nl": "Delicatessen, dips & duindoorn"
   },
   {
-    "bild": "leuchttuerme",
+    "bild": "src/assets/img/leuchttuerme.jpg",
     "alt": "Rot-weiße Leuchtturm-Figuren als maritime Souvenirs",
     "titel": "Maritime Souvenirs",
     "titel_en": "Maritime souvenirs",
     "titel_nl": "Maritieme souvenirs"
   },
   {
-    "bild": "windspiele-ballons",
+    "bild": "src/assets/img/windspiele-ballons.jpg",
     "alt": "Bunte Windspiele und Heißluftballon-Lampen",
     "titel": "Windspiele & Deko",
     "titel_en": "Wind spinners & decor",
     "titel_nl": "Windspellen & decoratie"
   },
   {
-    "bild": "laden-hooksiel",
+    "bild": "src/assets/img/laden-hooksiel.jpg",
     "alt": "Ladenfront der Hooksieler Schatulle & Drachennest",
     "titel": "Hooksieler Schatulle & Drachennest",
     "titel_en": "Hooksieler Schatulle & Drachennest",
     "titel_nl": "Hooksieler Schatulle & Drachennest"
   },
   {
-    "bild": "laden-schillig",
+    "bild": "src/assets/img/laden-schillig.jpg",
     "alt": "Schaufenster der Schilligen Schatulle",
     "titel": "Schillige Schatulle",
     "titel_en": "Schillige Schatulle",
