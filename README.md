@@ -1,7 +1,9 @@
 # dieschatullen.de
 
 Website der **Hooksieler Schatulle & Drachennest** und der **Schilligen Schatulle** (Wangerland).
-Statische Seite mit [Astro](https://astro.build) + Tailwind CSS, ohne Cookies, ohne Tracking.
+Statische Seite mit [Astro](https://astro.build) + Tailwind CSS. Google Analytics nur optional über den Einwilligungs-Banner CCM19 (Adresse in `site.json` → `consent.skriptUrl`, leer = kein Banner, kein Tracking).
+
+Regeln für KI-Assistenten (ChatGPT/Codex, Claude): [`AGENTS.md`](AGENTS.md).
 
 ## Lokal starten
 
@@ -13,12 +15,13 @@ npm run build    # fertige Seite in dist/
 
 ## Inhalte pflegen
 
-**Am einfachsten:** [app.pagescms.org](https://app.pagescms.org) → mit GitHub anmelden → Repo wählen → Formulare ausfüllen → Speichern. Die Konfiguration steht in `.pages.yml`.
+**Am einfachsten:** [app.pagescms.org](https://app.pagescms.org) → anmelden (Einladung per E-Mail oder GitHub) → Repo wählen → Formulare ausfüllen → Speichern. Die Konfiguration steht in `.pages.yml`.
 
 Alles Wichtige steht in `src/data/`, dafür muss man kein Code anfassen:
 
 | Datei | Inhalt |
 |---|---|
+| `bilder.json` | Bilder je Seite und Platz (großes Bild oben, Ladenbilder, Fotostreifen …) |
 | `site.json` | E-Mail, YouTube, **Winterpause** (`"winterpause": true`), **Hinweis-Banner** (`"hinweis": "…"`), Schließtage (`"ausnahmen": [{ "datum": "2026-12-24" }]`) |
 | `laeden.json` | Adresse, Telefon, **Öffnungszeiten** je Laden, Texte, „Gut zu wissen“ |
 | `sortiment.json` | Sortiment-Kategorien mit Bild und Text |
@@ -29,7 +32,7 @@ Alles Wichtige steht in `src/data/`, dafür muss man kein Code anfassen:
 | `videos.json` | YouTube-Videos (nur ID eintragen, Vorschaubild lädt der Build automatisch) |
 | `uebersetzungen.json` | Texte der englischen und niederländischen Seite (`/en/`, `/nl/`) |
 
-Bilder liegen in `src/assets/img/` und werden über den Dateinamen ohne Endung angesprochen (z. B. `"bild": "tee"`).
+Bilder liegen in `src/assets/img/`. Welches Bild auf welcher Seite erscheint, steht in `bilder.json` (Pages CMS: „Bilder auf den Seiten“), beim Slider in `slider.json` und beim Sortiment in `sortiment.json`.
 
 ## Veröffentlichen
 
