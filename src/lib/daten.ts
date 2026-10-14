@@ -48,7 +48,12 @@ export const ausnahmen = liste<{ datum: string }>(s.ausnahmen).filter((a) => typ
 
 /** Einwilligungs-Banner CCM19 (selbst gehostet). Leer = kein Banner (lokal, GitHub-Pages-Vorschau). */
 const skriptUrl = text(s.consent?.skriptUrl);
-export const consent = { skriptUrl: /^https:\/\/[\w.-]+\//.test(skriptUrl) ? skriptUrl : '' };
+const gueltig = /^https:\/\/[\w.-]+\//.test(skriptUrl) ? skriptUrl : '';
+/** Variante laut Skript-Adresse: keine (ohne Google Analytics), eigener Server (Download) oder CCM19-Cloud */
+export const consent = {
+  skriptUrl: gueltig,
+  art: !gueltig ? ('keine' as const) : new URL(gueltig).hostname.endsWith('dieschatullen.de') ? ('eigenerServer' as const) : ('cloud' as const),
+};
 
 export const laeden: Laden[] = liste<Roh<Laden>>(laedenRoh).map((l) => ({
   ...(l as Laden),
